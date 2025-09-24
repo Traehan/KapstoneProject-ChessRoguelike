@@ -1,0 +1,34 @@
+# --- Unity ---
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Mm]emoryCaptures/
+UserSettings/
+Recordings/
+SysInfo.txt
+
+# --- Crash/Profiler ---
+*.pidb
+*.svd
+
+# --- OS junk ---
+.DS_Store
+Thumbs.db
+
+# --- IDE / Rider / VS ---
+.vscode/
+.idea/
+*.suo
+*.user
+*.userprefs
+*.vcxproj*
+*.sln.iml
+*.csproj
+*.unityproj
+*.booproj
+
+# --- Packages/Lock (keep these!) ---
+# (Do NOT ignore Packages/ or Packages/manifest.json or packages-lock.json)
