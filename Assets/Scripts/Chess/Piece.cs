@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace ChessRL
+namespace Chess
 {
     [RequireComponent(typeof(Collider))]
     public abstract class Piece : MonoBehaviour
@@ -53,6 +53,20 @@ namespace ChessRL
             if (p != null && p.Team != Team) { buffer.Add(c); return true; }
             return false;
         }
+        
+        // Public entry point the board can call to move a piece safely.
+        public void ApplyBoardMove(Vector2Int to, bool snap = true)
+        {
+            SetCoord(to, snap);
+            OnAfterBoardMove();
+        }
+
+        /// <summary>
+        /// Hook for subclasses (e.g., Pawn) to react to a successful board move
+        /// without the board needing to know about specific piece types.
+        /// </summary>
+        protected virtual void OnAfterBoardMove() { }
+
 
         protected static string TileName(Vector2Int c)
         {

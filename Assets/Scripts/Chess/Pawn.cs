@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace ChessRL
+namespace Chess
 {
     public class Pawn : Piece
     {
@@ -33,6 +33,16 @@ namespace ChessRL
         }
 
         public void MarkMoved() => hasMoved = true;
+        
+        protected override void OnAfterBoardMove()
+        {
+            // If you already have a method, call it:
+            // MarkMoved();
+
+            // Or directly:
+            hasMoved = true;
+        }
+
     }
 }
 

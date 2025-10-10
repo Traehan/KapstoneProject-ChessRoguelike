@@ -1,4 +1,4 @@
-namespace ChessRL
+namespace Chess
 {
     public enum Team
     {
