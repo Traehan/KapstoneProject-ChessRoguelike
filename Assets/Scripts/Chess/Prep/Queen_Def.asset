@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ded2e13f6ebd3434dad991b06601023a, type: 3}
+  m_Name: Queen_Def
+  m_EditorClassIdentifier: Assembly-CSharp::PieceDefinition
+  displayName: Queen
+  icon: {fileID: 0}
+  piecePrefab: {fileID: 2292216996095787352, guid: 7596a633edc3d86428dbdaba5d22f998, type: 3}
+  count: 1
