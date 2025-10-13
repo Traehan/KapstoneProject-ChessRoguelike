@@ -54,6 +54,19 @@ namespace Chess
 
         void Start()
         {
+            BeginPreparation();   // instead of BeginPlayerTurn();
+        }
+        
+        void BeginPreparation()
+        {
+            Phase = TurnPhase.Preparation;
+            OnPhaseChanged?.Invoke(Phase);
+            // Optional: disable BoardInput here, enable it in BeginPlayerTurn.
+        }
+        
+        public void BeginEncounterFromPreparation()
+        {
+            if (Phase != TurnPhase.Preparation) return;
             BeginPlayerTurn();
         }
 
