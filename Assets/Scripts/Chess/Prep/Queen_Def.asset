@@ -16,3 +16,6 @@ MonoBehaviour:
   icon: {fileID: 0}
   piecePrefab: {fileID: 2292216996095787352, guid: 7596a633edc3d86428dbdaba5d22f998, type: 3}
   count: 1
+  iconPrefabOverride: {fileID: 7903322909935275479, guid: 884c5fbfe2c6ccd4c90b3fb59a3a6642, type: 3}
+  iconTint: {r: 1, g: 1, b: 1, a: 1}
+  frameSprite: {fileID: 0}
