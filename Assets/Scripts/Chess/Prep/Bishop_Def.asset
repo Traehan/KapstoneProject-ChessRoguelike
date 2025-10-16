@@ -14,5 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PieceDefinition
   displayName: Bishop
   icon: {fileID: 0}
-  piecePrefab: {fileID: 6085744766955399094, guid: f5df8660c2eb5f844b5f31904581e187, type: 3}
-  count: 2
+  piecePrefab: {fileID: 7086628534228263635, guid: f5df8660c2eb5f844b5f31904581e187, type: 3}
+  count: 1
+  iconPrefabOverride: {fileID: 0}
+  iconTint: {r: 1, g: 1, b: 1, a: 1}
+  frameSprite: {fileID: 0}

@@ -270,8 +270,29 @@ namespace Chess
                 }
             }
         }
+        
+        public bool TryRemovePieceAt(Vector2Int c)
+        {
+            if (!InBounds(c)) return false;
+            if (_pieces.TryGetValue(c, out var p))
+            {
+                _pieces.Remove(c);                       // keep occupancy correct
+                if (p != null)
+                {
+                    if (Application.isPlaying) Destroy(p.gameObject);
+                    else DestroyImmediate(p.gameObject);
+                }
+                return true;
+            }
+            return false;
+        }
+
+// Remove by instance + destroy (used elsewhere too)
+        
 
         public bool HasPieceAt(Vector2Int c) => _pieces.ContainsKey(c);
+        
+        
 
     }
 }

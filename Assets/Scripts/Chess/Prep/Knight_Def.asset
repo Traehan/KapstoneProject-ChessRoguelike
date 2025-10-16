@@ -14,5 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PieceDefinition
   displayName: Knight
   icon: {fileID: 0}
-  piecePrefab: {fileID: 1160164814214499685, guid: 2a1c60c9ba6f4e5459df5f242bc1c581, type: 3}
-  count: 2
+  piecePrefab: {fileID: 8220822681136369037, guid: 2a1c60c9ba6f4e5459df5f242bc1c581, type: 3}
+  count: 1
+  iconPrefabOverride: {fileID: 0}
+  iconTint: {r: 1, g: 1, b: 1, a: 1}
+  frameSprite: {fileID: 0}
