@@ -10,12 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ded2e13f6ebd3434dad991b06601023a, type: 3}
-  m_Name: Rook_Def
-  m_EditorClassIdentifier: Assembly-CSharp::PieceDefinition
-  displayName: Rook
+  m_Name: ERook_Hard
+  m_EditorClassIdentifier: Assembly-CSharp::Chess.PieceDefinition
+  displayName: Rook_Hard
   icon: {fileID: 0}
-  piecePrefab: {fileID: 7645125845517465504, guid: 997e7fa7527098c4bb3263cb726741b4, type: 3}
-  count: 1
   iconPrefabOverride: {fileID: 0}
-  iconTint: {r: 1, g: 1, b: 1, a: 1}
-  frameSprite: {fileID: 0}
+  count: 1
+  piecePrefab: {fileID: 7077751289521428780, guid: 3eb41ed0a3c025c46b369aae2e8a46cc, type: 3}
+  maxHP: 3
+  attack: 1
+  forwardOnly: 1
+  passThroughFriendlies: 1
+  maxStride: 3

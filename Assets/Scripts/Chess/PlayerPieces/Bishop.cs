@@ -17,25 +17,52 @@ namespace Chess
         {
             buffer.Clear();
 
+            var def = Definition;
+            int  stride         = (def != null) ? Mathf.Max(1, def.maxStride) : 8;  // default 8 on 8x8
+            bool canPassThrough = (def != null) ? def.passThroughFriendlies   : false;
+
+            // Diagonals: NE, NW, SE, SW
+            Vector2Int[] DIRS = {
+                new Vector2Int(+1, +1),
+                new Vector2Int(-1, +1),
+                new Vector2Int(+1, -1),
+                new Vector2Int(-1, -1),
+            };
+
             foreach (var d in DIRS)
             {
-                var c = Coord + d;
-                while (Board.InBounds(c))
+                var c = Coord;
+                int steps = 0;
+
+                while (steps < stride)
                 {
-                    // empty square → add and keep sliding
+                    c += d;
+                    steps++;
+
+                    if (!Board.InBounds(c)) break;
+
                     if (!Board.IsOccupied(c))
                     {
-                        buffer.Add(c);
-                        c += d;
+                        buffer.Add(c);     // empty → can land; keep sliding
                         continue;
                     }
 
-                    // hit a piece → allow capture if enemy, then stop
                     var p = Board.GetPiece(c);
-                    if (p != null && p.Team != Team) buffer.Add(c);
-                    break;
+                    if (p.Team == Team)
+                    {
+                        // friendly: cannot land; can optionally scan past
+                        if (canPassThrough) continue;
+                        break;
+                    }
+                    else
+                    {
+                        // enemy: can capture, then stop in this dir
+                        buffer.Add(c);
+                        break;
+                    }
                 }
             }
         }
+
     }
 }

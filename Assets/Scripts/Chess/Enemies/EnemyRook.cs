@@ -18,16 +18,22 @@ namespace Chess
         public override void GetLegalMoves(List<Vector2Int> buffer)
 {
     buffer.Clear();
+    
+    
+    var def = Definition; // read-only property from Piece
+    int  stride         = (def != null) ? def.maxStride             : maxStride;
+    bool canPassThrough = (def != null) ? def.passThroughFriendlies : passThroughFriendlies;
+    bool onlyForward    = (def != null) ? def.forwardOnly           : forwardOnly;
 
     int fwdSign = (Team == Team.White) ? +1 : -1;
     Vector2Int forwardDir = new Vector2Int(0, fwdSign);
 
-    // 1) Try to build FORWARD moves first (up to maxStride, no backwards)
+    // 1) Try to build FORWARD moves first (up to stride, no backwards)
     var forwardMoves = new List<Vector2Int>();
     {
         var c = Coord;
         int steps = 0;
-        while (steps < maxStride)
+        while (steps < stride)
         {
             c += forwardDir;
             steps++;
@@ -43,7 +49,7 @@ namespace Chess
             if (occ.Team == Team)
             {
                 // friendly: can pass through if allowed, but cannot land
-                if (passThroughFriendlies) continue;
+                if (canPassThrough) continue;
                 break; // blocked
             }
             else
@@ -69,7 +75,7 @@ namespace Chess
     {
         var c = Coord;
         int steps = 0;
-        while (steps < maxStride)
+        while (steps < stride)
         {
             c += d;
             steps++;
@@ -84,7 +90,7 @@ namespace Chess
 
             if (occ.Team == Team)
             {
-                if (passThroughFriendlies) continue; // skip landing; keep scanning
+                if (canPassThrough) continue; // skip landing; keep scanning
                 break;
             }
             else
