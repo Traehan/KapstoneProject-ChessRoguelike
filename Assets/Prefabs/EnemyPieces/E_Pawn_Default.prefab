@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8065942175526427736}
   - component: {fileID: 1449731476884607493}
   m_Layer: 0
-  m_Name: Pawn_Enemy_Prefab
+  m_Name: E_Pawn_Default
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -128,6 +128,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 808baf71bb91e194ca984720dfb7e88e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Chess.Pawn
+  definition: {fileID: 11400000, guid: d3883e3ca600c6e449787739b4918791, type: 2}
   maxHP: 1
   currentHP: 1
   attack: 1

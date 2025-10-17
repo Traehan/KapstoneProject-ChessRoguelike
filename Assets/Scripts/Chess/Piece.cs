@@ -10,8 +10,12 @@ namespace Chess
         public Vector2Int Coord { get; private set; }
         public ChessBoard Board { get; private set; }
 
-        // Optional combat-ish stats you can grow later (HP, ATK, etc.)
-        [Header("Stats (expand later)")]
+        [Header("Data")]
+        [SerializeField] private PieceDefinition definition;
+        public PieceDefinition Definition => definition;  // read-only accessor
+
+        // Keep these for backwards compatibility (serialized on old prefabs)
+        [Header("Stats (runtime)")]
         public int maxHP = 1;
         public int currentHP = 1;
         public int attack = 1;
@@ -22,6 +26,30 @@ namespace Chess
             Team  = team;
             SetCoord(start, snap:true);
             name = $"{team} {GetType().Name} {TileName(start)}";
+
+            // NEW: hydrate stats from ScriptableObject (if assigned)
+            if (definition)
+            {
+                maxHP     = definition.maxHP;
+                currentHP = definition.maxHP;
+                attack    = definition.attack;
+            }
+        }
+        
+        public void EnsureDefinition(PieceDefinition def)
+        {
+            if (def == null) return;
+            if (definition != null) return;
+
+            definition = def;
+
+            // If Init already ran, sync runtime stats now.
+            if (Board != null)
+            {
+                maxHP     = definition.maxHP;
+                currentHP = definition.maxHP;
+                attack    = definition.attack;
+            }
         }
 
         protected void SetCoord(Vector2Int c, bool snap)

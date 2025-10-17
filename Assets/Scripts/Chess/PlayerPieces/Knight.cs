@@ -17,12 +17,28 @@ namespace Chess
         {
             buffer.Clear();
 
+            // L-jumps
+            Vector2Int[] JUMPS = {
+                new Vector2Int(+1, +2), new Vector2Int(+2, +1),
+                new Vector2Int(+2, -1), new Vector2Int(+1, -2),
+                new Vector2Int(-1, -2), new Vector2Int(-2, -1),
+                new Vector2Int(-2, +1), new Vector2Int(-1, +2),
+            };
+
+            var def = Definition;
+            bool onlyForward = (def != null) ? def.forwardOnly : false;
+
+            int fwdSign = (Team == Team.White) ? +1 : -1;
+
             foreach (var j in JUMPS)
             {
+                // If forwardOnly, keep jumps whose Y component goes "forward"
+                if (onlyForward && (int)Mathf.Sign(j.y) != fwdSign) continue;
+
                 var c = Coord + j;
                 if (!Board.InBounds(c)) continue;
 
-                // Knight can jump over pieces; only destination matters.
+                // Knight can jump over pieces; only the destination matters.
                 if (!Board.IsOccupied(c)) { buffer.Add(c); continue; }
 
                 var p = Board.GetPiece(c);

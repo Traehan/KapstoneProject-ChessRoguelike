@@ -126,6 +126,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72e126e133689e04eb066cf469aa5276, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Chess.Knight
+  definition: {fileID: 11400000, guid: 7f003049c03d88440ba3260e8dba1515, type: 2}
   maxHP: 2
   currentHP: 2
   attack: 1

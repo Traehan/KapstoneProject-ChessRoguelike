@@ -25,10 +25,12 @@ namespace Chess
         [Header("Refs")] [SerializeField] private ChessBoard board;
         [SerializeField] private Team playerTeam = Team.White; // player = White by default
         [SerializeField] private Team enemyTeam = Team.Black;
+        
+        [Header("Turn Pacing")]
+        [SerializeField, Range(0f, 2f)] float enemyMoveDelay = 0.35f;     // per enemy action
+        [SerializeField, Range(0f, 2f)] float postEnemyTurnPause = 0.15f; // after all enemies act
 
         [Header("Turn Config")] [Min(0)] public int apPerTurn = 3;
-        private int NumberOfTurns = 0;
-        private int WaveCounter = 0;
 
         public TurnPhase Phase { get; private set; } = TurnPhase.PlayerTurn;
         public int CurrentAP { get; private set; }
@@ -39,7 +41,7 @@ namespace Chess
         public System.Action<int, int> OnAPChanged; // (current, max)
         public System.Action<TurnPhase> OnPhaseChanged;
 
-        public EncounterSetup ES;
+        
 
         void Awake()
         {
@@ -55,6 +57,12 @@ namespace Chess
         void Start()
         {
             BeginPreparation();   // instead of BeginPlayerTurn();
+        }
+        
+        void SetPhase(TurnPhase next)
+        {
+            Phase = next;
+            OnPhaseChanged?.Invoke(Phase);
         }
         
         void BeginPreparation()
@@ -102,24 +110,8 @@ namespace Chess
         IEnumerator EnemyTurnRoutine()
         {
             Phase = TurnPhase.EnemyTurn;
-            NumberOfTurns++;
             
             OnPhaseChanged?.Invoke(Phase);
-
-            if (CheckNumberOfWaves())
-            {
-                if (CheckNumberOfTurns())
-                {
-                    ES.SpawnEnemyWave();
-                    NumberOfTurns = 0;
-                    WaveCounter++;
-                    Debug.Log("New Wave!");
-                }
-            }
-            else
-            {
-                Debug.Log("Waves Over");
-            }
             
             // Gather all enemy pieces; if ChessBoard doesn't expose an API, fall back to FindObjectsOfType.
             List<Piece> enemies = board.GetAllPieces()
@@ -153,13 +145,15 @@ namespace Chess
                 TryMoveOrAttack(enemy, desired);
 
                 // Small pacing pause so you can later hook animations
-                yield return new WaitForSeconds(0.05f);
+                if (enemyMoveDelay > 0f)
+                    yield return new WaitForSeconds(enemyMoveDelay);
             }
 
             // Cleanup (status ticks/hazards could go here)
             Phase = TurnPhase.Cleanup;
             OnPhaseChanged?.Invoke(Phase);
-            yield return null;
+            if (postEnemyTurnPause > 0f)
+                yield return new WaitForSeconds(postEnemyTurnPause);
 
             // Back to player
             BeginPlayerTurn();
@@ -273,24 +267,7 @@ namespace Chess
             attackerDied = attacker.currentHP <= 0;
             defenderDied = defender.currentHP <= 0;
         }
-
-        private bool CheckNumberOfTurns()
-        {
-            if (NumberOfTurns == 3)
-            {
-                return true;
-            }
-                return false;
-        }
-
-        private bool CheckNumberOfWaves()
-        {
-            if (WaveCounter < 3)
-            {
-                return true;
-            }
-            return false;
-        }
+        
     }
 
 }
