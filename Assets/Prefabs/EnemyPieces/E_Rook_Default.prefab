@@ -10,9 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 3165218035715988667}
   - component: {fileID: 4071762067827595184}
-  - component: {fileID: 5584549565404423218}
   - component: {fileID: 7077751289521428780}
   - component: {fileID: 1423846908685216966}
+  - component: {fileID: -7788345429536753289}
   m_Layer: 0
   m_Name: E_Rook_Default
   m_TagString: Untagged
@@ -93,27 +93,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!65 &5584549565404423218
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5210646609092542360}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 2.56, y: 2.56, z: 0.2}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &7077751289521428780
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -126,7 +105,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e718ffe13c22f94438eb88583ce8cc9f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Chess.EnemyRook
-  definition: {fileID: 11400000, guid: ec4c33d4f5053e44eb1dc58e90748206, type: 2}
+  definition: {fileID: 0}
   maxHP: 1
   currentHP: 1
   attack: 1
@@ -145,3 +124,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb08eb769fb7ef042b87102c7d9b5775, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Chess.EnemySimpleChooser
+--- !u!136 &-7788345429536753289
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5210646609092542360}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 2.56
+  m_Direction: 1
+  m_Center: {x: 0, y: 1.28, z: 0}

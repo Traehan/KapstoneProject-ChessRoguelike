@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using GameManager;
 
 namespace Chess
 {
@@ -29,9 +30,37 @@ namespace Chess
         
         void Start()
         {
-            if (runOnStart && encounter != null)
-                StartCoroutine(RunEncounter(encounter));
-                piecePlacer.PlaceClassicPawns();
+            var chosen = encounter;
+
+            // First: take the payload passed by SceneController.GoTo(...)
+            if (chosen == null && SceneArgs.Payload is EncounterDefinition fromPayload)
+            {
+                chosen = fromPayload;
+                SceneArgs.Payload = null; // consume it
+            }
+
+            // Fallback: support your older GameSession flow too
+            if (chosen == null && GameSession.I != null)
+            {
+                chosen = GameSession.I.selectedEncounter;
+                GameSession.I.selectedEncounter = null; // consume so it doesn’t repeat on return
+            }
+
+            if (chosen == null)
+            {
+                Debug.LogError("EncounterRunner: No encounter found (field, SceneArgs, and GameSession are all null).");
+                return;
+            }
+
+            StartCoroutine(RunEncounter(chosen));
+            piecePlacer.PlaceClassicPawns();
+        }
+        
+        //use later for when I create map and need to call when an encounter occurs
+        public void StartWith(EncounterDefinition def)
+        {
+            if (def == null) { Debug.LogError("Encounter is null"); return; }
+            StartCoroutine(RunEncounter(def));
         }
         
         IEnumerator EnsureSubscribed()
@@ -73,6 +102,7 @@ namespace Chess
                 roundsCompleted++;
         }
 
+        // ReSharper disable Unity.PerformanceAnalysis
         public IEnumerator RunEncounter(EncounterDefinition def)
         {
             if (def.clearExistingBlackPieces)
@@ -105,6 +135,7 @@ namespace Chess
 
                     if (wave.spawnInterval > 0f)
                         yield return new WaitForSeconds(wave.spawnInterval);
+                        TurnManager.Instance.RecomputeEnemyIntentsAndPaint();
                 }
 
                 if (wave.postWavePause > 0f)

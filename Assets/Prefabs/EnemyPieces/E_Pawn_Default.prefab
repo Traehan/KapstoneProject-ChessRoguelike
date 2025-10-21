@@ -128,7 +128,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 808baf71bb91e194ca984720dfb7e88e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Chess.Pawn
-  definition: {fileID: 11400000, guid: d3883e3ca600c6e449787739b4918791, type: 2}
+  definition: {fileID: 0}
   maxHP: 1
   currentHP: 1
   attack: 1

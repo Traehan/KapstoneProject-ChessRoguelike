@@ -539,7 +539,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Chess.EncounterRunner
   board: {fileID: 506964572}
-  encounter: {fileID: 11400000, guid: 3251ea42d39c3df429dc9911b9008ebd, type: 2}
+  encounter: {fileID: 0}
   autoAddEnemyChooser: 1
   runOnStart: 1
   piecePlacer: {fileID: 506964575}
@@ -1280,8 +1280,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 100, y: -200}
-  m_SizeDelta: {x: 200, y: 375}
+  m_AnchoredPosition: {x: 100, y: -175}
+  m_SizeDelta: {x: 200, y: 350}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1483553202
 MonoBehaviour:
