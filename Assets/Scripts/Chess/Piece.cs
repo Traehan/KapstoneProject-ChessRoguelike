@@ -16,9 +16,9 @@ namespace Chess
 
         // Keep these for backwards compatibility (serialized on old prefabs)
         [Header("Stats (runtime)")]
-        public int maxHP = 1;
-        public int currentHP = 1;
-        public int attack = 1;
+        [HideInInspector]public int maxHP = 1;
+        [HideInInspector]public int currentHP = 1;
+        [HideInInspector]public int attack = 1;
 
         public virtual void Init(ChessBoard board, Team team, Vector2Int start)
         {
@@ -103,6 +103,18 @@ namespace Chess
             do { col = (char)('A' + (x % 26)) + col; x = x / 26 - 1; } while (x >= 0);
             return $"{col}{c.y + 1}";
         }
+        
+#if UNITY_EDITOR
+        void OnValidate()
+        {
+            if (definition != null)
+            {
+                maxHP = definition.maxHP;
+                currentHP = definition.maxHP;
+                attack = definition.attack;
+            }
+        }
+#endif
     }
 }
 

@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Chess;
 using System.Collections.Generic;
+using GameManager;
 
 public class PrepPanel : MonoBehaviour
 {
@@ -43,6 +44,7 @@ public class PrepPanel : MonoBehaviour
         // disallow confirming if nothing placed? (optional)
         TurnManager.Instance?.BeginEncounterFromPreparation();
         gameObject.SetActive(false);
+        SceneController.instance.LoadAdditive("UI_Battle");
     }
 
     public void OnIconConsumed(DraggablePieceIcon icon)

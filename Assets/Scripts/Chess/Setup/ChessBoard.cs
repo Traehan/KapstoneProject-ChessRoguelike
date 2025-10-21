@@ -286,10 +286,114 @@ namespace Chess
             }
             return false;
         }
+        
+        
+        // ======== FOR UNDO FEATURE ========
+        
+        public Piece GetPieceAt(Vector2Int c) => GetPiece(c);
+        
+        public void ClearCell(Vector2Int c)
+        {
+            if (!InBounds(c)) return;
+            _pieces.Remove(c);
+        }
 
-// Remove by instance + destroy (used elsewhere too)
+        /// Soft-capture: remove from occupancy and deactivate, but DON'T Destroy.
+        /// Returns true if a piece was captured/removed from the board map.
+        public bool CapturePiece(Piece p)
+        {
+        if (p == null) return false;
+
+        // Only remove if the board currently owns this piece at its coord
+        if (_pieces.TryGetValue(p.Coord, out var cur) && cur == p)
+            _pieces.Remove(p.Coord);
+
+        // Hide/disable so it no longer participates in turns, but keep the object around
+        p.gameObject.SetActive(false);
+        return true;
+        }
+
+        /// Restore a previously soft-captured piece at coord (must be empty).
+        public void RestoreCapturedPiece(Piece p, Vector2Int coord)
+        {
+            if (p == null || !InBounds(coord)) return;
+
+            // Caller guarantees empty; if not, bail to avoid stomping
+            if (_pieces.ContainsKey(coord)) return;
+
+            p.gameObject.SetActive(true);
+            // Snap transform/Coord via your piece helper, then register in map
+            p.ApplyBoardMove(coord);
+            _pieces[coord] = p;
+        }
+
+        /// Move with optional capture. Does NOT do legality checks; call only after you’ve
+        /// decided the move is legal for the mover. Returns true on success and gives you
+        /// the soft-captured piece (if any) so TurnManager can store it for undo.
+        public bool TryMoveWithCapture(Piece mover, Vector2Int to, out Piece captured)
+        {
+            captured = null;
+            if (mover == null || !InBounds(to)) return false;
+
+            // If same-team piece blocks destination, fail
+            if (IsOccupied(to))
+            {
+                var there = GetPiece(to);
+                if (there == null)
+                {
+                    // stale entry: clean and continue
+                    _pieces.Remove(to);
+                }
+                else if (there.Team == mover.Team)
+                {
+                    return false; // ally blocks
+                }
+                else
+                {
+                    // enemy present -> soft-capture so we can undo later
+                    captured = there;
+                    CapturePiece(captured); // removes from _pieces + deactivates
+                }
+            }
+
+            // Remove mover's old mapping if present
+            if (_pieces.TryGetValue(mover.Coord, out var cur) && cur == mover)
+                _pieces.Remove(mover.Coord);
+
+            // Snap mover to destination and register in map
+            mover.ApplyBoardMove(to);
+            _pieces[to] = mover;
+
+            return true;
+        }
+
+        /// Raw relocate (no capture logic). Use for undo to place a piece exactly at 'to'.
+        /// If p == null, this acts like ClearCell(to).
+        public void PlaceWithoutCapture(Piece p, Vector2Int to)
+        {
+            if (!InBounds(to)) return;
+
+            if (p == null)
+            {
+                _pieces.Remove(to);
+                return;
+            }
+
+            // Remove the piece's old entry if the board currently tracks it
+            if (_pieces.TryGetValue(p.Coord, out var cur) && cur == p)
+                _pieces.Remove(p.Coord);
+
+            // Ensure destination is free (caller should guarantee this in undo)
+            _pieces.Remove(to);
+
+            p.ApplyBoardMove(to);
+            _pieces[to] = p;
+        }
+        
         
 
+            // Remove by instance + destroy (used elsewhere too)
+        
         public bool HasPieceAt(Vector2Int c) => _pieces.ContainsKey(c);
         
         
