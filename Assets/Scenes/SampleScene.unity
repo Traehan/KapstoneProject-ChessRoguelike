@@ -469,11 +469,8 @@ MonoBehaviour:
   playerLives: 5
   livesText: {fileID: 0}
   encounterRunner: {fileID: 506964576}
-  selectedClan: 0
-  ironMarchAuraColor: {r: 1, g: 0.85, b: 0.2, a: 1}
-  queenLeader: {fileID: 6979421579680749516, guid: 7596a633edc3d86428dbdaba5d22f998, type: 3}
-  ironMarchFortifyMax: 1
-  ironMarchQueenAdjacencyBonus: 1
+  selectedClan: {fileID: 11400000, guid: b4012547c94901e4096979993f744095, type: 2}
+  queenLeader: {fileID: 0}
 --- !u!114 &506964572
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1310,7 +1307,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 7f003049c03d88440ba3260e8dba1515, type: 2}
   - {fileID: 11400000, guid: 8898d83dfd7480a4b9237ff27c4d5b83, type: 2}
   gridParent: {fileID: 1768484477}
-  iconPrefab: {fileID: 7795780069276698349, guid: 3f6fd8ea5608f1b4a9cce13b64d61b9b, type: 3}
+  iconPrefab: {fileID: 0}
   confirmButton: {fileID: 763991274}
   resetButton: {fileID: 700944259}
   undoButton: {fileID: 1287900524}
