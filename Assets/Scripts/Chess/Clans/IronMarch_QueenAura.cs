@@ -64,5 +64,15 @@ namespace Chess
             }
             return tiles.Count > 0;
         }
+        
+        public override void OnUndo(ClanRuntime ctx, object payload)
+        {
+            // After undo, recompute whether the queen counts as "moved" this turn.
+            // TurnManager already restored the moved set, so we can just query it.
+            _queenMovedThisTurn = ctx != null
+                                  && ctx.queen != null
+                                  && ctx.tm != null
+                                  && ctx.tm.MovedThisPlayerTurnSnapshot.Contains(ctx.queen);
+        }
     }
 }
