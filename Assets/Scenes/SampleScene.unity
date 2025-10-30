@@ -206,13 +206,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.29432696, y: -0, z: -0, w: 0.9557048}
-  m_LocalPosition: {x: 3.98, y: 7.89, z: -6.02}
+  m_LocalRotation: {x: 0.38434353, y: -0, z: -0, w: 0.9231902}
+  m_LocalPosition: {x: 3.98, y: 9.4, z: -4.99}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 34.234, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 45.206, y: 0, z: 0}
 --- !u!114 &330585547
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -464,7 +464,16 @@ MonoBehaviour:
   enemyTeam: -1
   enemyMoveDelay: 0.2
   postEnemyTurnPause: 0.1
-  apPerTurn: 3
+  apPerTurn: 5
+  enemyIntentColor: {r: 1, g: 0, b: 0, a: 0.85}
+  playerLives: 5
+  livesText: {fileID: 0}
+  encounterRunner: {fileID: 506964576}
+  selectedClan: 0
+  ironMarchAuraColor: {r: 1, g: 0.85, b: 0.2, a: 1}
+  queenLeader: {fileID: 6979421579680749516, guid: 7596a633edc3d86428dbdaba5d22f998, type: 3}
+  ironMarchFortifyMax: 1
+  ironMarchQueenAdjacencyBonus: 1
 --- !u!114 &506964572
 MonoBehaviour:
   m_ObjectHideFlags: 0

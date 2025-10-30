@@ -45,8 +45,18 @@ namespace Chess
                 }
             }
 
-            if (bestCapture.HasValue) { desired = bestCapture.Value; return true; }
-            if (bestRun.HasValue)     { desired = bestRun.Value;     return true; }
+            if (bestCapture.HasValue)
+            {
+                desired = bestCapture.Value;
+                if (self is EnemyKnight ek) ek.SetLockedIntent(desired);
+                return true;
+            }
+            if (bestRun.HasValue)
+            {
+                desired = bestRun.Value;
+                if (self is EnemyKnight ek) ek.SetLockedIntent(desired);
+                return true;
+            }
             return false;
         }
     }

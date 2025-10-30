@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ded2e13f6ebd3434dad991b06601023a, type: 3}
-  m_Name: ERook_Default
+  m_Name: Knight_Enemy_Default
   m_EditorClassIdentifier: Assembly-CSharp::Chess.PieceDefinition
-  displayName: Rook
+  displayName: Pawn
   icon: {fileID: 0}
   iconPrefabOverride: {fileID: 0}
   count: 1
-  piecePrefab: {fileID: 7077751289521428780, guid: a95d30d53c190444a88154c06b861826, type: 3}
-  maxHP: 2
-  attack: 2
-  forwardOnly: 1
-  passThroughFriendlies: 1
-  maxStride: 3
+  piecePrefab: {fileID: 3621383225441128277, guid: 2860336377c5645458cddfc3aa4ad558, type: 3}
+  maxHP: 3
+  attack: 3
+  forwardOnly: 0
+  passThroughFriendlies: 0
+  maxStride: 8
