@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Rook_Def
   m_EditorClassIdentifier: Assembly-CSharp::PieceDefinition
   displayName: Rook
-  icon: {fileID: 0}
-  iconPrefabOverride: {fileID: 0}
+  icon: {fileID: 21300000, guid: 92f45a2a976d5e3499f57816f2473caa, type: 3}
+  iconPrefabOverride: {fileID: 7903322909935275479, guid: 7772734b9065a65489dc409a6a90cc05, type: 3}
   count: 1
-  piecePrefab: {fileID: 7645125845517465504, guid: 997e7fa7527098c4bb3263cb726741b4, type: 3}
+  piecePrefab: {fileID: 3756708735162278666, guid: ab141072bc50c234f847e6370e88c742, type: 3}
   maxHP: 1
   attack: 1
   forwardOnly: 0

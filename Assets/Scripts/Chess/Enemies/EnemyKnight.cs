@@ -14,6 +14,21 @@ namespace Chess
             new Vector2Int(-1, -2), new Vector2Int(-2, -1),
             new Vector2Int(-2, +1), new Vector2Int(-1, +2),
         };
+        
+        // EnemyKnight.cs (inside class)
+        public bool HasLockedIntent { get; private set; }
+        public Vector2Int LockedIntent { get; private set; }
+
+        public void SetLockedIntent(Vector2Int dest)
+        {
+            LockedIntent = dest;
+            HasLockedIntent = true;
+        }
+
+        public void ClearLockedIntent()
+        {
+            HasLockedIntent = false;
+        }
 
         public override void GetLegalMoves(List<Vector2Int> buffer)
         {

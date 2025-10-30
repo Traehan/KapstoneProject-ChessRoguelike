@@ -19,6 +19,12 @@ namespace Chess
         [HideInInspector]public int maxHP = 1;
         [HideInInspector]public int currentHP = 1;
         [HideInInspector]public int attack = 1;
+        
+        //----FOR CLANS----//
+        [Header("Combat Runtime")]
+        [Tooltip("Iron March: reduces incoming damage by this amount; stacks on end-turn if stationary.")]
+        public int fortifyStacks = 0;
+
 
         public virtual void Init(ChessBoard board, Team team, Vector2Int start)
         {
@@ -104,6 +110,17 @@ namespace Chess
             return $"{col}{c.y + 1}";
         }
         
+        //-----IRON MARCH----//
+        public void AddFortify(int maxStacks = 3)
+        {
+            fortifyStacks = Mathf.Clamp(fortifyStacks + 1, 0, maxStacks);
+        }
+
+        public void ClearFortify()
+        {
+            fortifyStacks = 0;
+        }
+        
 #if UNITY_EDITOR
         void OnValidate()
         {
@@ -116,5 +133,6 @@ namespace Chess
         }
 #endif
     }
+    
 }
 

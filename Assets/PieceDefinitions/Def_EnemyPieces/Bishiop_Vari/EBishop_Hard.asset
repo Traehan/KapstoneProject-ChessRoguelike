@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ded2e13f6ebd3434dad991b06601023a, type: 3}
-  m_Name: ERook_Default
+  m_Name: EBishop_Hard
   m_EditorClassIdentifier: Assembly-CSharp::Chess.PieceDefinition
-  displayName: Rook
+  displayName: Bishop hard
   icon: {fileID: 0}
   iconPrefabOverride: {fileID: 0}
   count: 1
-  piecePrefab: {fileID: 7077751289521428780, guid: a95d30d53c190444a88154c06b861826, type: 3}
+  piecePrefab: {fileID: 8784958972727818190, guid: 400b2ccf1a7f8194bbc873014a00b3a9, type: 3}
   maxHP: 2
   attack: 2
-  forwardOnly: 1
-  passThroughFriendlies: 1
-  maxStride: 3
+  forwardOnly: 0
+  passThroughFriendlies: 0
+  maxStride: 8

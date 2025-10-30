@@ -42,6 +42,7 @@ namespace Chess
                         {
                             board.ClearHighlights();
                             tm.RecomputeEnemyIntentsAndPaint(); //highlights enemy intent
+                            tm.RepaintIronMarchHints(); 
                             _selected = null;
                             _moves.Clear();
                         }
@@ -55,7 +56,8 @@ namespace Chess
                 _selected = piece;
                 board.ClearHighlights();
                 // redraw enemy intents first (so your move options can visually override on overlap)
-                TurnManager.Instance?.RepaintEnemyIntentsOverlay();
+                TurnManager.Instance?.RecomputeEnemyIntentsAndPaint();
+                tm.RepaintIronMarchHints(); 
                 _moves.Clear();
                 _selected.GetLegalMoves(_moves);
                 board.Highlight(_moves, highlightColor);
@@ -71,7 +73,8 @@ namespace Chess
                     if (tm != null && tm.TryPlayerAct_Move(_selected, tile.Coord))
                     {
                         board.ClearHighlights();                    // wipe old move highlights
-                        tm.RecomputeEnemyIntentsAndPaint();         // refresh red intents for new board state
+                        tm.RepaintEnemyIntentsOverlay();         // refresh red intents for new board state
+                        tm.RepaintIronMarchHints(); 
                         _selected = null;
                         _moves.Clear();
                     }
