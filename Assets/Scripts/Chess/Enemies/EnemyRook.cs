@@ -5,101 +5,79 @@ namespace Chess
 {
     public class EnemyRook : Piece
     {
-        [Header("Enemy Movement")]
-        [SerializeField, Min(1)] int maxStride = 3;
-        [SerializeField] bool passThroughFriendlies = true;
-        [SerializeField] bool forwardOnly = true;  // “never move backwards”; rook can go side-to-side
+        // Uses Definition.forwardOnly, Definition.passThroughFriendlies, Definition.maxStride
 
-        static readonly Vector2Int[] DIRS = {
+        private static readonly Vector2Int[] AllDirs =
+        {
             new Vector2Int(+1, 0), new Vector2Int(-1, 0),
             new Vector2Int(0, +1), new Vector2Int(0, -1),
         };
 
+        private static readonly Vector2Int[] LateralDirs =
+        {
+            new Vector2Int(+1, 0), new Vector2Int(-1, 0),
+        };
+
         public override void GetLegalMoves(List<Vector2Int> buffer)
-{
-    buffer.Clear();
-    
-    
-    var def = Definition; // read-only property from Piece
-    int  stride         = (def != null) ? def.maxStride             : maxStride;
-    bool canPassThrough = (def != null) ? def.passThroughFriendlies : passThroughFriendlies;
-    bool onlyForward    = (def != null) ? def.forwardOnly           : forwardOnly;
-
-    int fwdSign = (Team == Team.White) ? +1 : -1;
-    Vector2Int forwardDir = new Vector2Int(0, fwdSign);
-
-    // 1) Try to build FORWARD moves first (up to stride, no backwards)
-    var forwardMoves = new List<Vector2Int>();
-    {
-        var c = Coord;
-        int steps = 0;
-        while (steps < stride)
         {
-            c += forwardDir;
-            steps++;
-            if (!Board.InBounds(c)) break;
+            buffer.Clear();
+            if (Board == null) return;
 
-            var occ = Board.GetPiece(c);
-            if (occ == null)
+            var def          = Definition;
+            bool forwardOnly = def ? def.forwardOnly           : true;
+            bool canPass     = def ? def.passThroughFriendlies : true;
+            int  stride      = def ? Mathf.Max(1, def.maxStride) : 3;
+
+            if (!forwardOnly)
             {
-                forwardMoves.Add(c);
-                continue; // keep sliding forward
+                // Standard rook slides in all 4 orthogonal directions
+                Slide(AllDirs, stride, canPass, buffer);
+                return;
             }
 
-            if (occ.Team == Team)
+            // Forward-first behavior: try forward; if blocked, allow lateral only (never backwards)
+            int fwdSign = (Team == Team.White) ? +1 : -1;
+            var forwardDir = new Vector2Int(0, fwdSign);
+
+            var tmp = new List<Vector2Int>(8);
+            Slide(new[] { forwardDir }, stride, canPass, tmp);
+
+            if (tmp.Count > 0)
             {
-                // friendly: can pass through if allowed, but cannot land
-                if (canPassThrough) continue;
-                break; // blocked
+                buffer.AddRange(tmp);
+                return;
             }
-            else
+
+            // No forward squares -> allow left/right only
+            Slide(LateralDirs, stride, canPass, buffer);
+        }
+
+        private void Slide(IEnumerable<Vector2Int> dirs, int stride, bool canPass, List<Vector2Int> outBuffer)
+        {
+            foreach (var d in dirs)
             {
-                // enemy: can capture, then stop
-                forwardMoves.Add(c);
-                break;
+                for (int step = 1; step <= stride; step++)
+                {
+                    var c = Coord + d * step;
+                    if (!Board.InBounds(c)) break;
+
+                    var occ = Board.GetPiece(c);
+                    if (occ == null)
+                    {
+                        outBuffer.Add(c);
+                        continue;
+                    }
+
+                    if (occ.Team == Team)
+                    {
+                        if (canPass) continue; // skip landing; keep scanning
+                        break;
+                    }
+
+                    outBuffer.Add(c); // capture
+                    break;
+                }
             }
         }
-    }
-
-    // If any forward move exists, ONLY allow forward this turn.
-    if (forwardMoves.Count > 0)
-    {
-        buffer.AddRange(forwardMoves);
-        return;
-    }
-
-    // 2) No forward moves? Then allow SIDE-TO-SIDE (left/right), never backward.
-    Vector2Int[] lateralDirs = { new Vector2Int(+1, 0), new Vector2Int(-1, 0) };
-
-    foreach (var d in lateralDirs)
-    {
-        var c = Coord;
-        int steps = 0;
-        while (steps < stride)
-        {
-            c += d;
-            steps++;
-            if (!Board.InBounds(c)) break;
-
-            var occ = Board.GetPiece(c);
-            if (occ == null)
-            {
-                buffer.Add(c);
-                continue; // keep sliding
-            }
-
-            if (occ.Team == Team)
-            {
-                if (canPassThrough) continue; // skip landing; keep scanning
-                break;
-            }
-            else
-            {
-                buffer.Add(c); // capture then stop in this dir
-                break;
-            }
-        }
-    }
-}
     }
 }

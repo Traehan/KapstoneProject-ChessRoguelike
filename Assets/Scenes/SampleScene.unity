@@ -464,9 +464,9 @@ MonoBehaviour:
   enemyTeam: -1
   enemyMoveDelay: 0.2
   postEnemyTurnPause: 0.1
-  apPerTurn: 5
+  apPerTurn: 3
   enemyIntentColor: {r: 1, g: 0, b: 0, a: 0.85}
-  playerLives: 5
+  playerLives: 3
   livesText: {fileID: 0}
   encounterRunner: {fileID: 506964576}
   selectedClan: 0

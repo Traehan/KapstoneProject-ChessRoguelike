@@ -106,9 +106,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Chess.EnemyRook
   definition: {fileID: 0}
-  maxHP: 1
-  currentHP: 1
-  attack: 1
+  maxHP: 2
+  currentHP: 2
+  attack: 2
+  fortifyStacks: 0
   maxStride: 3
   passThroughFriendlies: 1
   forwardOnly: 1

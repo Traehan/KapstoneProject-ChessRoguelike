@@ -5,12 +5,10 @@ namespace Chess
 {
     public class EnemyBishop : Piece
     {
-        [Header("Enemy Movement")]
-        [SerializeField, Min(1)] int maxStride = 3;     // tweak in Inspector
-        [SerializeField] bool passThroughFriendlies = true;
-        [SerializeField] bool forwardOnly = true;       // no backwards
+        // Uses Definition.forwardOnly, Definition.passThroughFriendlies, Definition.maxStride
 
-        static readonly Vector2Int[] DIRS = {
+        private static readonly Vector2Int[] Dirs =
+        {
             new Vector2Int(+1, +1), new Vector2Int(-1, +1),
             new Vector2Int(+1, -1), new Vector2Int(-1, -1),
         };
@@ -18,44 +16,53 @@ namespace Chess
         public override void GetLegalMoves(List<Vector2Int> buffer)
         {
             buffer.Clear();
-            int fwdSign = (Team == Team.White) ? +1 : -1;
+            if (Board == null) return;
 
-            foreach (var d in DIRS)
+            // Pull movement profile from PieceDefinition (fallbacks preserve old behavior)
+            var def          = Definition;
+            bool forwardOnly = def ? def.forwardOnly           : true;
+            bool canPass     = def ? def.passThroughFriendlies : true;
+            int  stride      = def ? Mathf.Max(1, def.maxStride) : 3;
+
+            // Direction filter if forward-only
+            IEnumerable<Vector2Int> dirs = Dirs;
+            if (forwardOnly)
             {
-                // forwardOnly: only keep diagonals that go forward relative to team
-                if (forwardOnly && Mathf.Sign(d.y) != Mathf.Sign(fwdSign)) continue;
+                int fwd = (Team == Team.White) ? +1 : -1;
+                var list = new List<Vector2Int>(4);
+                foreach (var d in Dirs)
+                    if ((int)Mathf.Sign(d.y) == fwd) list.Add(d);
+                dirs = list;
+            }
 
-                var c = Coord;
-                int steps = 0;
-                while (steps < maxStride)
+            // Slide in allowed directions
+            foreach (var d in dirs)
+            {
+                for (int step = 1; step <= stride; step++)
                 {
-                    c += d;
-                    steps++;
+                    var c = Coord + d * step;
                     if (!Board.InBounds(c)) break;
 
                     var occ = Board.GetPiece(c);
+
                     if (occ == null)
                     {
-                        // empty: always landable
                         buffer.Add(c);
                         continue;
                     }
 
+                    // Friendly in the way
                     if (occ.Team == Team)
                     {
-                        // friendly: can pass through if allowed, but cannot land here
-                        if (passThroughFriendlies) continue;
-                        else break;
-                    }
-                    else
-                    {
-                        // enemy (i.e., player's piece): capture is allowed; stop after capture
-                        buffer.Add(c);
+                        if (canPass) continue; // skip landing, keep scanning
                         break;
                     }
+
+                    // Enemy: capture and stop this ray
+                    buffer.Add(c);
+                    break;
                 }
             }
         }
     }
 }
-

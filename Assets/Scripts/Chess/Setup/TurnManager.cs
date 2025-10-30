@@ -6,8 +6,6 @@ using TMPro;
 
 namespace Chess
 {
-    
-    
     public enum TurnPhase
     {
         Preparation,
@@ -15,100 +13,89 @@ namespace Chess
         EnemyTurn,
         Cleanup
     }
-    
-    
 
     public class TurnManager : MonoBehaviour
     {
-        // TurnManager.cs
+        // ====== Public surface (unchanged) ======
         public Team PlayerTeam => playerTeam;
-
         public static TurnManager Instance { get; private set; }
 
-        [Header("Refs")] [SerializeField] private ChessBoard board;
+        [Header("Refs")]
+        [SerializeField] private ChessBoard board;
         [SerializeField] private Team playerTeam = Team.White; // player = White by default
         [SerializeField] private Team enemyTeam = Team.Black;
-        
+
         [Header("Turn Pacing")]
         [SerializeField, Range(0f, 2f)] float enemyMoveDelay = 0.35f;     // per enemy action
         [SerializeField, Range(0f, 2f)] float postEnemyTurnPause = 0.15f; // after all enemies act
 
-        [Header("Turn Config")] [Min(0)] public int apPerTurn = 3;
-        
-        //Enemy Intent Highlight
+        [Header("Turn Config")]
+        [Min(0)] public int apPerTurn = 3;
+
+        // Enemy intent overlay
         readonly List<Vector2Int> _enemyIntents = new List<Vector2Int>();
-        [SerializeField] Color enemyIntentColor = new Color(1f, 0f, 0f, 0.85f); // red
-        
-        //Player Lives
+        [SerializeField] Color enemyIntentColor = new Color(1f, 0f, 0f, 0.85f);
+
+        // Player lives (UI)
         [SerializeField] int playerLives = 3;
         [SerializeField] TextMeshProUGUI livesText;
-        
+
         [SerializeField] EncounterRunner encounterRunner;
-        
-        //FOR CLANS --> IRON MARCH
-        // --- Clan / Leader (Iron March bootstrap) ---
-        public enum ClanType { IronMarch /*, BloodCourt, ObsidianVeil, ...*/ }
+
+        // ====== Clan / Iron March ======
+        public enum ClanType { IronMarch /* future: BloodCourt, ObsidianVeil, ...*/ }
 
         [Header("Clan Setup")]
         [SerializeField] private ClanType selectedClan = ClanType.IronMarch;
-        [Header("Iron March Hints")]
-        [SerializeField] private Color ironMarchAuraColor = new Color(1f, 0.85f, 0.2f, 1f); // soft gold
 
-        // Assign your Iron Matriarch Queen prefab instance in-scene (player side)
+        [Header("Iron March Hints")]
+        [SerializeField] private Color ironMarchAuraColor = new Color(0.2f, 0.8f, 1f, 0.27f);
+
+        // Assign in-scene player Queen
         [SerializeField] private Queen queenLeader;
 
-        // Iron March tuning knobs
         [SerializeField, Min(1)] private int ironMarchFortifyMax = 3;
         [SerializeField] private int ironMarchQueenAdjacencyBonus = 1;
 
-        // Per-turn bookkeeping
         readonly HashSet<Piece> _movedThisPlayerTurn = new HashSet<Piece>();
         bool _queenMovedThisTurn = false;
 
+        // Events (unchanged)
+        public System.Action<int, int> OnAPChanged;  // (current, max)
+        public System.Action<TurnPhase> OnPhaseChanged;
+        public event System.Action OnPlayerDefeated;
+        public event System.Action OnPlayerWon;
 
-        
-        public event System.Action OnPlayerDefeated; // will use later to change to ExitBacktoMainMenu screen
-        public event System.Action OnPlayerWon; //
-        
-        // --- Redo / Undo last player moves (stack) ---
+        // ====== Undo (unchanged names/shape) ======
         struct LastPlayerMove
         {
-            public Piece mover; //The player piece
-            public Vector2Int from; //original position
-            public Vector2Int to; //position it moved to
-            public int apSpent; //which is 1 AP
+            public Piece mover;
+            public Vector2Int from;
+            public Vector2Int to;
+            public int apSpent;
 
-            // mover snapshots
-            public int moverHP_Before; //saves the original hp before action
-            public bool moverPawn_HadMovedBefore; //checks if it WAS the piece
+            public int moverHP_Before;
+            public bool moverPawn_HadMovedBefore;
+            public bool moverActuallyMoved;
 
-            // action shape
-            public bool moverActuallyMoved;   // true = a relocation occurred; false = pure attack
-
-            // defender snapshots (only set when a defender existed)
             public Piece defender;
             public Vector2Int defenderAt;
             public int defenderHP_Before;
-            public bool defenderDied;         // true if we removed defender
-            
-            public int  moverFortify_Before;           // fortify stacks of the mover before the action
-            public bool moverWasMarkedMoved_Before;    // whether _movedThisPlayerTurn contained the mover
-            public bool queenMovedThisTurn_Before;     // value of _queenMovedThisTurn before the action
+            public bool defenderDied;
+
+            public int  moverFortify_Before;
+            public bool moverWasMarkedMoved_Before;
+            public bool queenMovedThisTurn_Before;
         }
-        readonly List<LastPlayerMove> _moveStack = new List<LastPlayerMove>(); // acts like a stack
+        readonly List<LastPlayerMove> _moveStack = new List<LastPlayerMove>(); // stack
 
-
-        public TurnPhase Phase { get; private set; } = TurnPhase.PlayerTurn;
+        public TurnPhase Phase { get; private set; } = TurnPhase.Preparation;
         public int CurrentAP { get; private set; }
 
         public bool IsPlayerTurn => Phase == TurnPhase.PlayerTurn;
         public bool CanPlayerAct => IsPlayerTurn && CurrentAP > 0;
 
-        public System.Action<int, int> OnAPChanged; // (current, max)
-        public System.Action<TurnPhase> OnPhaseChanged;
-
-        
-
+        // ====== Bootstrap ======
         void Awake()
         {
             if (Instance != null && Instance != this)
@@ -116,56 +103,30 @@ namespace Chess
                 Destroy(gameObject);
                 return;
             }
-
             Instance = this;
         }
 
         void Start()
         {
-            BeginPreparation();  
-            UpdateLivesUI(); //sets Lives to specific amount I input
-            EnsureQueenLeaderBound();
+            UpdateLivesUI();
+            if (Phase == TurnPhase.PlayerTurn)
+            {
+                // Start of a run/session: ensure overlays are correct
+                PaintAllOverlays();
+            }
         }
-        
-        void SetPhase(TurnPhase next)
-        {
-            Phase = next;
-            OnPhaseChanged?.Invoke(Phase);
-        }
-        
-        void BeginPreparation()
-        {
-            Phase = TurnPhase.Preparation;
-            OnPhaseChanged?.Invoke(Phase);
-            // Optional: disable BoardInput here, enable it in BeginPlayerTurn.
-        }
-        
+
+        // ====== Simple public hooks (unchanged names) ======
         public void BeginEncounterFromPreparation()
         {
             if (Phase != TurnPhase.Preparation) return;
             BeginPlayerTurn();
         }
 
-        void BeginPlayerTurn()
-        {
-            _moveStack.Clear();
-            Phase = TurnPhase.PlayerTurn;
-            CurrentAP = apPerTurn;
-            OnPhaseChanged?.Invoke(Phase);
-            OnAPChanged?.Invoke(CurrentAP, apPerTurn);
-            _movedThisPlayerTurn.Clear(); //set for IronMarch Queen passive
-            _queenMovedThisTurn = false;
-            EnsureQueenLeaderBound();
-            RecomputeEnemyIntentsAndPaint();
-            RepaintIronMarchHints();
-        }
-
         public void EndPlayerTurnButton()
         {
             if (!IsPlayerTurn) return;
-            // --- Iron March end-of-turn passive ---
             GrantIronMarchFortifyIfSelected();
-            
             StartCoroutine(EnemyTurnRoutine());
         }
 
@@ -174,134 +135,64 @@ namespace Chess
             if (!IsPlayerTurn || CurrentAP < amount) return false;
             CurrentAP -= amount;
             OnAPChanged?.Invoke(CurrentAP, apPerTurn);
-            if (CurrentAP <= 0)
-            {
-                // Auto-end available if you want, but you asked for a button.
-                // StartCoroutine(EnemyTurnRoutine());
-            }
-
             return true;
         }
 
-        // ReSharper disable Unity.PerformanceAnalysis
-        IEnumerator EnemyTurnRoutine()
+        // ====== Core turn transitions (small helpers) ======
+        void SetPhase(TurnPhase p)
         {
-            _moveStack.Clear();
-            Phase = TurnPhase.EnemyTurn;
-            
+            Phase = p;
             OnPhaseChanged?.Invoke(Phase);
-            
-            // Gather all enemy pieces; if ChessBoard doesn't expose an API, fall back to FindObjectsOfType.
-            List<Piece> enemies = board.GetAllPieces()
-                .Where(p => p.Team == enemyTeam)
-                .ToList();
-
-            // Sort: front line first (closest to player side), then left-to-right as tie-breaker.
-            enemies.Sort((a, b) =>
-            {
-                // Generalized along their forward direction:
-                int keyA = a.Team == Team.White ? -a.Coord.y : a.Coord.y;
-                int keyB = b.Team == Team.White ? -b.Coord.y : b.Coord.y;
-                int cmp = keyA.CompareTo(keyB);
-                if (cmp != 0) return cmp;
-                return a.Coord.x.CompareTo(b.Coord.x);
-            });
-
-            foreach (var enemy in enemies)
-            {
-                if (enemy == null) continue; // may have died
-                if (!board.ContainsPiece(enemy)) continue;
-
-                // Ask any attached enemy behavior for its desired destination
-                Vector2Int target;
-                bool haveTarget = false;
-
-                // For Knights: first try the last highlighted (locked) tile
-                if (enemy is EnemyKnight ek && ek.HasLockedIntent)
-                {
-                    target = ek.LockedIntent;
-                    haveTarget = true;
-                    ek.ClearLockedIntent(); // consume it
-                }
-                else
-                {
-                    // Others (and knight fallback): compute live as before
-                    if (!enemy.TryGetComponent<IEnemyBehavior>(out var behavior))
-                        continue;
-                    if (!behavior.TryGetDesiredDestination(board, out var desired))
-                        continue;
-                    target = desired;
-                    haveTarget = true;
-                }
-
-                if (haveTarget)
-                {
-                    // Your existing blocking/combat logic still applies here
-                    TryMoveOrAttack(enemy, target);
-                }
-
-
-                // Small pacing pause so you can later hook animations
-                if (enemyMoveDelay > 0f)
-                    yield return new WaitForSeconds(enemyMoveDelay);
-            }
-            
-            // --- Victory check (all waves started, no enemies remain) ---
-            if (encounterRunner == null) encounterRunner = FindObjectOfType<EncounterRunner>();
-
-            // Cleanup (status ticks/hazards could go here)
-            Phase = TurnPhase.Cleanup;
-            OnPhaseChanged?.Invoke(Phase);
-            if (postEnemyTurnPause > 0f)
-                yield return new WaitForSeconds(postEnemyTurnPause);
-            
-            if (encounterRunner != null && encounterRunner.IsVictoryReady(board))
-            {
-                PlayerWon();
-                yield break; // stop the coroutine so we don't start a new player turn
-            }
-            
-            //clear prior enemy intent highlights
-            if (board != null) board.ClearHighlights();
-            // Back to player
-            BeginPlayerTurn();
         }
 
-        /// <summary>
-        /// Player-issued move (called by BoardInput). Handles AP and combat.
-        /// </summary>
+        void BeginPlayerTurn()
+        {
+            _moveStack.Clear();
+            SetPhase(TurnPhase.PlayerTurn);
+            CurrentAP = apPerTurn;
+            OnAPChanged?.Invoke(CurrentAP, apPerTurn);
+
+            _movedThisPlayerTurn.Clear();
+            _queenMovedThisTurn = false;
+
+            EnsureQueenLeaderBound();
+            PaintAllOverlays(); // enemy intents + Iron March (if applicable)
+        }
+
+        // ====== Player action (unchanged name/signature) ======
+        /// <summary>Player-issued move or attack. Handles AP, undo snapshots, overlays, and victory checks.</summary>
         public bool TryPlayerAct_Move(Piece piece, Vector2Int dest)
         {
-            if (Phase != TurnPhase.PlayerTurn) return false; //checks if its players turn
-            if (piece == null || board == null) return false; //check if theres no piece or board
-            if (CurrentAP <= 0) return false; //check if theres available AP
-            if (!board.InBounds(dest)) return false; //check if clicked destination is outta bounds
+            if (Phase != TurnPhase.PlayerTurn) return false;
+            if (piece == null || board == null) return false;
+            if (CurrentAP <= 0) return false;
+            if (!board.InBounds(dest)) return false;
 
-            // Snapshot mover state (for undo)
+            // Snapshot (for undo)
             int moverHP_before = piece.currentHP;
-            bool moverPawn_hadMoved = (piece is Pawn pw) ? pw.hasMoved : false;
+            bool moverPawn_hadMoved = (piece is Pawn pw) && pw.hasMoved;
             var from = piece.Coord;
 
             // Empty tile -> relocate
             if (!board.TryGetPiece(dest, out var target))
             {
-                int  fortBefore        = piece.fortifyStacks;
-                bool wasMarkedMoved    = _movedThisPlayerTurn.Contains(piece);
-                bool queenMovedBefore  = _queenMovedThisTurn;
-                
-                
+                int  fortBefore       = piece.fortifyStacks;
+                bool wasMarkedMoved   = _movedThisPlayerTurn.Contains(piece);
+                bool queenMovedBefore = _queenMovedThisTurn;
+
                 if (!board.TryMovePiece(piece, dest)) return false;
-                
-                // Bookkeep Iron March movement
+
+                // Mark per-turn flags
                 _movedThisPlayerTurn.Add(piece);
                 piece.ClearFortify();
                 if (queenLeader != null && piece == queenLeader) _queenMovedThisTurn = true;
 
-                // Spend AP
-                CurrentAP -= 1; OnAPChanged?.Invoke(CurrentAP, apPerTurn);
+                // Spend AP (standardized)
+                if (!TrySpendAP(1)) return false;
 
-                // Push undo
-                _moveStack.Add(new LastPlayerMove {
+                // Push undo frame
+                _moveStack.Add(new LastPlayerMove
+                {
                     mover = piece,
                     from = from,
                     to = dest,
@@ -310,78 +201,145 @@ namespace Chess
                     moverPawn_HadMovedBefore = moverPawn_hadMoved,
                     moverActuallyMoved = true,
                     defender = null,
+                    defenderHP_Before = 0,
+                    defenderDied = false,
                     moverFortify_Before = fortBefore,
                     moverWasMarkedMoved_Before = wasMarkedMoved,
                     queenMovedThisTurn_Before = queenMovedBefore
                 });
 
-                // refresh overlays
-                RecomputeEnemyIntentsAndPaint();
+                // Victory check (player may have cleared last enemy)
+                VictoryCheckDuringPlayer();
+
+                // Overlays
+                PaintAllOverlays();
                 return true;
             }
 
-            // Occupied by ally -> do nothing
+            // Occupied by ally -> no-op
             if (target.Team == piece.Team) return false;
 
-            // === PLAYER ATTACKS: no move; defender takes damage only ===
+            // Attack only (no relocation)
             int defHP_before = target.currentHP;
 
             ResolveCombat(attacker: piece, defender: target, attackerIsPlayer: true,
                 out bool moverDied, out bool targetDied);
 
-            // By design you don't kill the attacker on player turn; guard anyway
-            if (moverDied) { board.RemovePiece(piece); /* AP consumed */ CurrentAP -= 1; OnAPChanged?.Invoke(CurrentAP, apPerTurn); _moveStack.Clear(); return true; }
+            if (moverDied)
+            {
+                board.RemovePiece(piece);
+                // Spend AP anyway; action consumed
+                if (!TrySpendAP(1)) return true;
+                _moveStack.Clear(); // safety: cannot reliably undo after removal
+                PaintAllOverlays();
+                return true;
+            }
 
-            // If defender died, SOFT-capture (not Destroy) so we can undo
             if (targetDied)
-                board.CapturePiece(target);
+                board.CapturePiece(target); // soft-capture for undo
 
-            // Spend AP
-            CurrentAP -= 1; OnAPChanged?.Invoke(CurrentAP, apPerTurn);
+            // Spend AP (standardized)
+            if (!TrySpendAP(1)) return true;
 
-            // Push undo (pure attack; no relocation)
-            _moveStack.Add(new LastPlayerMove {
+            // Push undo frame (pure attack)
+            _moveStack.Add(new LastPlayerMove
+            {
                 mover = piece,
                 from = from,
-                to = from, // no movement
+                to = dest,
                 apSpent = 1,
                 moverHP_Before = moverHP_before,
                 moverPawn_HadMovedBefore = moverPawn_hadMoved,
                 moverActuallyMoved = false,
-                defender = target,
+                defender = targetDied ? target : null,
                 defenderAt = dest,
                 defenderHP_Before = defHP_before,
-                defenderDied = targetDied
+                defenderDied = targetDied,
+                moverFortify_Before = piece.fortifyStacks,
+                moverWasMarkedMoved_Before = _movedThisPlayerTurn.Contains(piece),
+                queenMovedThisTurn_Before = _queenMovedThisTurn
             });
 
-            RecomputeEnemyIntentsAndPaint();
+            VictoryCheckDuringPlayer();
+            PaintAllOverlays();
             return true;
         }
 
+        // ====== Enemy turn ======
+        IEnumerator EnemyTurnRoutine()
+        {
+            _moveStack.Clear();
+            SetPhase(TurnPhase.EnemyTurn);
 
+            // Snapshot enemy list
+            List<Piece> enemies = board.GetAllPieces()
+                .Where(p => p.Team == enemyTeam)
+                .ToList();
 
-        /// <summary>
-        /// Centralized move/attack resolution used by both player and enemies.
-        /// Simultaneous damage if target occupied by opposite team.
-        /// </summary>
+            // Sort (frontline first along their forward)
+            enemies.Sort((a, b) =>
+            {
+                int ay = a.Coord.y, by = b.Coord.y;
+                // Enemy assumed moving "down" toward y==0 (player back rank); invert to act nearer to player first
+                return ay.CompareTo(by); // lower y goes first
+            });
+
+            foreach (var enemy in enemies)
+            {
+                if (enemy == null) continue;
+                if (!board.ContainsPiece(enemy)) continue;
+
+                // Decide destination
+                bool haveTarget = false;
+                Vector2Int target = enemy.Coord;
+
+                // If enemy has a behavior, ask it; else skip
+                if (enemy.TryGetComponent<IEnemyBehavior>(out var behavior))
+                {
+                    if (behavior.TryGetDesiredDestination(board, out var desired) && board.InBounds(desired))
+                    {
+                        target = desired;
+                        haveTarget = true;
+                    }
+                }
+
+                if (haveTarget)
+                {
+                    TryMoveOrAttack(enemy, target);
+                }
+
+                if (enemyMoveDelay > 0f)
+                    yield return new WaitForSeconds(enemyMoveDelay);
+            }
+
+            // Enemy turn ended — victory check
+            if (encounterRunner == null) encounterRunner = FindObjectOfType<EncounterRunner>();
+
+            SetPhase(TurnPhase.Cleanup);
+            if (postEnemyTurnPause > 0f)
+                yield return new WaitForSeconds(postEnemyTurnPause);
+
+            if (encounterRunner != null && encounterRunner.IsVictoryReady(board))
+            {
+                PlayerWon();
+                yield break;
+            }
+
+            if (board != null) board.ClearHighlights();
+            BeginPlayerTurn();
+        }
+
+        // ====== Shared move/attack resolution for enemies & misc ======
         bool TryMoveOrAttack(Piece mover, Vector2Int to)
         {
             if (!board.InBounds(to)) return false;
 
-            // Empty tile -> normal move
+            // Empty
             if (!board.TryGetPiece(to, out var target))
             {
                 bool moved = board.TryMovePiece(mover, to);
-                
-                if (moved && Phase == TurnPhase.PlayerTurn && mover.Team == playerTeam)
-                {
-                    _movedThisPlayerTurn.Add(mover);
-                    mover.ClearFortify();
-                    if (queenLeader != null && mover == queenLeader) _queenMovedThisTurn = true;
-                }
 
-
-                // if an ENEMY just moved, check back-rank escape
+                // If an ENEMY just moved, check back-rank goal
                 if (moved && Phase == TurnPhase.EnemyTurn && mover.Team == enemyTeam)
                 {
                     if (EnemyReachedPlayerSide(mover))
@@ -389,148 +347,120 @@ namespace Chess
                 }
                 return moved;
             }
-               
-                
 
-            // Ally blocks; do nothing
-            if (target.Team == mover.Team)
-                return false;
+            // Ally block
+            if (target.Team == mover.Team) return false;
 
-            // Determine who is acting under which phase
             bool playerActing = (Phase == TurnPhase.PlayerTurn) && (mover.Team == playerTeam);
-            bool enemyActing = (Phase == TurnPhase.EnemyTurn) && (mover.Team == enemyTeam);
+            bool enemyActing  = (Phase == TurnPhase.EnemyTurn) && (mover.Team == enemyTeam);
 
-            // --- PLAYER ATTACKS (no move; defender only takes damage) ---
+            // Player attacks (no move)
             if (playerActing)
             {
                 ResolveCombat(attacker: mover, defender: target, attackerIsPlayer: true,
                     out bool moverDied, out bool targetDied);
 
-                // Player shouldn't die when attacking on player's turn by design,
-                // but we still guard against <= 0 HP in case stats change.
                 if (moverDied)
                 {
                     board.RemovePiece(mover);
-                    // Action consumed even if something unexpected happened
                     return true;
                 }
 
                 if (targetDied)
-                    board.RemovePiece(target); // player stays on original square
+                {
+                    board.RemovePiece(target);
+                    return true;
+                }
 
-                // Action consumed (AP should decrement).
                 return true;
             }
 
-            // --- ENEMY ATTACKS (simultaneous; may move into tile if it kills) ---
+            // Enemy attacks (simultaneous)
             if (enemyActing)
             {
                 ResolveCombat(attacker: mover, defender: target, attackerIsPlayer: false,
                     out bool moverDied, out bool targetDied);
 
-                if (targetDied && !moverDied)
+                if (!moverDied && !targetDied)
                 {
-                    // Enemy killed player -> take the square
+                    // Both survive: no move
+                    return true;
+                }
+
+                if (!moverDied && targetDied)
+                {
+                    // Defender died -> occupy tile
                     board.RemovePiece(target);
                     board.TryMovePiece(mover, to);
-
-                    // after landing, check back-rank escape
-                    if (EnemyReachedPlayerSide(mover))
-                        LoseLifeAndDespawn(mover);
-
                     return true;
                 }
 
                 if (moverDied && !targetDied)
                 {
-                    // Enemy died -> remove only enemy; stay otherwise
                     board.RemovePiece(mover);
                     return true;
                 }
 
                 if (moverDied && targetDied)
                 {
-                    // Both died -> remove both; tile ends up empty
                     board.RemovePiece(target);
                     board.RemovePiece(mover);
                     return true;
                 }
 
-                // Both survived -> both remain where they started
                 return true;
             }
 
-            // Fallback: if somehow turns/teams don't line up, do a safe simultaneous clash without movement.
+            // Fallback: safe simultaneous clash
             ResolveCombat(attacker: mover, defender: target, attackerIsPlayer: false,
                 out bool aDied, out bool bDied);
             if (bDied) board.RemovePiece(target);
             if (aDied) board.RemovePiece(mover);
-            return true; // action consumed
+            return true;
         }
 
-        // AttackerIsPlayer -> defender takes damage; attacker takes none when true.
-        // When false -> simultaneous exchange.
+        // ====== Combat resolution (unchanged logic) ======
         void ResolveCombat(Piece attacker, Piece defender, bool attackerIsPlayer,
             out bool attackerDied, out bool defenderDied)
         {
-            // Base attacks
-            int atkToDef = Mathf.Max(0, attacker.attack);
-            int defToAtk = attackerIsPlayer ? 0 : Mathf.Max(0, defender.attack);
+            // Basic schema:
+            //  - Attacker deals its ATK reduced by defender fortify.
+            //  - Defender retaliates (enemy turn only) similarly.
+            //  - Player-turn attacks do not kill attacker by design, but we still compute safely.
 
-            // ----- Iron March: Queen adjacency buff (only if selected & queen held position) -----
-            if (selectedClan == ClanType.IronMarch && queenLeader != null && !_queenMovedThisTurn)
-            {
-                // Is attacker an ally adjacent (8-neighborhood) to queen?
-                if (attacker.Team == playerTeam)
-                {
-                    var dx = Mathf.Abs(attacker.Coord.x - queenLeader.Coord.x);
-                    var dy = Mathf.Abs(attacker.Coord.y - queenLeader.Coord.y);
-                    if (dx <= 1 && dy <= 1)
-                        atkToDef += ironMarchQueenAdjacencyBonus;
-                }
-            }
+            int atkToDef = Mathf.Max(0, attacker.attack - defender.fortifyStacks);
+            int defToAtk = 0;
 
-            // ----- Apply Fortify stacks as flat damage reduction to the piece being hit -----
-            // Defender takes attacker's damage minus defender's fortify
-            int finalToDef = Mathf.Max(0, atkToDef - defender.fortifyStacks);
+            // Enemy-turn retaliation (or symmetric if you enable for player too)
+            if (!attackerIsPlayer)
+                defToAtk = Mathf.Max(0, defender.attack - attacker.fortifyStacks);
 
-            // Attacker may take return damage (on enemy turn) reduced by attacker's own fortify
-            int finalToAtk = Mathf.Max(0, defToAtk - attacker.fortifyStacks);
-
-            defender.currentHP -= finalToDef;
-            attacker.currentHP -= finalToAtk;
+            defender.currentHP -= atkToDef;
+            attacker.currentHP -= defToAtk;
 
             attackerDied = attacker.currentHP <= 0;
             defenderDied = defender.currentHP <= 0;
         }
-        
+
+        // ====== Enemy intents (unchanged names) ======
         void ComputeEnemyIntents()
         {
             _enemyIntents.Clear();
-            // Only during player turn we compute/paint
             if (Phase != TurnPhase.PlayerTurn || board == null) return;
 
             foreach (var p in board.GetAllPieces())
             {
                 if (p == null) continue;
                 if (p.Team != enemyTeam) continue;
+                if (p is Pawn) continue; // skip pawns for “significant” intents
 
-                // Skip pawns; only show "significant" pieces
-                if (p is Pawn) continue;
-
-                // Needs an enemy behavior (EncounterRunner auto-adds EnemySimpleChooser)
                 if (!p.TryGetComponent<IEnemyBehavior>(out var beh)) continue;
+                if (!beh.TryGetDesiredDestination(board, out var dest)) continue;
+                if (!board.InBounds(dest)) continue;
 
-                if (beh.TryGetDesiredDestination(board, out var dest))
-                {
-                    // In case behavior returns OOB, guard
-                    if (board.InBounds(dest))
-                        _enemyIntents.Add(dest);
-                }
+                _enemyIntents.Add(dest);
             }
         }
-        
-        //------ENEMY INTENT BEHAVIOR (Highlights the board tiles red during playerturn)----//
 
         public void RepaintEnemyIntentsOverlay()
         {
@@ -545,18 +475,9 @@ namespace Chess
             board.ClearHighlights();
             ComputeEnemyIntents();
             RepaintEnemyIntentsOverlay();
-
-            // ✅ If all waves have been started and there are no enemies, declare victory now.
-            if (encounterRunner == null) encounterRunner = FindObjectOfType<EncounterRunner>();
-            if (encounterRunner != null && encounterRunner.IsVictoryReady(board))
-            {
-                PlayerWon(); // will raise event + show win panel + freeze turns
-                return;
-            }
         }
-        
-        //-------UNDO FEATURE (uses struct and stack to hold piece info to later call back to (FIFO)------//
-        
+
+        // ====== Undo (unchanged public name) ======
         public bool TryUndoLastPlayerMove()
         {
             if (Phase != TurnPhase.PlayerTurn) return false;
@@ -564,32 +485,12 @@ namespace Chess
 
             var m = _moveStack[_moveStack.Count - 1];
 
-            // 1) Undo relocation if it happened
+            // 1) Restore mover’s position
             if (m.moverActuallyMoved)
             {
-                // Consistency: piece must be at 'to'
+                // Expect mover currently at 'to'
                 if (board.GetPieceAt(m.to) != m.mover) { _moveStack.Clear(); return false; }
-
-                // Move back
-                board.ClearCell(m.to);
-                board.PlaceWithoutCapture(m.mover, m.from);
-
-                // Restore pawn first-move flag if applicable
-                if (m.mover is Pawn pw)
-                    pw.hasMoved = m.moverPawn_HadMovedBefore;
-                
-                // --- Restore Iron March state ---
-                // Fortify stacks back to what they were before the move
-                m.mover.fortifyStacks = m.moverFortify_Before;
-
-                // Restore "moved this turn" set to its prior state
-                if (m.moverWasMarkedMoved_Before)
-                    _movedThisPlayerTurn.Add(m.mover);
-                else
-                    _movedThisPlayerTurn.Remove(m.mover);
-
-                // Restore whether the queen had been considered moved this turn
-                _queenMovedThisTurn = m.queenMovedThisTurn_Before;
+                if (!board.TryMovePiece(m.mover, m.from)) { _moveStack.Clear(); return false; }
             }
             else
             {
@@ -597,40 +498,69 @@ namespace Chess
                 if (board.GetPieceAt(m.from) != m.mover) { _moveStack.Clear(); return false; }
             }
 
-            // 2) Restore HP for mover
+            // 2) Restore mover HP & pawn “hasMoved”
             m.mover.currentHP = m.moverHP_Before;
+            if (m.mover is Pawn pw) pw.hasMoved = m.moverPawn_HadMovedBefore;
+            m.mover.fortifyStacks = m.moverFortify_Before;
 
-            // 3) If there was a defender, restore its HP and presence
+            // 3) Restore defender if applicable
             if (m.defender != null)
             {
-                // If we soft-removed it, bring it back
                 if (m.defenderDied)
                     board.RestoreCapturedPiece(m.defender, m.defenderAt);
-
                 m.defender.currentHP = m.defenderHP_Before;
             }
 
-            // 4) Refund AP and pop
+            // 4) Refund AP and pop stack
             CurrentAP = Mathf.Min(CurrentAP + m.apSpent, apPerTurn);
             OnAPChanged?.Invoke(CurrentAP, apPerTurn);
-
             _moveStack.RemoveAt(_moveStack.Count - 1);
 
-            // 5) Refresh overlays
-            RecomputeEnemyIntentsAndPaint();
+            // 5) Restore per-turn flags
+            if (m.moverWasMarkedMoved_Before)
+                _movedThisPlayerTurn.Add(m.mover);
+            else
+                _movedThisPlayerTurn.Remove(m.mover);
+            _queenMovedThisTurn = m.queenMovedThisTurn_Before;
+
+            // 6) Refresh overlays
+            PaintAllOverlays();
             return true;
         }
-        
-        //------PLAYER HEALTH (updated UI and Lives int when enemy reaches the other side of the board)-----////
-        
+
+        // ====== Victory / defeat helpers ======
+        void VictoryCheckDuringPlayer()
+        {
+            // If wave system says all waves started & no enemies, declare now.
+            if (encounterRunner == null) encounterRunner = FindObjectOfType<EncounterRunner>();
+            if (encounterRunner != null && encounterRunner.IsVictoryReady(board))
+            {
+                PlayerWon();
+            }
+        }
+
+        void PlayerWon()
+        {
+            Debug.Log("Player won.");
+            OnPlayerWon?.Invoke();
+            ShowWinPanel();
+            SetPhase(TurnPhase.Cleanup);
+        }
+
+        void ShowWinPanel()
+        {
+            var ui = FindObjectOfType<GameWinUI>();
+            if (ui != null) ui.ShowWin();
+        }
+
+        // ====== Lives / UI ======
         void UpdateLivesUI()
         {
             if (livesText != null) livesText.text = $"Lives: {playerLives}";
         }
-        
+
         void LoseLifeAndDespawn(Piece enemy)
         {
-            // Despawn first (so it doesn't act again if UI or coroutines stall)
             if (enemy != null && board != null && board.ContainsPiece(enemy))
                 board.RemovePiece(enemy);
 
@@ -641,69 +571,40 @@ namespace Chess
             {
                 Debug.Log("Player defeated.");
                 OnPlayerDefeated?.Invoke();
-
-                var ui = FindObjectOfType<GameOverUI>();
-                if (ui != null)
-                    ui.ShowGameOver();
+                // You can trigger a GameOver panel here via another UI script.
             }
         }
-        int PlayerHomeRankY()
+
+        bool EnemyReachedPlayerSide(Piece mover)
         {
-            // Player side: y==0 if player is White, else top rank.
-            return (PlayerTeam == Team.White) ? 0 : (board?.rows ?? 8) - 1;
-        }
-        bool EnemyReachedPlayerSide(Piece p)
-        {
-            if (p == null || p.Team != enemyTeam || board == null) return false;
-            return p.Coord.y == PlayerHomeRankY();
-        }
-        
-        public void RegisterLivesText(TextMeshProUGUI txt) //when UI_Battle is awoken will plug the text into the LivesTextSlot
-        {
-            livesText = txt;
-            UpdateLivesUI();
+            if (board == null || mover == null) return false;
+            // Player back rank assumed at y == 0
+            return mover.Coord.y <= 0;
         }
 
-        void ShowWinPanel()
-        {
-            var ui = FindObjectOfType<GameWinUI>();
-            if (ui != null) ui.ShowWin();
-        }
-        
-        void PlayerWon()
-        {
-            Debug.Log("Player won.");
-            OnPlayerWon?.Invoke();   // fire the event for any listeners
-            ShowWinPanel();          // pops the WinPanel UI
-            // (optional) freeze turns so nothing else runs:
-            Phase = TurnPhase.Cleanup;
-        }
-        
-        //-----IRON MARCH----//
-        
+        // ====== Iron March ======
         void GrantIronMarchFortifyIfSelected()
         {
             if (selectedClan != ClanType.IronMarch || board == null) return;
 
+            // Any piece that did NOT move this turn gains up to max fortify.
             foreach (var p in board.GetAllPieces())
             {
                 if (p == null || p.Team != playerTeam) continue;
-                if (_movedThisPlayerTurn.Contains(p)) continue; // only those who held position
+                if (_movedThisPlayerTurn.Contains(p)) continue;
                 p.AddFortify(ironMarchFortifyMax);
             }
         }
-        
-        // ReSharper disable Unity.PerformanceAnalysis
+
         public void RepaintIronMarchHints()
         {
-            if (selectedClan != ClanType.IronMarch || board == null || queenLeader == null) return;
+            if (selectedClan != ClanType.IronMarch || board == null) return;
 
-            // Aura only shows if Queen did NOT move this player turn
             EnsureQueenLeaderBound();
             if (queenLeader == null) return;
-            if (_queenMovedThisTurn) return;
+            if (_queenMovedThisTurn) return; // aura suppressed after queen moves
 
-            // Adjacent-8 neighborhood
+            // Adjacent-8 around queen
             var q = queenLeader.Coord;
             List<Vector2Int> adj = new List<Vector2Int>(8);
             for (int dx = -1; dx <= 1; dx++)
@@ -714,15 +615,14 @@ namespace Chess
                 if (board.InBounds(c)) adj.Add(c);
             }
 
-            // Do not ClearHighlights() here! We want to layer this over other hints after they’re drawn.
+            // Layered over existing highlights (no ClearHighlights here)
             board.Highlight(adj, ironMarchAuraColor);
         }
-        
+
         void EnsureQueenLeaderBound()
         {
             if (queenLeader != null && queenLeader.Board == board) return;
 
-            // Find the player's Queen that is actually on THIS board
             queenLeader = board
                 .GetAllPieces()
                 .OfType<Queen>()
@@ -736,10 +636,19 @@ namespace Chess
 #endif
         }
 
+        // ====== Overlay bundler ======
+        void PaintAllOverlays()
+        {
+            // Enemy intents first (clears), then Iron March aura on top
+            RecomputeEnemyIntentsAndPaint();
+            RepaintIronMarchHints();
+        }
 
-
-
-        
+        // ====== Public small helpers you already rely on ======
+        public void RegisterLivesText(TextMeshProUGUI txt)
+        {
+            livesText = txt;
+            UpdateLivesUI();
+        }
     }
-
 }

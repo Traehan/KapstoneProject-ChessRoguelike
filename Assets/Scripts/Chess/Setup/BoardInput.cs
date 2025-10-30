@@ -3,7 +3,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-// <-- new system
 
 namespace Chess
 {
@@ -17,70 +16,66 @@ namespace Chess
 
         void Update()
         {
-            // New Input System equivalents
             if (!(Mouse.current?.leftButton.wasPressedThisFrame ?? false)) return;
 
             var mousePos = Mouse.current.position.ReadValue();
             var ray = Camera.main.ScreenPointToRay(mousePos);
-
             if (!Physics.Raycast(ray, out var hit, 100f)) return;
 
-            // BoardInput.cs (inside Update, after raycast)
+            var tm    = TurnManager.Instance;
             var piece = hit.collider.GetComponentInParent<Piece>();
             var tile  = hit.collider.GetComponentInParent<Tile>();
 
+            // Helper to run after a successful player action
+            void AfterSuccessfulAction()
+            {
+                board.ClearHighlights();
+                // Keep your existing intent + Iron March layering:
+                tm.RecomputeEnemyIntentsAndPaint(); // includes .RepaintEnemyIntentsOverlay()
+                tm.RepaintIronMarchHints();
+                _selected = null;
+                _moves.Clear();
+            }
+
+            // === Clicked a piece ===
             if (piece != null)
             {
-                var tm = TurnManager.Instance;
-
-                // If we already selected our piece, and we clicked an enemy that sits on a legal dest -> attack
+                // If we have a selection and clicked an enemy occupying a legal dest -> attack via move API
                 if (_selected != null && tm != null && tm.IsPlayerTurn && piece.Team != tm.PlayerTeam)
                 {
                     if (_moves.Contains(piece.Coord))
                     {
                         if (tm.TryPlayerAct_Move(_selected, piece.Coord))
-                        {
-                            board.ClearHighlights();
-                            tm.RecomputeEnemyIntentsAndPaint(); //highlights enemy intent
-                            tm.RepaintIronMarchHints(); 
-                            _selected = null;
-                            _moves.Clear();
-                        }
+                            AfterSuccessfulAction();
                     }
-                    return; // handled
+                    return;
                 }
 
-                // Otherwise: selecting our own piece
+                // Selecting one of our pieces
                 if (tm == null || !tm.IsPlayerTurn || piece.Team != tm.PlayerTeam) return;
 
                 _selected = piece;
                 board.ClearHighlights();
-                // redraw enemy intents first (so your move options can visually override on overlap)
-                TurnManager.Instance?.RecomputeEnemyIntentsAndPaint();
-                tm.RepaintIronMarchHints(); 
+
+                // Draw enemy intents *first*, then our move options can visually override overlaps
+                tm.RecomputeEnemyIntentsAndPaint();
+                tm.RepaintIronMarchHints();
+
                 _moves.Clear();
                 _selected.GetLegalMoves(_moves);
                 board.Highlight(_moves, highlightColor);
                 return;
             }
 
-// Clicked a tile (no piece), same as before
+            // === Clicked a tile ===
             if (tile != null && _selected != null)
             {
                 if (_moves.Contains(tile.Coord))
                 {
-                    var tm = TurnManager.Instance;
                     if (tm != null && tm.TryPlayerAct_Move(_selected, tile.Coord))
-                    {
-                        board.ClearHighlights();                    // wipe old move highlights
-                        tm.RepaintEnemyIntentsOverlay();         // refresh red intents for new board state
-                        tm.RepaintIronMarchHints(); 
-                        _selected = null;
-                        _moves.Clear();
-                    }
+                        AfterSuccessfulAction();
                 }
             }
-
         }
     }
 }
