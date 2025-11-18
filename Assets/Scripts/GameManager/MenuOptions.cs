@@ -1,3 +1,4 @@
+using GameManager;
 using UnityEngine;
 
 public class MenuOptions : MonoBehaviour
@@ -25,5 +26,10 @@ public class MenuOptions : MonoBehaviour
 #endif
 
         Debug.Log("Quit command executed");
+    }
+
+    public void OnMenuClick_ResetRun()
+    {
+        SceneController.instance.GoTo("ClanSelectScene");
     }
 }
