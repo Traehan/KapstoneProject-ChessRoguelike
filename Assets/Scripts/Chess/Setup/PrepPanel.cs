@@ -9,6 +9,9 @@ public class PrepPanel : MonoBehaviour
 {
     [Header("Data")]
     public List<PieceDefinition> options;
+    [Tooltip("If ON, overrides 'options' with GameSession's current army on Start().")]
+    public bool useGameSessionArmy = true;
+
 
     [Header("UI")]
     public Transform gridParent;               // e.g., a GridLayoutGroup
@@ -21,23 +24,36 @@ public class PrepPanel : MonoBehaviour
     [Header("Placement")]
     public PlacementManager placementManager;  // ref in Inspector
 
-    void Awake()
+    void Start()
     {
+        // Replace the options from GameSession at runtime
+        if (useGameSessionArmy && GameSession.I != null)
+        {
+            options = new List<PieceDefinition>(GameSession.I.CurrentArmy);
+            Debug.Log($"[PrepPanel] Pulled {options.Count} pieces from GameSession.");
+        }
+
+        // --- build icons ---
         foreach (var def in options)
         {
-            for (int i = 0; i < def.count; i++)
+            for (int i = 0; i < Mathf.Max(1, def.count); i++)
             {
-                //checks if iconPrefab is overrided
                 var prefabToUse = def.iconPrefabOverride != null ? def.iconPrefabOverride : iconPrefab;
+                if (prefabToUse == null)
+                {
+                    Debug.LogError("[PrepPanel] Icon Prefab is missing and no override provided.");
+                    continue;
+                }
+
                 var go = Instantiate(prefabToUse, gridParent);
                 var icon = go.GetComponent<DraggablePieceIcon>();
                 icon.Init(def, placementManager, this);
-
             }
         }
 
         confirmButton.onClick.AddListener(OnConfirm);
     }
+
 
     void OnConfirm()
     {

@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp-Editor", "Assembly-CSharp-Editor.csproj", "{3dc24475-3759-ab09-3618-7dfe78c2d68a}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bezi.Editor", "Bezi.Editor.csproj", "{6fde1fbd-4f12-e37b-a6ca-1be66b5d443f}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -14,6 +16,8 @@ Global
 		{00c7fa1a-4d86-a7c7-36bd-98734b188dc5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3dc24475-3759-ab09-3618-7dfe78c2d68a}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3dc24475-3759-ab09-3618-7dfe78c2d68a}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6fde1fbd-4f12-e37b-a6ca-1be66b5d443f}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6fde1fbd-4f12-e37b-a6ca-1be66b5d443f}.Debug|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

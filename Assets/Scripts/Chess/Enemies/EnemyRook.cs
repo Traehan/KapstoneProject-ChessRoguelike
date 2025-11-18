@@ -18,8 +18,7 @@ namespace Chess
         public override void GetLegalMoves(List<Vector2Int> buffer)
 {
     buffer.Clear();
-    
-    
+
     var def = Definition; // read-only property from Piece
     int  stride         = (def != null) ? def.maxStride             : maxStride;
     bool canPassThrough = (def != null) ? def.passThroughFriendlies : passThroughFriendlies;
@@ -28,7 +27,7 @@ namespace Chess
     int fwdSign = (Team == Team.White) ? +1 : -1;
     Vector2Int forwardDir = new Vector2Int(0, fwdSign);
 
-    // 1) Try to build FORWARD moves first (up to stride, no backwards)
+    // 1) Build FORWARD moves (up to stride). This enforces "no backwards".
     var forwardMoves = new List<Vector2Int>();
     {
         var c = Coord;
@@ -61,14 +60,19 @@ namespace Chess
         }
     }
 
-    // If any forward move exists, ONLY allow forward this turn.
-    if (forwardMoves.Count > 0)
+    // NEW: If there is NO AI behavior, keep the old "forward-only if available" rule.
+    // If there IS an AI behavior, expose lateral moves too so the AI can choose.
+    bool hasBehavior = TryGetComponent<IEnemyBehavior>(out _);
+    if (!hasBehavior && forwardMoves.Count > 0)
     {
         buffer.AddRange(forwardMoves);
         return;
     }
 
-    // 2) No forward moves? Then allow SIDE-TO-SIDE (left/right), never backward.
+    // If AI present, or no forward moves, include forward moves (if any) and ALSO scan lateral.
+    buffer.AddRange(forwardMoves);
+
+    // 2) Allow SIDE-TO-SIDE (left/right). Still never backward (we don't add negative forwardDir).
     Vector2Int[] lateralDirs = { new Vector2Int(+1, 0), new Vector2Int(-1, 0) };
 
     foreach (var d in lateralDirs)
@@ -101,5 +105,6 @@ namespace Chess
         }
     }
 }
+
     }
 }

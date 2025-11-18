@@ -1,0 +1,366 @@
+========================================
+CURRENCY & SHOP SYSTEM ARCHITECTURE
+========================================
+
+This diagram shows how all components connect and interact.
+
+========================================
+COMPONENT DIAGRAM:
+========================================
+
+┌─────────────────────────────────────────────────────────────┐
+│                     CURRENCY MANAGER                         │
+│                   (DontDestroyOnLoad)                        │
+│                                                              │
+│  • Tracks current coins                                     │
+│  • Saves to PlayerPrefs                                     │
+│  • Events: OnCoinsChanged                                   │
+│  • Methods: AddCoins(), SpendCoins(), CanAfford()          │
+│  • Reset on GameSession.StartNewRun()                       │
+└──────────────┬──────────────────────────────────────┬───────┘
+               │                                      │
+               │ subscribes                           │ subscribes
+               ▼                                      ▼
+    ┌──────────────────┐                  ┌──────────────────┐
+    │ CurrencyDisplay  │                  │ CurrencyDisplay  │
+    │   (MapScene)     │                  │ (SampleScene)    │
+    │                  │                  │                  │
+    │ "Coins: 75"      │                  │ "Coins: 75"      │
+    └──────────────────┘                  └──────────────────┘
+
+========================================
+SCENE FLOW DIAGRAM:
+========================================
+
+START GAME:
+┌──────────────────┐
+│ ClanSelectScene  │
+│                  │
+│ Player picks     │
+│ clan             │
+└────────┬─────────┘
+         │
+         │ GameSession.StartNewRun(clan)
+         │ • army.Clear()
+         │ • CurrencyManager.ResetCurrency() → 0 coins
+         │ • MapState.ClearState()
+         │
+         ▼
+┌──────────────────┐
+│   MapScene       │◄──────────────────┐
+│                  │                   │
+│ • Shows map      │                   │
+│ • Currency: 0    │                   │
+│ • Click node     │                   │
+└────────┬─────────┘                   │
+         │                             │
+         │ Click Encounter node        │
+         │                             │
+         ▼                             │
+┌──────────────────┐                   │
+│  SampleScene     │                   │
+│   (Battle)       │                   │
+│                  │                   │
+│ • Fight enemies  │                   │
+│ • Win battle     │                   │
+│ • Victory!       │                   │
+└────────┬─────────┘                   │
+         │                             │
+         │ TurnManager.OnPlayerWon     │
+         │         ▼                   │
+         │ VictoryRewardHandler        │
+         │         ▼                   │
+         │ CurrencyManager.AddCoins(75)│
+         │         ▼                   │
+         │ Currency: 75                │
+         │                             │
+         │ Return to MapScene          │
+         └─────────────────────────────┘
+                   │
+                   │ Click Shop node
+                   ▼
+         ┌──────────────────┐
+         │   Shop_Scene     │
+         │                  │
+         │ • 3 Piece Slots  │
+         │ • 3 Upgrade Slots│
+         │ • PrepPanel      │
+         │ • Currency: 75   │
+         │                  │
+         │ Player buys item │
+         │         ▼        │
+         │ Currency: 0      │
+         │ Army updated     │
+         │                  │
+         │ Click Leave      │
+         └────────┬─────────┘
+                  │
+                  │ Return to MapScene
+                  │
+                  ▼
+         Back to MapScene
+         with updated army
+         and currency
+
+========================================
+PURCHASE FLOW - PIECE:
+========================================
+
+Player clicks Buy on Piece
+         │
+         ▼
+ShopSlot.OnBuyClicked()
+         │
+         ▼
+CurrencyManager.CanAfford(cost)?
+         │
+    ┌────┴────┐
+    │ YES     │ NO → Show message
+    ▼         └─────────────┐
+ShopManager.OnPiecePurchased()│
+         │                    │
+         ▼                    │
+CurrencyManager.SpendCoins()  │
+         │                    │
+         ▼                    │
+GameSession.I.army.Add(piece) │
+         │                    │
+         ▼                    │
+PrepPanel.Refresh()           │
+         │                    │
+         ▼                    ▼
+   Purchase Complete    Cannot Afford
+
+========================================
+PURCHASE FLOW - UPGRADE:
+========================================
+
+Player clicks Buy on Upgrade
+         │
+         ▼
+ShopSlot.OnBuyClicked()
+         │
+         ▼
+CurrencyManager.CanAfford(cost)?
+         │
+    ┌────┴────┐
+    │ YES     │ NO → Cannot Afford
+    ▼         └────────────────┐
+ShopManager.OnUpgradePurchased()│
+         │                      │
+         ▼                      │
+UpgradeSelectionPopup.ShowPopup()
+         │                      │
+         ▼                      │
+┌─────────────────────┐        │
+│ Select Piece Popup  │        │
+│                     │        │
+│ [Bishop HP:3 ATK:2] │        │
+│ [Rook HP:5 ATK:4]   │        │
+│ [Knight HP:4 ATK:3] │        │
+│                     │        │
+│     [Cancel]        │        │
+└──────────┬──────────┘        │
+           │                   │
+    Player selects piece       │
+           │                   │
+           ▼                   │
+CurrencyManager.SpendCoins()   │
+           │                   │
+           ▼                   │
+piece.maxHP += upgrade.addMaxHP│
+piece.attack += upgrade.addAttack
+           │                   │
+           ▼                   │
+PrepPanel.Refresh()            │
+           │                   │
+           ▼                   ▼
+   Upgrade Applied      Cancelled
+
+========================================
+DATA FLOW DIAGRAM:
+========================================
+
+GameSession.army (List<PieceDefinition>)
+    │
+    ├─ Queen (from clan)
+    ├─ Starting Troop (granted once)
+    ├─ Purchased Piece 1
+    ├─ Purchased Piece 2
+    └─ Purchased Piece 3 (with upgrades applied)
+         │
+         ├─ maxHP: 5 (base: 3, +2 from upgrade)
+         └─ attack: 3 (base: 2, +1 from upgrade)
+
+PlayerPrefs
+    │
+    ├─ "PlayerCoins": 150
+    └─ "MapState": {...}
+
+CurrencyManager
+    │
+    ├─ currentCoins: 150
+    └─ OnCoinsChanged event
+          │
+          ├─ → CurrencyDisplay (MapScene)
+          ├─ → CurrencyDisplay (SampleScene)
+          ├─ → CurrencyDisplay (Shop_Scene)
+          ├─ → ShopSlot 1
+          ├─ → ShopSlot 2
+          ├─ → ShopSlot 3
+          └─ → ShopManager
+
+========================================
+EVENT CHAIN DIAGRAM:
+========================================
+
+BATTLE VICTORY:
+TurnManager.IsVictoryReady()
+    │
+    ▼
+TurnManager.PlayerWon()
+    │
+    ▼
+TurnManager.OnPlayerWon event fires
+    │
+    ▼
+VictoryRewardHandler.OnPlayerVictory()
+    │
+    ▼
+CurrencyManager.AddCoins(75)
+    │
+    ▼
+CurrencyManager.OnCoinsChanged event fires
+    │
+    ├─ → CurrencyDisplay.UpdateDisplay()
+    ├─ → ShopSlot.UpdateBuyButton()
+    └─ → ShopManager.UpdateRefreshButton()
+
+CURRENCY CHANGE:
+CurrencyManager.CurrentCoins = newValue
+    │
+    ▼
+OnCoinsChanged?.Invoke(newValue)
+    │
+    ├─ → All CurrencyDisplay instances update
+    ├─ → All ShopSlot instances update button state
+    └─ → ShopManager updates refresh button
+
+========================================
+CLASS RELATIONSHIPS:
+========================================
+
+CurrencyManager (Singleton)
+    ↑ referenced by
+    │
+    ├─ CurrencyDisplay (observes)
+    ├─ ShopSlot (queries)
+    ├─ ShopManager (queries)
+    └─ VictoryRewardHandler (calls AddCoins)
+
+GameSession (Singleton)
+    ↑ referenced by
+    │
+    ├─ ShopManager (modifies army)
+    ├─ PrepPanel (reads army)
+    └─ Various scenes (reads selectedClan)
+
+ShopManager
+    ↓ contains
+    │
+    ├─ ShopSlot[] (piece slots)
+    ├─ ShopSlot[] (upgrade slots)
+    └─ PrepPanel (reference)
+
+ShopSlot
+    ↓ holds
+    │
+    ├─ PieceDefinition (item)
+    │     OR
+    └─ PieceUpgradeSO (item)
+
+========================================
+PERSISTENCE DIAGRAM:
+========================================
+
+PlayerPrefs
+    │
+    ├─ "PlayerCoins" (int)
+    │   └─ Saved on every currency change
+    │   └─ Loaded on CurrencyManager.Awake()
+    │   └─ Cleared on GameSession.StartNewRun()
+    │
+    └─ "MapState" (JSON string)
+        └─ Saved on node selection
+        └─ Loaded on MapScene enter
+        └─ Cleared on new run
+
+GameSession.army (Runtime)
+    │
+    ├─ Populated on run start (Queen)
+    ├─ Added to from shop purchases
+    ├─ Modified by upgrades
+    ├─ Persists across scenes (DontDestroyOnLoad)
+    └─ Cleared on GameSession.StartNewRun()
+
+PieceDefinition Stats (ScriptableObject)
+    │
+    ├─ Modified by upgrades
+    ├─ Changes persist until run reset
+    └─ Affects all instances of that piece
+
+========================================
+LIFECYCLE SUMMARY:
+========================================
+
+APP START:
+1. CurrencyManager.Awake() → LoadCoins()
+2. GameSession.Awake() → DontDestroyOnLoad
+
+NEW RUN START:
+1. Player picks clan in ClanSelectScene
+2. GameSession.StartNewRun(clan)
+3. • army.Clear()
+4. • MapState.ClearState()
+5. • CurrencyManager.ClearSavedCurrency()
+6. • CurrencyManager.ResetCurrency() → 0 coins
+7. Navigate to MapScene
+
+BATTLE:
+1. Player enters SampleScene
+2. VictoryRewardHandler subscribes to OnPlayerWon
+3. Player fights and wins
+4. TurnManager.PlayerWon()
+5. OnPlayerWon event fires
+6. VictoryRewardHandler awards coins
+7. CurrencyManager saves to PlayerPrefs
+
+SHOP VISIT:
+1. Player clicks Shop node in MapScene
+2. Navigate to Shop_Scene
+3. ShopManager.PopulateShop()
+4. • Randomize pieces
+5. • Randomize upgrades
+6. Player makes purchases
+7. • Coins spent
+8. • Army updated
+9. • Stats modified
+10. Player leaves → back to MapScene
+
+RUN END:
+1. Player dies OR completes run
+2. GameSession.StartNewRun() (for new run)
+3. All state resets
+4. Back to ClanSelectScene
+
+========================================
+THREAD SAFETY:
+========================================
+
+✓ All operations on main thread
+✓ No async/await complications
+✓ Event subscriptions managed in OnEnable/OnDisable
+✓ Singleton pattern with null checks
+✓ No race conditions
+
+========================================

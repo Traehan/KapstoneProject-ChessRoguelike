@@ -1,0 +1,391 @@
+========================================
+CURRENCY & SHOP SYSTEM
+IMPLEMENTATION CHECKLIST
+========================================
+
+Use this checklist to verify everything is set up correctly.
+
+========================================
+SCRIPTS CREATED ✓
+========================================
+
+Currency System:
+✓ CurrencyManager.cs
+✓ CurrencyDisplay.cs
+✓ VictoryRewardHandler.cs
+
+Shop System:
+✓ ShopManager.cs
+✓ ShopSlot.cs
+✓ UpgradeSelectionPopup.cs
+
+Integration:
+✓ GameSession.cs (updated)
+
+Editor Tools:
+✓ CurrencyShopSetupTools.cs
+
+Documentation:
+✓ QUICKSTART_SHOP.txt
+✓ ShopScene_SetupGuide.txt
+✓ UpgradeDefinitions_README.txt
+✓ CURRENCY_AND_SHOP_SUMMARY.txt
+✓ SystemArchitecture_Diagram.txt
+✓ IMPLEMENTATION_CHECKLIST.txt (this file)
+
+========================================
+SETUP TASKS
+========================================
+
+CURRENCY MANAGER SETUP:
+□ Tools > Shop System > Setup Currency Manager
+□ CurrencyManager GameObject exists
+□ Component configured:
+  □ Starting Coins: 0
+  □ Encounter Victory Reward: 75
+
+CURRENCY DISPLAYS:
+□ MapScene has CurrencyDisplay
+  □ Tools > Shop System > Add Currency Display
+  □ TextMeshProUGUI shows "Coins: 0"
+  □ Positioned at top-left
+  
+□ SampleScene has CurrencyDisplay
+  □ Tools > Shop System > Add Currency Display
+  □ TextMeshProUGUI shows "Coins: 0"
+  □ Positioned at top-left
+
+□ Shop_Scene has CurrencyDisplay (after creating scene)
+  □ Tools > Shop System > Add Currency Display
+  □ TextMeshProUGUI shows "Coins: 0"
+  □ Positioned at top-left
+
+VICTORY REWARDS:
+□ SampleScene has VictoryRewardHandler
+  □ Tools > Shop System > Add Victory Reward Handler
+  □ Component attached to a persistent GameObject
+  □ Will award coins on battle victory
+
+UPGRADE CREATION:
+□ Created at least 3 upgrades
+  □ Tools > Shop System > Create Upgrade Template
+  □ IronPlating (+2 HP)
+  □ SharpenedBlade (+1 ATK)
+  □ CombatTraining (+1 HP, +1 ATK)
+  □ (Optional) More upgrades created
+
+SHOP SCENE:
+□ Shop_Scene created
+  □ File > New Scene
+  □ Saved as "Shop_Scene" in /Assets/Scenes/
+  
+□ Added to Build Settings
+  □ File > Build Settings
+  □ Shop_Scene in scenes list
+
+□ Basic hierarchy created
+  □ Canvas exists
+  □ EventSystem exists
+  □ ShopManager GameObject exists
+
+□ Shop slots created (6 total)
+  □ PieceSlot1, PieceSlot2, PieceSlot3
+  □ UpgradeSlot1, UpgradeSlot2, UpgradeSlot3
+  □ Each has ShopSlot component
+
+□ Buttons created
+  □ RefreshButton (UI > Button)
+  □ LeaveButton (UI > Button)
+
+□ ShopManager configured
+  □ Piece Slots array (size 3)
+    □ All 3 piece slots assigned
+  □ Upgrade Slots array (size 3)
+    □ All 3 upgrade slots assigned
+  □ Available Pieces list
+    □ Bishop_Def added
+    □ Rook_Def added
+    □ Knight_Def added
+    □ (Optional) More pieces added
+  □ Available Upgrades list
+    □ All created upgrades added
+  □ Pricing configured
+    □ Piece Price Min: 50
+    □ Piece Price Max: 150
+    □ Upgrade Price Min: 30
+    □ Upgrade Price Max: 100
+    □ Refresh Cost: 25
+  □ UI References
+    □ Refresh Button assigned
+    □ Leave Button assigned
+    □ Prep Panel assigned (optional)
+  □ Scene Navigation
+    □ Map Scene Name: "MapScene"
+
+□ UpgradeSelectionPopup setup
+  □ Component on shop scene GameObject
+  □ Popup Panel created
+  □ Title text assigned
+  □ Piece Button Container assigned
+  □ Piece Button Prefab assigned
+  □ Cancel Button assigned
+  □ Popup initially inactive
+
+□ CurrencyDisplay added
+  □ Shows coins at top-left
+
+========================================
+INTEGRATION VERIFICATION
+========================================
+
+GAMESESSION:
+□ GameSession.StartNewRun() includes:
+  □ MapState.ClearState()
+  □ CurrencyManager.ClearSavedCurrency()
+  □ CurrencyManager.Instance.ResetCurrency()
+
+MAPGENERATOR:
+□ MapGenerator.cs has:
+  □ shopSceneName = "Shop_Scene"
+  □ Shop nodes navigate correctly
+
+BUILD SETTINGS:
+□ All scenes in Build Settings:
+  □ StartScreen (if exists)
+  □ ClanSelectScene
+  □ MapScene
+  □ SampleScene
+  □ Shop_Scene
+  □ (Any other scenes)
+
+========================================
+TESTING CHECKLIST
+========================================
+
+BASIC CURRENCY:
+□ Start game
+  □ Currency shows "Coins: 0"
+□ Enter battle (SampleScene)
+  □ Currency displays in battle scene
+□ Win battle
+  □ Console shows coin reward message
+  □ Currency updates to "Coins: 75"
+□ Return to map
+  □ Currency persists "Coins: 75"
+□ Exit play mode and re-enter
+  □ Currency loads from save
+
+SHOP NAVIGATION:
+□ From MapScene, manually navigate to shop:
+  □ Create test: SceneController.instance.GoTo("Shop_Scene")
+  □ Shop scene loads successfully
+  □ Currency displays correctly
+  □ No errors in Console
+
+SHOP DISPLAY:
+□ Shop scene shows correctly:
+  □ 3 piece slots visible
+  □ 3 upgrade slots visible
+  □ Refresh button visible
+  □ Leave button visible
+  □ Currency display visible
+□ Items populate:
+  □ Piece slots show random pieces
+  □ Upgrade slots show random upgrades
+  □ Prices displayed
+□ Icons and text:
+  □ Piece icons appear
+  □ Upgrade icons appear
+  □ Names displayed
+  □ Descriptions displayed
+
+PIECE PURCHASE:
+□ Have enough coins (75+)
+□ Click Buy on a piece
+  □ Coins deducted
+  □ Console shows purchase message
+  □ Piece added to army
+  □ PrepPanel updates (if configured)
+□ Not enough coins
+  □ Buy button disabled
+  □ Can't purchase
+
+UPGRADE PURCHASE:
+□ Have enough coins (30+)
+□ Have pieces in army
+□ Click Buy on upgrade
+  □ Popup appears
+  □ Shows army pieces (no Queen)
+  □ Can select a piece
+□ Select piece
+  □ Coins deducted
+  □ Console shows upgrade message
+  □ Piece stats updated
+  □ PrepPanel updates (if configured)
+□ Cancel popup
+  □ No coins spent
+  □ Popup closes
+
+REFRESH FUNCTIONALITY:
+□ Have 25+ coins
+□ Click Refresh button
+  □ Coins deducted (25)
+  □ New upgrades shown
+  □ Different from previous upgrades
+  □ Button becomes disabled
+  □ Text changes to "USED"
+□ Try clicking again
+  □ Nothing happens
+  □ Button stays disabled
+
+LEAVE SHOP:
+□ Click Leave button
+  □ Returns to MapScene
+  □ Currency persists
+  □ Army changes persist
+□ Re-enter shop
+  □ New random inventory
+  □ Refresh button reset
+  □ Can refresh again
+
+BATTLE WITH PURCHASES:
+□ Buy piece in shop
+□ Return to map
+□ Enter battle
+□ Open PrepPanel
+  □ Purchased piece appears
+  □ Can place purchased piece
+  □ Piece works in battle
+□ Buy upgrade in shop
+□ Apply to piece
+□ Enter battle
+  □ Piece has upgraded stats
+  □ Upgrade persists in battle
+
+RUN RESET:
+□ Accumulate coins
+□ Purchase pieces/upgrades
+□ Start new run
+  □ Coins reset to 0
+  □ Army cleared
+  □ Map cleared
+  □ Only Queen and starting troop remain
+
+========================================
+FINAL VERIFICATION
+========================================
+
+PERSISTENCE:
+□ Currency saves across scenes
+□ Currency loads on game start
+□ Army saves across scenes
+□ Upgrades persist on pieces
+□ Map state independent of currency
+
+EVENTS:
+□ OnCoinsChanged fires correctly
+□ Currency displays update
+□ Shop buttons update
+□ Victory rewards work
+
+EDGE CASES:
+□ Can't buy with insufficient coins
+□ Can't upgrade Queen
+□ Refresh only works once
+□ Empty slots handled gracefully
+□ No pieces in army handled
+
+PERFORMANCE:
+□ No errors in Console
+□ No memory leaks
+□ Smooth scene transitions
+□ Instant currency updates
+
+========================================
+OPTIONAL POLISH
+========================================
+
+VISUAL:
+□ Custom sprites for coins
+□ Icons for all pieces
+□ Icons for all upgrades
+□ Background images for slots
+□ Shop theme/aesthetic
+
+UI/UX:
+□ Animations on purchase
+□ Sound effects for buy/sell
+□ Particle effects for coins
+□ Tooltips on hover
+□ Purchase confirmation
+□ Better shop layout
+□ PrepPanel in shop
+
+GAMEPLAY:
+□ More upgrade varieties
+□ More piece types
+□ Special shop deals
+□ Limited stock items
+□ Price balancing
+□ Difficulty scaling rewards
+
+========================================
+KNOWN ISSUES / LIMITATIONS
+========================================
+
+DOCUMENTED LIMITATIONS:
+• Upgrades modify PieceDefinition directly
+  → Affects all instances until run reset
+  → Consider runtime copies if needed
+
+• Shop inventory randomizes each visit
+  → Could add persistent inventory
+  → Could track purchase history
+
+• Refresh shows new upgrades only
+  → Tracks shown in session only
+  → Resets on shop reload
+
+• No piece quantity field
+  → Each purchase adds one
+  → Could add bulk purchase
+
+POTENTIAL IMPROVEMENTS:
+• Runtime PieceDefinition instances
+• Persistent shop state
+• Purchase history tracking
+• Undo last purchase
+• Sell pieces back
+• Price negotiation
+• Shop upgrades/tiers
+
+========================================
+SUCCESS CRITERIA
+========================================
+
+✓ Currency system functional
+✓ Coins awarded on victory
+✓ Currency persists across scenes
+✓ Currency resets on new run
+✓ Shop scene loads from map
+✓ Shop displays items correctly
+✓ Can purchase pieces
+✓ Can purchase upgrades
+✓ Upgrades apply to pieces
+✓ Purchases persist in army
+✓ Refresh button works
+✓ Leave button works
+✓ No critical errors
+✓ Full game loop functional
+
+========================================
+COMPLETION
+========================================
+
+When all checkboxes above are completed,
+your currency and shop system is fully
+operational and ready for playtesting!
+
+Congratulations! 🎉
+
+========================================

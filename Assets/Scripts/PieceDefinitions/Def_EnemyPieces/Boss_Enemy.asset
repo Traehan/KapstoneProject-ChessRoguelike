@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ded2e13f6ebd3434dad991b06601023a, type: 3}
+  m_Name: Boss_Enemy
+  m_EditorClassIdentifier: Assembly-CSharp::Chess.PieceDefinition
+  displayName: The Tower
+  icon: {fileID: 0}
+  iconPrefabOverride: {fileID: 0}
+  count: 1
+  piecePrefab: {fileID: 7077751289521428780, guid: 50e7ac4801f171e438a201112ec94f81, type: 3}
+  maxHP: 8
+  attack: 3
+  forwardOnly: 0
+  passThroughFriendlies: 0
+  maxStride: 8
+  shopPrice: 100

@@ -1,0 +1,269 @@
+========================================
+MAP NODE SYSTEM - COMPLETE SUMMARY
+========================================
+
+I've created a complete vertical scrolling map node system for your MapScene. Here's what was created and how to use it:
+
+========================================
+FILES CREATED:
+========================================
+
+1. MapNodeType.cs
+   - Defines node types: Encounter, Shop, RandomEvent
+   - Weighted random selection (Encounters are most common)
+
+2. MapNode.cs
+   - Core data class for a single node
+   - Tracks visited state, locked state, and connections
+
+3. MapNodeVisual.cs
+   - UI component for displaying nodes
+   - Handles clicking, hover effects, and visual states
+   - Color codes by node type
+
+4. MapGenerator.cs
+   - Generates the entire map (10 rows, 2-4 nodes per row)
+   - Creates branching paths that can intersect
+   - Handles node selection and row locking
+   - Navigates to appropriate scenes
+   - Saves/loads map state
+
+5. MapState.cs
+   - Saves map state to PlayerPrefs
+   - Restores map when returning to MapScene
+   - Persists across scene transitions
+
+6. MapPrefabCreator.cs (Editor Script)
+   - Automatically creates required prefabs
+   - Sets up MapGenerator with correct settings
+
+7. README_MapSetup.cs
+   - Comprehensive setup guide
+   - Troubleshooting tips
+   - Customization options
+
+8. Updated RunMapController.cs
+   - Integrated with MapGenerator
+   - Keeps legacy button functionality
+   - Adds ResetMapForNewRun() method
+
+9. Updated GameSession.cs
+   - Clears map state on StartNewRun()
+   - Ensures fresh map for each game run
+
+========================================
+QUICK START GUIDE:
+========================================
+
+OPTION 1: AUTOMATIC SETUP (RECOMMENDED)
+-----------------------------------------
+1. Open MapScene in Unity
+2. Go to menu: Tools > Map System > Create Map Node Prefabs
+   - This creates MapNodeVisual.prefab and PathLine.prefab
+3. Go to menu: Tools > Map System > Setup Map Scene
+   - This configures the MapGenerator automatically
+4. Press Play to test!
+
+OPTION 2: MANUAL SETUP
+-----------------------
+See the detailed instructions in README_MapSetup.cs
+
+========================================
+HOW IT WORKS:
+========================================
+
+MAP GENERATION:
+- Creates 10 rows of nodes
+- Each row has 2-4 nodes (randomized)
+- Nodes are randomly typed:
+  * 70% Encounters (battles)
+  * 15% Shops
+  * 15% Random Events
+- Nodes connect with branching paths
+- Paths can merge back together
+
+GAMEPLAY FLOW:
+1. Player starts at row 0 (bottom)
+2. First row nodes are clickable
+3. Click a node:
+   - Node turns gray (visited)
+   - Entire row locks (no other nodes in row clickable)
+   - Connected nodes in next row unlock
+   - Navigate to appropriate scene:
+     * Encounter → SampleScene (battle)
+     * Shop → ShopScene (placeholder)
+     * Event → EventScene (placeholder)
+4. Return to MapScene:
+   - Map state is restored
+   - Continue from where you left off
+5. Repeat until all 10 rows completed
+
+PATH LOCKING:
+- Once you click a node, you're committed to that path
+- Can only access nodes connected to your previous choice
+- Creates meaningful roguelike decision-making
+
+STATE PERSISTENCE:
+- Map saved to PlayerPrefs after each click
+- Returning to MapScene restores exact state
+- New run clears map state (fresh generation)
+
+========================================
+FEATURES IMPLEMENTED:
+========================================
+
+✓ 10 rows of nodes
+✓ 2-4 nodes per row
+✓ Branching paths that can intersect
+✓ Weighted random node types (Encounters most common)
+✓ Row locking after node selection
+✓ Path commitment (follow connected nodes)
+✓ Clickable nodes with visual feedback
+✓ State persistence between scenes
+✓ Integration with existing SceneController
+✓ Integration with existing GameSession
+✓ Visual color coding by node type
+✓ Hover effects on available nodes
+✓ Automatic scene navigation based on node type
+
+========================================
+SCENE INTEGRATION:
+========================================
+
+The system integrates with your existing code:
+
+- Uses SceneController.GoTo() for scene transitions
+- Uses GameSession.PickRandomEncounter() for battles
+- Uses GameSession.selectedEncounter for passing data
+- Clears state in GameSession.StartNewRun()
+- Works with existing encounter system
+
+========================================
+CUSTOMIZATION:
+========================================
+
+To change node distribution:
+- Edit MapGenerator > Node Type Weights
+  * encounterWeight: 70 (default)
+  * shopWeight: 15 (default)
+  * randomEventWeight: 15 (default)
+
+To change map size:
+- Edit MapGenerator > Map Settings
+  * numberOfRows: 10 (default)
+  * minNodesPerRow: 2 (default)
+  * maxNodesPerRow: 4 (default)
+
+To change visual spacing:
+- Edit MapGenerator > Visual Settings
+  * horizontalSpacing: 200 (default)
+  * verticalSpacing: 150 (default)
+
+To change node colors:
+- Edit MapNodeVisual prefab
+- Adjust color fields in MapNodeVisual component
+
+To add custom sprites:
+- Assign sprites to MapNodeVisual:
+  * encounterSprite
+  * shopSprite
+  * eventSprite
+
+========================================
+NEXT STEPS:
+========================================
+
+1. Create ShopScene:
+   - Create a new scene for shop functionality
+   - Add to Build Settings
+   - Implement shop logic
+
+2. Create EventScene:
+   - Create a new scene for random events
+   - Add to Build Settings
+   - Implement event logic
+
+3. Test the flow:
+   - Start a new run
+   - Navigate through map nodes
+   - Complete battles
+   - Return to map
+   - Verify state persistence
+
+4. Polish visuals:
+   - Create custom sprites for node types
+   - Adjust colors to match game theme
+   - Add animations/transitions
+
+========================================
+TESTING:
+========================================
+
+To test the system:
+1. Make sure GameSession prefab is loaded
+2. Open MapScene
+3. Press Play
+4. You should see:
+   - Vertical scrolling map with 10 rows
+   - First row nodes are white (clickable)
+   - Other nodes are gray (locked)
+   - Path lines connecting nodes
+5. Click a first-row node:
+   - Node turns gray
+   - Other first-row nodes lock
+   - Connected second-row nodes unlock
+   - Scene transitions to SampleScene
+
+To reset the map:
+- Call MapState.ClearState() in code
+- Or start a new run via GameSession.StartNewRun()
+
+========================================
+TROUBLESHOOTING:
+========================================
+
+Issue: Nodes don't appear
+- Check Console for errors
+- Verify prefabs are assigned in MapGenerator
+- Ensure Content RectTransform is assigned
+
+Issue: Nodes not clickable
+- Verify EventSystem exists in scene
+- Check Button component is enabled
+- Ensure first row has isCurrentlyAvailable = true
+
+Issue: Scene transition fails
+- Check SceneController.instance exists
+- Verify scene names in Build Settings
+- Ensure GameSession.I has encounterCatalog
+
+Issue: Map doesn't persist
+- Check PlayerPrefs permissions
+- Verify SaveMapState() is called
+- Check for errors in LoadOrGenerateMap()
+
+========================================
+TECHNICAL NOTES:
+========================================
+
+- Uses PlayerPrefs for state persistence
+  * Key: "MapState"
+  * Contains serialized JSON
+
+- Node connections stored as indices
+  * Format: row * 100 + column
+  * Allows reconstruction after deserialization
+
+- Visual updates are decoupled from data
+  * MapNode holds data
+  * MapNodeVisual displays it
+  * Generator coordinates both
+
+- Thread-safe by design
+  * All operations on main thread
+  * No async complications
+
+========================================
+
+You're all set! The complete map node system is ready to use.
+Follow the Quick Start Guide above to get started!

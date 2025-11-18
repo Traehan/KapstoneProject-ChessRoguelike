@@ -5,6 +5,6 @@ public class StartScreen : MonoBehaviour
 {
     public void OnClickStart()
     {
-        SceneController.instance.GoTo("MapScene");
+        SceneController.instance.GoTo("ClanSelectScene");
     }
 }

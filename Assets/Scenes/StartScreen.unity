@@ -1043,6 +1043,99 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c50270e62e1eea4da2e9d1d170896e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StartScreen
+--- !u!1001 &2105119437
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 498387140854340117, guid: af55ef0f1e9ca4144b3f95a0a6923738, type: 3}
+      propertyPath: m_Name
+      value: GameSession
+      objectReference: {fileID: 0}
+    - target: {fileID: 6196382523377431584, guid: af55ef0f1e9ca4144b3f95a0a6923738, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 464.1198
+      objectReference: {fileID: 0}
+    - target: {fileID: 6196382523377431584, guid: af55ef0f1e9ca4144b3f95a0a6923738, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 99.98518
+      objectReference: {fileID: 0}
+    - target: {fileID: 6196382523377431584, guid: af55ef0f1e9ca4144b3f95a0a6923738, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 84.38654
+      objectReference: {fileID: 0}
+    - target: {fileID: 6196382523377431584, guid: af55ef0f1e9ca4144b3f95a0a6923738, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6196382523377431584, guid: af55ef0f1e9ca4144b3f95a0a6923738, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6196382523377431584, guid: af55ef0f1e9ca4144b3f95a0a6923738, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6196382523377431584, guid: af55ef0f1e9ca4144b3f95a0a6923738, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6196382523377431584, guid: af55ef0f1e9ca4144b3f95a0a6923738, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6196382523377431584, guid: af55ef0f1e9ca4144b3f95a0a6923738, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6196382523377431584, guid: af55ef0f1e9ca4144b3f95a0a6923738, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7882225745780591430, guid: af55ef0f1e9ca4144b3f95a0a6923738, type: 3}
+      propertyPath: army.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7882225745780591430, guid: af55ef0f1e9ca4144b3f95a0a6923738, type: 3}
+      propertyPath: encounterCatalog
+      value: 
+      objectReference: {fileID: 11400000, guid: 9dc5fb757d81e59429cb7dd509b5b75f, type: 2}
+    - target: {fileID: 7882225745780591430, guid: af55ef0f1e9ca4144b3f95a0a6923738, type: 3}
+      propertyPath: queenIconFallback
+      value: 
+      objectReference: {fileID: 21300000, guid: 1828b1bae8e05744faa587fad087b8c7, type: 3}
+    - target: {fileID: 7882225745780591430, guid: af55ef0f1e9ca4144b3f95a0a6923738, type: 3}
+      propertyPath: hasGrantedStartingTroop
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7882225745780591430, guid: af55ef0f1e9ca4144b3f95a0a6923738, type: 3}
+      propertyPath: queenIconPrefabOverride
+      value: 
+      objectReference: {fileID: 7795780069276698349, guid: 3f6fd8ea5608f1b4a9cce13b64d61b9b, type: 3}
+    - target: {fileID: 7882225745780591430, guid: af55ef0f1e9ca4144b3f95a0a6923738, type: 3}
+      propertyPath: startingTroopPool.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7882225745780591430, guid: af55ef0f1e9ca4144b3f95a0a6923738, type: 3}
+      propertyPath: 'startingTroopPool.Array.data[0]'
+      value: 
+      objectReference: {fileID: 11400000, guid: caaba4aec4be4504e8a8df17ded31d0d, type: 2}
+    - target: {fileID: 7882225745780591430, guid: af55ef0f1e9ca4144b3f95a0a6923738, type: 3}
+      propertyPath: 'startingTroopPool.Array.data[1]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 7f003049c03d88440ba3260e8dba1515, type: 2}
+    - target: {fileID: 7882225745780591430, guid: af55ef0f1e9ca4144b3f95a0a6923738, type: 3}
+      propertyPath: 'startingTroopPool.Array.data[2]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 8898d83dfd7480a4b9237ff27c4d5b83, type: 2}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: af55ef0f1e9ca4144b3f95a0a6923738, type: 3}
 --- !u!1 &2118265876
 GameObject:
   m_ObjectHideFlags: 0
@@ -1131,3 +1224,4 @@ SceneRoots:
   - {fileID: 1920333373}
   - {fileID: 1691715677}
   - {fileID: 840433883}
+  - {fileID: 2105119437}

@@ -1,17 +1,21 @@
-// Assets/Scripts/Map/RunMapController.cs
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
-using GameManager;        // <-- your SceneController namespace
+using GameManager;
 using Chess;
 using UnityEngine.SceneManagement;
 
 public class RunMapController : MonoBehaviour
 {
-    [Header("UI")] public Button leftButton;
+    [Header("Map Generator")]
+    public MapGenerator mapGenerator;
+
+    [Header("Legacy UI Buttons (Optional)")]
+    public Button leftButton;
     public Button rightButton;
 
-    [Header("Scenes")] [Tooltip("Your board/GameRoot scene (was SampleScene).")]
+    [Header("Scenes")]
+    [Tooltip("Your board/GameRoot scene (was SampleScene).")]
     public string battleSceneName = "SampleScene";
 
     [Tooltip("Battle HUD scene to load additively.")]
@@ -19,13 +23,24 @@ public class RunMapController : MonoBehaviour
 
     void Awake()
     {
-        leftButton.onClick.AddListener(OnBranchClicked);
-        rightButton.onClick.AddListener(OnBranchClicked);
+        if (mapGenerator == null)
+        {
+            mapGenerator = FindFirstObjectByType<MapGenerator>();
+        }
+
+        if (leftButton != null)
+        {
+            leftButton.onClick.AddListener(OnBranchClicked);
+        }
+        
+        if (rightButton != null)
+        {
+            rightButton.onClick.AddListener(OnBranchClicked);
+        }
     }
 
     void OnBranchClicked()
     {
-        // 1) Pick a random encounter from your catalog via GameSession
         var gs = GameSession.I;
         if (gs == null)
         {
@@ -40,17 +55,24 @@ public class RunMapController : MonoBehaviour
             return;
         }
 
-        // (Optional) Keep this for older code paths
         gs.selectedEncounter = chosen;
-
-        // 2) Hand off via SceneArgs.Payload (strongest guarantee)
-        //    EncounterRunner in SampleScene will read this in Start()
         StartCoroutine(LoadBattleFlow(chosen));
     }
 
     IEnumerator LoadBattleFlow(EncounterDefinition encounter)
     {
-        // swap to SampleScene, passing the encounter as args
         yield return SceneController.instance.GoTo(battleSceneName, encounter);
+    }
+
+    public void ResetMapForNewRun()
+    {
+        if (mapGenerator != null)
+        {
+            mapGenerator.ResetMap();
+        }
+        else
+        {
+            Debug.LogWarning("MapGenerator not found!");
+        }
     }
 }

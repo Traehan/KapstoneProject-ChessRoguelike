@@ -14,6 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Chess.EncounterWave
   spawns:
   - piece: {fileID: 11400000, guid: d3883e3ca600c6e449787739b4918791, type: 2}
+    coord: {x: 1, y: 1}
+    fromTop: 1
+  - piece: {fileID: 11400000, guid: d3883e3ca600c6e449787739b4918791, type: 2}
     coord: {x: 0, y: 0}
     fromTop: 1
   trigger: 0

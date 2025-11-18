@@ -1,0 +1,273 @@
+========================================
+CURRENCY & SHOP SYSTEM - QUICK START
+========================================
+
+Fast setup guide to get the currency and shop system
+working in your game in under 15 minutes!
+
+========================================
+PHASE 1: SETUP CURRENCY (5 minutes)
+========================================
+
+1. OPEN ANY SCENE (StartScreen or MapScene)
+
+2. TOOLS > Shop System > Setup Currency Manager
+   → Creates CurrencyManager GameObject
+   → This persists across all scenes
+
+3. OPEN MapScene
+
+4. TOOLS > Shop System > Add Currency Display to Scene
+   → Adds "Coins: 0" text at top-left
+   → Auto-connects to CurrencyManager
+
+5. OPEN SampleScene (battle scene)
+
+6. TOOLS > Shop System > Add Currency Display to Scene
+   → Adds coin display to battle scene too
+
+7. TOOLS > Shop System > Add Victory Reward Handler
+   → Awards 75 coins when player wins
+
+✓ Currency system complete!
+
+========================================
+PHASE 2: CREATE UPGRADES (3 minutes)
+========================================
+
+Create 3-5 upgrades using the tool:
+
+1. TOOLS > Shop System > Create Upgrade Template
+
+2. Name it: "IronPlating"
+
+3. Configure in Inspector:
+   - Display Name: "Iron Plating"
+   - Description: "Increases HP by 2"
+   - Add Max HP: 2
+   - Add Attack: 0
+
+4. Repeat for more upgrades:
+   - "SharpenedBlade" (+0 HP, +1 ATK)
+   - "CombatTraining" (+1 HP, +1 ATK)
+   - "FortifiedArmor" (+3 HP, +0 ATK)
+   - "BerserkerRage" (+0 HP, +2 ATK)
+
+✓ Upgrades ready!
+
+========================================
+PHASE 3: CREATE SHOP SCENE (7 minutes)
+========================================
+
+1. CREATE NEW SCENE
+   File > New Scene
+   Save as "Shop_Scene" in /Assets/Scenes/
+
+2. ADD TO BUILD SETTINGS
+   File > Build Settings
+   Add Open Scenes
+
+3. CREATE BASIC STRUCTURE
+   - Right-click Hierarchy
+   - UI > Canvas (if no canvas exists)
+   - Create > Create Empty: "ShopManager"
+
+4. ADD SHOP COMPONENTS
+   On ShopManager GameObject:
+   - Add Component > ShopManager
+   - Add Component > UpgradeSelectionPopup
+
+5. CREATE SHOP SLOTS
+   Create 6 empty GameObjects under Canvas:
+   - "PieceSlot1", "PieceSlot2", "PieceSlot3"
+   - "UpgradeSlot1", "UpgradeSlot2", "UpgradeSlot3"
+   
+   On each slot:
+   - Add Component > ShopSlot
+   - (Visual setup optional for testing)
+
+6. CREATE BUTTONS
+   Under Canvas:
+   - UI > Button: "RefreshButton"
+   - UI > Button: "LeaveButton"
+
+7. CONFIGURE ShopManager
+   Select ShopManager GameObject:
+   
+   Piece Slots:
+   - Size: 3
+   - Drag PieceSlot1, PieceSlot2, PieceSlot3
+
+   Upgrade Slots:
+   - Size: 3
+   - Drag UpgradeSlot1, UpgradeSlot2, UpgradeSlot3
+
+   Available Pieces:
+   - Add your PieceDefinitions:
+     * Bishop_Def
+     * Rook_Def
+     * Knight_Def
+
+   Available Upgrades:
+   - Add the upgrades you created
+
+   UI References:
+   - Refresh Button: Drag RefreshButton
+   - Leave Button: Drag LeaveButton
+   - Prep Panel: Leave empty for now
+
+   Scene Navigation:
+   - Map Scene Name: "MapScene"
+
+8. ADD CURRENCY DISPLAY
+   TOOLS > Shop System > Add Currency Display to Scene
+
+9. SAVE SCENE
+
+✓ Basic shop ready!
+
+========================================
+PHASE 4: TEST (2 minutes)
+========================================
+
+1. PRESS PLAY from StartScreen or ClanSelectScene
+
+2. VERIFY CURRENCY:
+   □ Shows "Coins: 0" at start
+   □ Win a battle
+   □ Shows "Coins: 75" after victory
+
+3. (TEMPORARY TEST - until map Shop nodes work):
+   In MapScene, manually load shop:
+   - Create a test button
+   - Add onClick: SceneController.instance.GoTo("Shop_Scene")
+
+4. VERIFY SHOP:
+   □ Shop scene loads
+   □ Currency displays
+   □ Pieces appear (if available)
+   □ Upgrades appear
+   □ Buy buttons work
+   □ Leave button returns to map
+
+✓ System working!
+
+========================================
+OPTIONAL: POLISH SHOP UI
+========================================
+
+If you have time, make the shop look better:
+
+SHOP SLOT VISUAL SETUP:
+For each ShopSlot GameObject:
+
+1. Add children:
+   - UI > Image: "Background"
+   - UI > Image: "Icon"
+   - UI > Text - TextMeshPro: "ItemName"
+   - UI > Text - TextMeshPro: "Description"
+   - UI > Text - TextMeshPro: "PriceText"
+   - UI > Button: "BuyButton"
+   - UI > Text - TextMeshPro: "EmptyIndicator"
+
+2. On ShopSlot component:
+   - Assign all references
+
+3. Save as prefab for reuse
+
+UPGRADE POPUP SETUP:
+On UpgradeSelectionPopup GameObject:
+
+1. Add children:
+   - UI > Panel: "PopupPanel"
+   - UI > Text - TextMeshPro: "Title"
+   - UI > Vertical Layout Group: "PieceButtonContainer"
+   - UI > Button: "CancelButton"
+   - UI > Button: "PieceButtonPrefab" (template)
+
+2. On UpgradeSelectionPopup component:
+   - Assign all references
+
+3. Set PopupPanel inactive by default
+
+========================================
+TROUBLESHOOTING:
+========================================
+
+Issue: Currency doesn't show
+Solution: 
+- Check CurrencyManager exists
+- Verify it's NOT in DontDestroyOnLoad scene hierarchy
+- Check CurrencyDisplay has TextMeshProUGUI reference
+
+Issue: No coins on victory
+Solution:
+- Check VictoryRewardHandler is in SampleScene
+- Verify TurnManager exists
+- Check Console for OnPlayerWon logs
+
+Issue: Shop slots empty
+Solution:
+- Verify Available Pieces list has items
+- Check PieceDefinitions are not null
+- Make sure icons are assigned
+
+Issue: Can't buy items
+Solution:
+- Check you have enough coins
+- Verify CurrencyManager.SpendCoins() is called
+- Check GameSession.I exists
+
+Issue: Upgrades don't apply
+Solution:
+- Verify army has pieces (not just Queen)
+- Check upgrade stats are non-zero
+- Ensure popup shows piece selection
+
+========================================
+NEXT STEPS:
+========================================
+
+1. Create proper shop UI with visuals
+2. Add PrepPanel to shop scene
+3. Add more piece definitions
+4. Create more upgrade varieties
+5. Test full game loop
+6. Balance prices and rewards
+7. Add visual polish (animations, sounds)
+
+========================================
+FULL DOCUMENTATION:
+========================================
+
+For complete setup instructions:
+→ TOOLS > Shop System > Show Setup Guide
+
+For system overview:
+→ TOOLS > Shop System > Open Currency & Shop Summary
+
+For upgrade creation:
+→ See UpgradeDefinitions_README.txt
+
+========================================
+SUCCESS CHECKLIST:
+========================================
+
+✓ CurrencyManager created
+✓ Currency displays in scenes
+✓ Victory rewards work
+✓ Upgrades created
+✓ Shop scene created
+✓ Shop_Scene in Build Settings
+✓ ShopManager configured
+✓ Shop slots created
+✓ Buttons functional
+✓ Tested currency flow
+✓ Tested purchases
+
+========================================
+
+You're done! The currency and shop system is ready!
+Test it by playing through a full game loop.
+
+========================================

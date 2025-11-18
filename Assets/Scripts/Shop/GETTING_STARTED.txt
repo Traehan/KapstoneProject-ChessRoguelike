@@ -1,0 +1,356 @@
+========================================
+CURRENCY & SHOP SYSTEM
+GETTING STARTED IN 10 STEPS
+========================================
+
+Follow these 10 simple steps to get your currency
+and shop system fully operational!
+
+========================================
+STEP 1: SETUP CURRENCY MANAGER
+========================================
+
+□ Unity Menu: Tools > Shop System > Setup Currency Manager
+□ Verify: CurrencyManager GameObject created
+□ Configure in Inspector:
+  • Starting Coins: 0
+  • Encounter Victory Reward: 75
+
+TIME: 1 minute
+
+========================================
+STEP 2: ADD CURRENCY TO MAP SCENE
+========================================
+
+□ Open MapScene
+□ Unity Menu: Tools > Shop System > Add Currency Display to Scene
+□ Verify: "Coins: 0" appears at top-left
+
+TIME: 1 minute
+
+========================================
+STEP 3: ADD CURRENCY TO BATTLE SCENE
+========================================
+
+□ Open SampleScene (battle)
+□ Unity Menu: Tools > Shop System > Add Currency Display to Scene
+□ Verify: "Coins: 0" appears at top-left
+□ Unity Menu: Tools > Shop System > Add Victory Reward Handler
+□ Verify: VictoryRewardHandler GameObject created
+
+TIME: 1 minute
+
+========================================
+STEP 4: CREATE UPGRADE ASSETS
+========================================
+
+□ Unity Menu: Tools > Shop System > Create Upgrade Template
+□ Name it: "IronPlating"
+□ Configure:
+  • Display Name: "Iron Plating"
+  • Description: "Increases HP by 2"
+  • Add Max HP: 2
+  • Add Attack: 0
+
+□ Repeat for 2-4 more upgrades:
+  Suggested names: SharpenedBlade, CombatTraining, FortifiedArmor
+
+TIME: 3 minutes
+
+========================================
+STEP 5: CREATE SHOP SCENE
+========================================
+
+□ File > New Scene
+□ Save as: Shop_Scene (in /Assets/Scenes/)
+□ File > Build Settings > Add Open Scenes
+
+TIME: 1 minute
+
+========================================
+STEP 6: CREATE SHOP HIERARCHY
+========================================
+
+In Shop_Scene, create this structure:
+
+□ Create: UI > Canvas (if none exists)
+
+□ Create 3 piece slot GameObjects:
+  • Name: "PieceSlot1"
+  • Name: "PieceSlot2"
+  • Name: "PieceSlot3"
+  • Add ShopSlot component to each
+
+□ Create 3 upgrade slot GameObjects:
+  • Name: "UpgradeSlot1"
+  • Name: "UpgradeSlot2"
+  • Name: "UpgradeSlot3"
+  • Add ShopSlot component to each
+
+□ Create: UI > Button (name: "RefreshButton")
+□ Create: UI > Button (name: "LeaveButton")
+
+□ Create empty GameObject: "ShopManager"
+
+TIME: 3 minutes
+
+========================================
+STEP 7: CONFIGURE SHOP MANAGER
+========================================
+
+□ Select ShopManager GameObject
+□ Add Component: ShopManager
+□ Add Component: UpgradeSelectionPopup
+
+Configure ShopManager:
+
+Piece Slots (size 3):
+□ Drag: PieceSlot1
+□ Drag: PieceSlot2
+□ Drag: PieceSlot3
+
+Upgrade Slots (size 3):
+□ Drag: UpgradeSlot1
+□ Drag: UpgradeSlot2
+□ Drag: UpgradeSlot3
+
+Available Pieces:
+□ Add: Bishop_Def (from project)
+□ Add: Rook_Def (from project)
+□ Add: Knight_Def (from project)
+□ Add any other pieces you have
+
+Available Upgrades:
+□ Add: IronPlating (created in Step 4)
+□ Add: Other upgrades you created
+
+Pricing (use defaults or adjust):
+□ Piece Price Min: 50
+□ Piece Price Max: 150
+□ Upgrade Price Min: 30
+□ Upgrade Price Max: 100
+□ Refresh Cost: 25
+
+UI References:
+□ Drag: RefreshButton to Refresh Button field
+□ Drag: LeaveButton to Leave Button field
+
+Scene Navigation:
+□ Set: Map Scene Name = "MapScene"
+
+TIME: 3 minutes
+
+========================================
+STEP 8: ADD CURRENCY TO SHOP
+========================================
+
+□ With Shop_Scene open
+□ Unity Menu: Tools > Shop System > Add Currency Display to Scene
+□ Verify: "Coins: 0" appears at top-left
+
+TIME: 30 seconds
+
+========================================
+STEP 9: TEST THE SYSTEM
+========================================
+
+□ Press Play from StartScreen or ClanSelectScene
+□ Verify: "Coins: 0" displays in MapScene
+□ Enter a battle (SampleScene)
+□ Win the battle
+□ Verify: "Coins: 75" (or your reward amount)
+□ Check Console: "[VictoryRewardHandler] Player victory! Coins awarded."
+
+TIME: 2 minutes
+
+========================================
+STEP 10: TEST THE SHOP
+========================================
+
+For now, manually navigate to shop:
+
+□ Open MapScene in Hierarchy
+□ Create temporary test button:
+  • UI > Button (name: "TempShopTest")
+  • Add onClick event:
+    → SceneController.instance
+    → GoTo("Shop_Scene")
+
+□ Press Play
+□ Click TempShopTest button
+□ Verify Shop loads:
+  • 3 pieces shown (or fewer if you don't have 3)
+  • 3 upgrades shown
+  • Currency displays correctly
+  • Refresh button present
+  • Leave button present
+
+□ Test Buy (if you have coins):
+  • Click Buy on a piece
+  • Verify coins deducted
+  • Check Console for purchase message
+
+□ Test Buy Upgrade (if you have coins):
+  • Click Buy on an upgrade
+  • Verify popup appears
+  • Select a piece
+  • Verify coins deducted
+
+□ Test Refresh:
+  • Click Refresh (costs 25 coins)
+  • Verify new upgrades appear
+  • Verify button becomes disabled
+
+□ Test Leave:
+  • Click Leave
+  • Verify returns to MapScene
+
+□ Delete TempShopTest button when done testing
+
+TIME: 3 minutes
+
+========================================
+TOTAL SETUP TIME: ~15 MINUTES
+========================================
+
+========================================
+WHAT'S NEXT?
+========================================
+
+BASIC (Complete above first)
+✓ Currency system working
+✓ Shop loads and shows items
+✓ Can buy pieces/upgrades
+✓ Refresh works
+✓ Leave returns to map
+
+POLISH (Optional improvements)
+□ Add visual design to shop slots
+□ Add icons to all pieces/upgrades
+□ Add PrepPanel to shop scene
+□ Create more upgrade varieties
+□ Add shop background art
+□ Add purchase sound effects
+
+INTEGRATION (Connect to map)
+□ Ensure MapGenerator has shop nodes
+□ Verify shop nodes navigate to Shop_Scene
+□ Test full game loop:
+  • ClanSelect → Map → Battle → Victory → Coins
+  • Map → Shop → Buy → Leave → Map
+  • Map → Battle (with purchased pieces)
+
+BALANCING
+□ Test coin economy
+□ Adjust prices if needed
+□ Adjust victory rewards
+□ Test with different difficulty
+
+========================================
+VERIFICATION CHECKLIST:
+========================================
+
+✓ CurrencyManager exists and persists
+✓ Currency displays in all 3 scenes
+✓ Coins = 0 on new run
+✓ Coins awarded on battle victory
+✓ Coins persist between scenes
+✓ Shop_Scene in Build Settings
+✓ Shop shows pieces
+✓ Shop shows upgrades
+✓ Buy buttons work
+✓ Refresh button works once
+✓ Leave button returns to map
+✓ Purchases add to army
+✓ Upgrades modify stats
+
+========================================
+TROUBLESHOOTING:
+========================================
+
+Currency not showing?
+→ Check CurrencyManager exists
+→ Verify CurrencyDisplay TextMeshProUGUI assigned
+
+No coins on victory?
+→ Check VictoryRewardHandler in SampleScene
+→ Verify it's enabled
+→ Check Console for messages
+
+Shop slots empty?
+→ Verify Available Pieces list populated
+→ Check Available Upgrades list populated
+→ Make sure icons assigned to pieces
+
+Can't buy items?
+→ Check you have enough coins
+→ Verify CurrencyManager exists
+→ Check Console for error messages
+
+Upgrades don't work?
+→ Check GameSession.I.army has pieces
+→ Verify piece isn't Queen
+→ Check upgrade stats are non-zero
+
+========================================
+DOCUMENTATION:
+========================================
+
+Quick Reference:
+• README.txt - System overview
+• QUICKSTART_SHOP.txt - 15-min setup
+
+Detailed Guides:
+• ShopScene_SetupGuide.txt - Complete shop UI
+• UpgradeDefinitions_README.txt - Creating upgrades
+• CURRENCY_AND_SHOP_SUMMARY.txt - Full documentation
+
+Technical:
+• SystemArchitecture_Diagram.txt - How it works
+• IMPLEMENTATION_CHECKLIST.txt - Complete testing
+
+========================================
+SUPPORT:
+========================================
+
+Editor Tools:
+Tools > Shop System > [Various helpers]
+
+Console Messages:
+All scripts log helpful debug messages
+Check Console if something doesn't work
+
+Error Messages:
+Scripts include clear error messages
+Point you to what's wrong
+
+Null Safety:
+All scripts check for null references
+Won't crash if something's missing
+
+========================================
+CONGRATULATIONS!
+========================================
+
+If you've completed all 10 steps above,
+your currency and shop system is ready!
+
+You now have:
+✓ Working currency system
+✓ Functional shop
+✓ Piece recruitment
+✓ Upgrade application
+✓ Persistent saves
+✓ Event-driven UI
+
+Test it by playing through a full run:
+1. Select clan
+2. Fight battle
+3. Earn coins
+4. Visit shop
+5. Buy pieces/upgrades
+6. Continue run with new army
+
+Have fun building your roguelike! 🎮
+
+========================================

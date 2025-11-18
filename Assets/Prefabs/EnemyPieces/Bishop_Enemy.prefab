@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 3209360597978845080}
   - component: {fileID: 8026357240938311897}
   - component: {fileID: 8784958972727818190}
-  - component: {fileID: 7066029205016372607}
   m_Layer: 0
   m_Name: Bishop_Enemy
   m_TagString: Untagged
@@ -130,18 +129,7 @@ MonoBehaviour:
   maxHP: 2
   currentHP: 2
   attack: 1
+  fortifyStacks: 0
   maxStride: 3
   passThroughFriendlies: 1
   forwardOnly: 1
---- !u!114 &7066029205016372607
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2306816823609848631}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bb08eb769fb7ef042b87102c7d9b5775, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Chess.EnemySimpleChooser

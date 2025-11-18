@@ -11,7 +11,7 @@ namespace Chess
         [Header("Leader")]
         public Queen queenPrefab;               // leader piece prefab for this clan
 
-        [Header("Abilities (in order)")]
+        [Header("Queen Abilities (in order)")]
         public AbilitySO[] abilities;
     }
 }

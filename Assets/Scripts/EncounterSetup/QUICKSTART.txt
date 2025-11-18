@@ -1,0 +1,157 @@
+========================================
+MAP NODE SYSTEM - QUICK START
+========================================
+
+FASTEST SETUP (5 minutes):
+========================================
+
+1. Open MapScene in Unity
+
+2. Click: Tools > Map System > Create Map Node Prefabs
+   → Creates MapNodeVisual.prefab and PathLine.prefab
+
+3. Click: Tools > Map System > Setup Map Scene
+   → Automatically configures everything
+
+4. Press Play!
+   → You should see a vertical scrolling map with clickable nodes
+
+That's it! The map is ready to use.
+
+========================================
+WHAT YOU GET:
+========================================
+
+✓ 10 rows of map nodes
+✓ Each row has 2-4 nodes
+✓ Nodes are: Encounters (70%), Shops (15%), Events (15%)
+✓ Branching paths that can merge
+✓ Click to navigate and lock previous row
+✓ State saves automatically
+✓ Returns to map after battles
+
+========================================
+MANUAL SETUP (if tools don't work):
+========================================
+
+1. CREATE NODE PREFAB:
+   - UI > Button (name: MapNodeVisual)
+   - Add MapNodeVisual script
+   - Add child: UI > Image (name: Icon)
+   - Add child: UI > Text - TextMeshPro (name: Text)
+   - Wire up references in MapNodeVisual script
+   - Save as prefab
+
+2. CREATE PATH PREFAB:
+   - UI > Image (name: PathLine)
+   - Size: 100 x 4
+   - Save as prefab
+
+3. CONFIGURE MAP:
+   - Select Map GameObject
+   - Add MapGenerator script
+   - Assign prefabs
+   - Assign Content (Map/Scroll View/Viewport/Content)
+
+========================================
+TESTING:
+========================================
+
+Press Play and verify:
+□ Map appears with 10 rows
+□ First row nodes are white (clickable)
+□ Other nodes are gray (locked)
+□ Click a node → turns gray
+□ Other nodes in row lock
+□ Next row nodes unlock
+□ Scene transitions to battle
+
+========================================
+CUSTOMIZATION:
+========================================
+
+Change probabilities:
+→ MapGenerator > Node Type Weights
+
+Change map size:
+→ MapGenerator > numberOfRows (10)
+→ MapGenerator > minNodesPerRow (2)
+→ MapGenerator > maxNodesPerRow (4)
+
+Change spacing:
+→ MapGenerator > horizontalSpacing (200)
+→ MapGenerator > verticalSpacing (150)
+
+Change colors:
+→ Edit MapNodeVisual prefab
+→ Adjust color fields
+
+========================================
+FILES CREATED:
+========================================
+
+Core Scripts:
+• MapNodeType.cs - Node type definitions
+• MapNode.cs - Node data class
+• MapNodeVisual.cs - UI component
+• MapGenerator.cs - Map generation & management
+• MapState.cs - Save/load system
+
+Editor Tools:
+• MapPrefabCreator.cs - Automatic prefab creation
+
+Documentation:
+• README_MapSetup.cs - Detailed setup guide
+• MapSystemSummary.txt - Complete overview
+• MapSystemDiagram.cs - Visual diagrams
+• QUICKSTART.txt - This file
+
+Updated Files:
+• RunMapController.cs - Integrated with new system
+• GameSession.cs - Clears map state on new run
+
+========================================
+TROUBLESHOOTING:
+========================================
+
+Problem: Nodes don't appear
+Solution: Check Console for errors
+         Verify prefabs assigned
+         Check Content transform assigned
+
+Problem: Can't click nodes
+Solution: Make sure EventSystem exists
+         Check Button is enabled
+         Verify first row has available nodes
+
+Problem: Scene won't load
+Solution: Check SceneController exists
+         Verify scene in Build Settings
+         Check GameSession has encounters
+
+Problem: Map doesn't save
+Solution: Check PlayerPrefs permissions
+         Look for errors in Console
+
+========================================
+NEXT STEPS:
+========================================
+
+1. Test the basic flow
+2. Create ShopScene (optional)
+3. Create EventScene (optional)
+4. Add custom node sprites
+5. Customize colors to match your theme
+6. Add sound effects for clicks
+7. Add visual transitions
+
+========================================
+NEED HELP?
+========================================
+
+• See README_MapSetup.cs for detailed docs
+• See MapSystemDiagram.cs for visual guide
+• See MapSystemSummary.txt for overview
+• Check Unity Console for error messages
+
+========================================
