@@ -1,0 +1,206 @@
+========================================
+MAP NODE SYSTEM - INSTALLATION CHECKLIST
+========================================
+
+✓ = Complete
+□ = To Do
+
+SCRIPTS CREATED:
+========================================
+✓ MapNodeType.cs - Node type enum & weights
+✓ MapNode.cs - Node data class
+✓ MapNodeVisual.cs - UI component
+✓ MapGenerator.cs - Map generation system
+✓ MapState.cs - Save/load functionality
+✓ MapPrefabCreator.cs - Editor tool
+✓ Updated RunMapController.cs - Integration
+✓ Updated GameSession.cs - Reset support
+
+DOCUMENTATION CREATED:
+========================================
+✓ README_MapSetup.cs - Detailed setup guide
+✓ MapSystemSummary.txt - Complete overview
+✓ MapSystemDiagram.cs - Visual diagrams
+✓ QUICKSTART.txt - Quick start guide
+✓ INSTALLATION_CHECKLIST.txt - This file
+
+NEXT STEPS TO COMPLETE SETUP:
+========================================
+
+□ STEP 1: Create Prefabs
+   Options:
+   A) Automatic (Recommended):
+      1. Go to: Tools > Map System > Create Map Node Prefabs
+      2. Done!
+   
+   B) Manual:
+      1. Create MapNodeVisual prefab (see README_MapSetup.cs)
+      2. Create PathLine prefab (see README_MapSetup.cs)
+
+□ STEP 2: Configure Map GameObject
+   Options:
+   A) Automatic (Recommended):
+      1. Select Map GameObject in Hierarchy
+      2. Go to: Tools > Map System > Setup Map Scene
+      3. Done!
+   
+   B) Manual:
+      1. Select Map GameObject
+      2. Add MapGenerator component
+      3. Assign nodeVisualPrefab
+      4. Assign pathLinePrefab
+      5. Assign contentParent (Map/Scroll View/Viewport/Content)
+      6. Configure settings
+
+□ STEP 3: Test in Play Mode
+   1. Press Play
+   2. Verify map appears with 10 rows
+   3. Check first row is clickable
+   4. Click a node
+   5. Verify row locks and next row unlocks
+   6. Verify scene transition works
+
+□ STEP 4: (Optional) Create Additional Scenes
+   1. Create ShopScene for shop nodes
+   2. Create EventScene for event nodes
+   3. Add both to Build Settings
+   4. Update MapGenerator scene name fields
+
+VERIFICATION CHECKLIST:
+========================================
+
+After setup, verify:
+□ Map GameObject has MapGenerator component
+□ MapGenerator has prefabs assigned
+□ MapGenerator has contentParent assigned
+□ RunMapController has mapGenerator reference
+□ EventSystem exists in scene
+□ GameSession prefab is in project
+□ SceneController exists in scene
+□ SampleScene is in Build Settings
+
+COMMON ISSUES & SOLUTIONS:
+========================================
+
+Issue: "Tools > Map System" menu not appearing
+Solution: 
+- Wait for Unity to compile scripts
+- Check Console for compilation errors
+- Restart Unity Editor
+
+Issue: Prefab creation fails
+Solution:
+- Ensure /Assets/Prefabs folder exists
+- Create folder manually if needed
+- Try manual prefab creation (see README_MapSetup.cs)
+
+Issue: Setup fails with "Could not find 'Map' GameObject"
+Solution:
+- Make sure MapScene is open
+- Verify Map GameObject exists in Hierarchy
+- Name must match exactly: "Map"
+
+Issue: Setup fails with "Could not find Content object"
+Solution:
+- Verify hierarchy: Map/Scroll View/Viewport/Content
+- Check that Scroll View structure is intact
+
+TESTING CHECKLIST:
+========================================
+
+Basic Functionality:
+□ Map generates 10 rows
+□ Each row has 2-4 nodes
+□ Nodes are color-coded by type
+□ First row nodes are clickable (white)
+□ Other rows are locked (dark gray)
+□ Hover over available node shows yellow
+□ Click node marks it as visited (gray)
+□ Click node locks entire row
+□ Click node unlocks connected nodes in next row
+□ Path lines connect nodes between rows
+
+Scene Navigation:
+□ Click Encounter node → navigates to SampleScene
+□ Battle loads with correct encounter
+□ Return to MapScene → map state is preserved
+□ Can continue from next row
+□ Visited nodes remain gray
+□ Locked nodes remain locked
+
+State Persistence:
+□ Exit Play mode
+□ Re-enter Play mode
+□ Map state is restored
+□ Can continue from where left off
+
+Run Reset:
+□ Call GameSession.StartNewRun()
+□ Return to MapScene
+□ New map is generated
+□ Previous state is cleared
+
+CUSTOMIZATION CHECKLIST:
+========================================
+
+If you want to customize:
+□ Change node probabilities → Edit MapGenerator Node Type Weights
+□ Change map size → Edit MapGenerator numberOfRows
+□ Change nodes per row → Edit MapGenerator min/maxNodesPerRow
+□ Change spacing → Edit MapGenerator spacing values
+□ Change colors → Edit MapNodeVisual color fields
+□ Add custom sprites → Assign to MapNodeVisual sprite fields
+□ Change branching logic → Edit MapGenerator.ConnectNodes()
+
+FILES YOU CAN SAFELY CUSTOMIZE:
+========================================
+- MapNodeVisual.prefab - Visual appearance
+- PathLine.prefab - Connection line appearance
+- MapGenerator settings in Inspector - All public fields
+- MapNodeTypeWeights values - Node type distribution
+- MapNodeVisual color fields - Node state colors
+
+FILES YOU SHOULD NOT EDIT (unless you know what you're doing):
+========================================
+- MapNodeType.cs - Core enum
+- MapNode.cs - Data structure
+- MapState.cs - Serialization format
+- MapGenerator.cs core methods - Generation logic
+
+PERFORMANCE NOTES:
+========================================
+✓ Optimized for 10 rows × 4 nodes = ~40 nodes max
+✓ Uses object pooling for visuals
+✓ Saves only necessary state to PlayerPrefs
+✓ No per-frame updates (event-driven)
+✓ Minimal GC allocations
+
+If you increase map size significantly (>20 rows):
+- Consider implementing node virtualization
+- Use object pooling for path lines
+- Optimize save/load serialization
+
+SUPPORT:
+========================================
+
+If you encounter issues:
+1. Check Console for error messages
+2. Review README_MapSetup.cs for detailed instructions
+3. Check MapSystemDiagram.cs for visual reference
+4. Verify all checklist items above are complete
+
+Remember:
+- All new scripts are in /Assets/Scripts/EncounterSetup
+- Editor tools are in /Assets/Scripts/EncounterSetup/Editor
+- Prefabs will be in /Assets/Prefabs
+- Documentation is in /Assets/Scripts/EncounterSetup
+
+========================================
+READY TO START!
+========================================
+
+Follow QUICKSTART.txt for the fastest setup,
+or use README_MapSetup.cs for detailed instructions.
+
+Good luck with your roguelike map system!
+========================================

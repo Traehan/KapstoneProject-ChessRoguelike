@@ -34,11 +34,14 @@ MonoBehaviour:
   - piece: {fileID: 11400000, guid: ec4c33d4f5053e44eb1dc58e90748206, type: 2}
     coord: {x: 7, y: 0}
     fromTop: 1
-  - piece: {fileID: 11400000, guid: ec4c33d4f5053e44eb1dc58e90748206, type: 2}
+  - piece: {fileID: 11400000, guid: b9e2d4cdd458deb4ab3730b96476eb2d, type: 2}
     coord: {x: 6, y: 1}
     fromTop: 1
-  - piece: {fileID: 11400000, guid: ec4c33d4f5053e44eb1dc58e90748206, type: 2}
+  - piece: {fileID: 11400000, guid: b9e2d4cdd458deb4ab3730b96476eb2d, type: 2}
     coord: {x: 7, y: 1}
+    fromTop: 1
+  - piece: {fileID: 11400000, guid: c5ec31a290371c1458aeab1ad95fd8b9, type: 2}
+    coord: {x: 2, y: 0}
     fromTop: 1
   trigger: 0
   amount: 0

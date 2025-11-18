@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 3165218035715988667}
   - component: {fileID: 4071762067827595184}
   - component: {fileID: 7077751289521428780}
-  - component: {fileID: 1423846908685216966}
   - component: {fileID: -7788345429536753289}
+  - component: {fileID: 6589369101769025247}
   m_Layer: 0
   m_Name: E_Rook_Default
   m_TagString: Untagged
@@ -109,21 +109,10 @@ MonoBehaviour:
   maxHP: 1
   currentHP: 1
   attack: 1
+  fortifyStacks: 0
   maxStride: 3
   passThroughFriendlies: 1
   forwardOnly: 1
---- !u!114 &1423846908685216966
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5210646609092542360}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bb08eb769fb7ef042b87102c7d9b5775, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Chess.EnemySimpleChooser
 --- !u!136 &-7788345429536753289
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -147,3 +136,15 @@ CapsuleCollider:
   m_Height: 2.56
   m_Direction: 1
   m_Center: {x: 0, y: 1.28, z: 0}
+--- !u!114 &6589369101769025247
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5210646609092542360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9891d34f99255247a37ea752fd75582, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Chess.EnemyRookForwardBehavior

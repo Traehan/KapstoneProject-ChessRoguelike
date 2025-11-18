@@ -17,6 +17,7 @@ namespace Chess
         [Header("AI")]
         [Tooltip("If spawned piece has no enemy behavior, add this chooser automatically.")]
         [SerializeField] bool autoAddEnemyChooser = true;
+        [SerializeField] DifficultyTier difficultyTier = DifficultyTier.Easy;
 
         [Header("Debug")]
         [SerializeField] bool runOnStart = true;
@@ -147,7 +148,7 @@ namespace Chess
                     if (pieceComp) pieceComp.EnsureDefinition(spec.piece);
 
                     if (!p.TryGetComponent<IEnemyBehavior>(out _))
-                        p.gameObject.AddComponent<EnemySimpleChooser>();
+                        EnemyBehaviorFactory.EnsureBehaviorFor(p as Piece, difficultyTier);
 
                     if (wave.spawnInterval > 0f)
                         yield return new WaitForSeconds(wave.spawnInterval);

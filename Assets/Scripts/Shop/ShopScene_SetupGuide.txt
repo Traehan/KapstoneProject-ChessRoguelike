@@ -1,0 +1,325 @@
+========================================
+SHOP SCENE SETUP GUIDE
+========================================
+
+This guide explains how to create and set up the Shop scene
+for recruiting pieces and purchasing upgrades.
+
+========================================
+STEP 1: CREATE THE SHOP SCENE
+========================================
+
+1. File > New Scene
+2. Save as "Shop_Scene" in /Assets/Scenes/
+3. Add to Build Settings (File > Build Settings > Add Open Scenes)
+
+========================================
+STEP 2: SETUP BASIC UI STRUCTURE
+========================================
+
+Create this hierarchy in the Shop scene:
+
+Shop_Scene
+├── Main Camera
+├── Directional Light
+├── EventSystem
+├── Canvas (Screen Space - Overlay)
+│   ├── CurrencyDisplay (Top Left)
+│   │   └── Text - TextMeshPro
+│   ├── ShopTitle
+│   │   └── Text - TextMeshPro ("SHOP")
+│   ├── PieceRecruitRow
+│   │   ├── Title ("RECRUIT PIECES")
+│   │   ├── PieceSlot1
+│   │   ├── PieceSlot2
+│   │   └── PieceSlot3
+│   ├── UpgradeRow
+│   │   ├── Title ("UPGRADES")
+│   │   ├── UpgradeSlot1
+│   │   ├── UpgradeSlot2
+│   │   ├── UpgradeSlot3
+│   │   └── RefreshButton
+│   ├── PrepPanelContainer
+│   │   ├── Title ("YOUR ARMY")
+│   │   └── PrepPanel (drag prefab or copy from battle scene)
+│   ├── LeaveButton
+│   └── UpgradeSelectionPopup (initially inactive)
+├── ShopManager
+└── CurrencyManager (if not already DontDestroyOnLoad)
+
+========================================
+STEP 3: CREATE SHOP SLOT PREFAB
+========================================
+
+1. Create a new GameObject: "ShopSlot"
+2. Add RectTransform (size: 200 x 250)
+3. Add the following hierarchy:
+
+ShopSlot
+├── Background (Image - panel sprite)
+├── Icon (Image - 150x150, centered top)
+├── ItemName (TextMeshProUGUI - below icon)
+├── Description (TextMeshProUGUI - smaller text)
+├── PriceContainer
+│   ├── CoinIcon (Image - coin sprite)
+│   └── PriceText (TextMeshProUGUI)
+├── BuyButton
+│   └── ButtonText (TextMeshProUGUI - "BUY")
+└── EmptyIndicator (TextMeshProUGUI - "EMPTY", shown when no item)
+
+4. Add ShopSlot component to the root
+5. Assign all references in Inspector
+6. Save as prefab in /Assets/Prefabs/
+
+========================================
+STEP 4: SETUP SHOP MANAGER
+========================================
+
+1. Create empty GameObject: "ShopManager"
+2. Add ShopManager component
+3. Configure:
+
+   SHOP SLOTS:
+   - Piece Slots: Array size 3
+     → Drag the 3 piece slot GameObjects
+   - Upgrade Slots: Array size 3
+     → Drag the 3 upgrade slot GameObjects
+
+   AVAILABLE ITEMS:
+   - Available Pieces: Add all PieceDefinitions
+     → Bishop_Def, Rook_Def, Knight_Def, etc.
+   - Available Upgrades: Add all PieceUpgradeSO
+     → Create these first (see UpgradeDefinitions_README.txt)
+
+   PRICING:
+   - Piece Price Min: 50
+   - Piece Price Max: 150
+   - Upgrade Price Min: 30
+   - Upgrade Price Max: 100
+   - Refresh Cost: 25
+
+   UI REFERENCES:
+   - Refresh Button: Drag the refresh button
+   - Leave Button: Drag the leave button
+   - Prep Panel: Drag the PrepPanel GameObject
+
+   SCENE NAVIGATION:
+   - Map Scene Name: "MapScene"
+
+========================================
+STEP 5: SETUP CURRENCY DISPLAY
+========================================
+
+1. Create UI > Text - TextMeshProUGUI at top left
+2. Position: Anchored top-left, padding (20, -20)
+3. Add CurrencyDisplay component
+4. Assign the TextMeshProUGUI to Coin Text field
+5. Set Text Format to "Coins: {0}"
+
+========================================
+STEP 6: SETUP PREP PANEL
+========================================
+
+OPTION A - Copy from Battle Scene:
+1. Open SampleScene (battle scene)
+2. Find PrepPanel GameObject
+3. Copy it (Ctrl+C)
+4. Open Shop_Scene
+5. Paste it (Ctrl+V)
+6. Move under PrepPanelContainer
+7. Disable "Use Game Session Army" (it's handled by ShopManager)
+
+OPTION B - Create New:
+1. Follow PrepPanel setup from battle scene
+2. Add PrepPanel component
+3. Configure grid layout and icon prefab
+4. Enable "Use Game Session Army"
+
+========================================
+STEP 7: SETUP UPGRADE SELECTION POPUP
+========================================
+
+1. Create UI > Panel: "UpgradeSelectionPopup"
+2. Make it cover the screen (anchors: stretch all)
+3. Add semi-transparent background (Image, alpha 0.8)
+4. Create this hierarchy:
+
+UpgradeSelectionPopup (Panel)
+├── Background (Image - dark overlay)
+├── PopupPanel (Panel - centered, 600x400)
+│   ├── Title (TextMeshProUGUI)
+│   ├── PieceButtonContainer (Vertical Layout Group)
+│   │   └── (Buttons spawned at runtime)
+│   └── CancelButton
+│       └── Text ("CANCEL")
+└── PieceButtonPrefab (Template Button, disable/hide)
+    ├── Icon (Image)
+    └── Text (TextMeshProUGUI)
+
+5. Add UpgradeSelectionPopup component to root
+6. Assign all references
+7. Set Popup Panel to inactive by default
+
+========================================
+STEP 8: CONFIGURE LEAVE BUTTON
+========================================
+
+1. Create UI > Button: "LeaveButton"
+2. Position: Bottom center or bottom right
+3. Size: 200 x 60
+4. Button text: "LEAVE SHOP"
+5. ShopManager will handle the click automatically
+
+========================================
+STEP 9: ADD CURRENCY MANAGER (IF NEEDED)
+========================================
+
+If CurrencyManager isn't already in your persistent scene:
+
+1. Create empty GameObject: "CurrencyManager"
+2. Add CurrencyManager component
+3. Configure:
+   - Starting Coins: 0
+   - Encounter Victory Reward: 75
+4. This will become DontDestroyOnLoad automatically
+
+========================================
+STEP 10: ADD CURRENCY DISPLAY TO OTHER SCENES
+========================================
+
+MAP SCENE:
+1. Open MapScene
+2. Add UI > Text - TextMeshProUGUI at top left
+3. Add CurrencyDisplay component
+4. Position similar to shop scene
+
+BATTLE SCENE (SampleScene):
+1. Open SampleScene
+2. Find or create UI_Battle scene (loaded additively)
+3. Add UI > Text - TextMeshProUGUI at top left
+4. Add CurrencyDisplay component
+5. Should auto-connect to CurrencyManager
+
+========================================
+STEP 11: ADD VICTORY REWARD HANDLER
+========================================
+
+1. Open SampleScene (battle scene)
+2. Find or create a GameObject that persists during battle
+3. Add VictoryRewardHandler component
+4. This will automatically award coins on victory
+
+Alternatively:
+- Add to GameSession prefab
+- Add to TurnManager GameObject
+- Add to a BattleManager GameObject
+
+========================================
+STEP 12: CREATE UPGRADE ASSETS
+========================================
+
+Create at least 3-5 upgrade ScriptableObjects:
+
+1. Right-click in Project
+2. Create > Upgrades
+3. Name examples:
+   - IronPlating (+2 HP)
+   - SharpenedBlade (+1 ATK)
+   - CombatTraining (+1 HP, +1 ATK)
+   - FortifiedArmor (+3 HP)
+   - BerserkerRage (+2 ATK)
+
+4. Assign these to ShopManager's "Available Upgrades"
+
+========================================
+STEP 13: CONFIGURE PIECE DEFINITIONS
+========================================
+
+Make sure your piece definitions have prices set:
+- Bishop: ~100 coins
+- Rook: ~120 coins
+- Knight: ~80 coins
+
+Or let the shop randomize prices between min/max.
+
+========================================
+STEP 14: TEST THE SHOP
+========================================
+
+1. Start a new run from ClanSelectScene
+2. Enter MapScene (you should have 0 coins)
+3. Complete a battle encounter
+4. Check you received ~75 coins
+5. Click a Shop node in the map
+6. Verify:
+   □ Shop scene loads
+   □ Currency displays correctly
+   □ 3 pieces shown (or less if not enough defined)
+   □ 3 upgrades shown
+   □ PrepPanel shows current army (no Queen)
+   □ Can buy pieces (if enough coins)
+   □ Can buy upgrades (if enough coins)
+   □ Upgrade popup appears
+   □ Can select piece to upgrade
+   □ Refresh button works once
+   □ Leave button returns to map
+   □ Purchases persist
+
+========================================
+CURRENCY FLOW SUMMARY:
+========================================
+
+1. Player selects clan → StartNewRun() → 0 coins
+2. Player enters MapScene → Currency displays "Coins: 0"
+3. Player completes battle → Victory → +75 coins
+4. Player returns to MapScene → Currency displays "Coins: 75"
+5. Player enters shop → Can buy items
+6. Player leaves shop → Returns to map with updated army
+7. Repeat battles → Accumulate coins
+8. Defeat or run reset → Coins reset to 0
+
+========================================
+TROUBLESHOOTING:
+========================================
+
+Issue: Currency doesn't display
+- Check CurrencyManager exists in scene
+- Verify CurrencyDisplay component is attached
+- Check TextMeshProUGUI reference is assigned
+
+Issue: No coins awarded on victory
+- Check VictoryRewardHandler is in battle scene
+- Verify TurnManager.OnPlayerWon event fires
+- Check Console for logs
+
+Issue: Shop slots empty
+- Verify Available Pieces list is populated
+- Check PieceDefinitions have icons assigned
+- Verify ShopManager.PopulateShop() is called
+
+Issue: Upgrades don't apply
+- Check GameSession.I.army contains pieces
+- Verify upgrade stats are non-zero
+- Check piece isn't the Queen
+
+Issue: Purchases don't persist
+- Verify GameSession.I.army is updated
+- Check piece added to army list
+- Ensure PrepPanel refreshes after purchase
+
+========================================
+OPTIONAL ENHANCEMENTS:
+========================================
+
+1. Add sound effects for purchases
+2. Add visual feedback (particle effects, animations)
+3. Show "SOLD OUT" on purchased items
+4. Add rarity tiers for upgrades (common/rare/epic)
+5. Add preview of stats after upgrade
+6. Show coin gain animation on victory
+7. Add purchase confirmation popup
+8. Show item tooltips on hover
+9. Add shop keeper character/dialogue
+10. Persist shop inventory across visits
+
+========================================
