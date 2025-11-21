@@ -34,6 +34,11 @@ public class GameSession : MonoBehaviour
     // 🔹 NEW: queue of upgrades to apply when a piece instance spawns
     readonly Dictionary<PieceDefinition, List<PieceUpgradeSO>> pendingUpgrades
         = new();
+    
+    [Header("Run / Boss State")]
+    public bool isBossBattle;
+    public bool bossDefeated;
+
 
     void Awake()
     {

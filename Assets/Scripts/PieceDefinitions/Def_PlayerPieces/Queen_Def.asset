@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: Queen_Def
   m_EditorClassIdentifier: Assembly-CSharp::PieceDefinition
   displayName: IronMarch Queen
-  icon: {fileID: 21300000, guid: 1828b1bae8e05744faa587fad087b8c7, type: 3}
+  icon: {fileID: 21300000, guid: f1a770d4197fe7e4ebdb41af1415b74e, type: 3}
   iconPrefabOverride: {fileID: 7795780069276698349, guid: 3f6fd8ea5608f1b4a9cce13b64d61b9b, type: 3}
   count: 1
   piecePrefab: {fileID: 6979421579680749516, guid: 7596a633edc3d86428dbdaba5d22f998, type: 3}
-  maxHP: 3
-  attack: 1
+  maxHP: 15
+  attack: 5
   forwardOnly: 0
   passThroughFriendlies: 0
   maxStride: 8

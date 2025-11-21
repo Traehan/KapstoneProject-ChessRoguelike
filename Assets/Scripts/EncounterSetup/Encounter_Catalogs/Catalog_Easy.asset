@@ -13,4 +13,6 @@ MonoBehaviour:
   m_Name: Catalog_Easy
   m_EditorClassIdentifier: Assembly-CSharp::EncounterCatalog
   encounters:
-  - {fileID: 11400000, guid: 2efd5ee56e2f990468af1c5fba62b2a9, type: 2}
+  - {fileID: 11400000, guid: 3251ea42d39c3df429dc9911b9008ebd, type: 2}
+  - {fileID: 11400000, guid: 1fb9bd250002dbf4d847e5f6bf9681e5, type: 2}
+  - {fileID: 11400000, guid: 9875cc3516d530e4bb16a6b5d1ebe57c, type: 2}

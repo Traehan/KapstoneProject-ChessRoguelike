@@ -57,6 +57,13 @@ public class VictoryRewardHandler : MonoBehaviour
         }
 
         _rewardGivenThisEncounter = true;
+        
+        //check if player won the boss battle
+        var gs = GameSession.I;
+        if (gs != null && gs.isBossBattle)
+        {
+            gs.bossDefeated = true;
+        }
 
         if (CurrencyManager.Instance != null)
         {

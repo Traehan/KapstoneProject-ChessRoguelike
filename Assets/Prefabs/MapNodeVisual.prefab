@@ -282,10 +282,10 @@ MonoBehaviour:
   shopColor: {r: 1, g: 1, b: 1, a: 1}
   randomEventColor: {r: 0.3, g: 0.3, b: 1, a: 1}
   bossColor: {r: 1, g: 0, b: 0.05414009, a: 1}
-  encounterSprite: {fileID: 21300000, guid: 47095ae51b6996b428cb440d5735e618, type: 3}
-  shopSprite: {fileID: 21300000, guid: d9efd51738e9179479dfc626dde5d035, type: 3}
+  encounterSprite: {fileID: 21300000, guid: d0ccaaffa32f28d4d9dd0ac1c61dffb1, type: 3}
+  shopSprite: {fileID: 21300000, guid: 909eca9905b52404d94fbe8c5a542fb7, type: 3}
   eventSprite: {fileID: 0}
-  bossSprite: {fileID: 0}
+  bossSprite: {fileID: 21300000, guid: 5dc1597a85203884aa9a17808221c83f, type: 3}
 --- !u!1 &8230552826956867739
 GameObject:
   m_ObjectHideFlags: 0
