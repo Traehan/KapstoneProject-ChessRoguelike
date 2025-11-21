@@ -2548,10 +2548,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: d422e08d794101c40a21b596dadf832e, type: 2}
   - {fileID: 11400000, guid: 34daf7d658ce93646aa0a18326590dea, type: 2}
   - {fileID: 11400000, guid: 7dee978a54eb5624a8b796d460730c25, type: 2}
-  piecePriceMin: 50
-  piecePriceMax: 150
-  upgradePriceMin: 30
-  upgradePriceMax: 100
+  piecePriceMin: 0
+  piecePriceMax: 200
+  upgradePriceMin: 0
+  upgradePriceMax: 200
   refreshCost: 25
   refreshButton: {fileID: 1998219116}
   leaveButton: {fileID: 1240464508}

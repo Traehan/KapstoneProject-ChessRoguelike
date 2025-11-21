@@ -59,7 +59,8 @@ public class ShopManager : MonoBehaviour
         {
             if (i < shuffledPieces.Count)
             {
-                int price = piecePriceMin; // fixed price by design
+                PieceDefinition def = shuffledPieces[i];
+                int price = def.shopPrice;
                 pieceSlots[i].SetPieceItem(shuffledPieces[i], price, this);
             }
             else pieceSlots[i].Clear();
@@ -78,7 +79,9 @@ public class ShopManager : MonoBehaviour
         {
             if (i < availableForDisplay.Count)
             {
-                int price = upgradePriceMin; // fixed price by design
+                PieceUpgradeSO upgrade = availableForDisplay[i];
+                // use the cost defined on the ScriptableObject
+                int price = upgrade.shopPrice;
                 upgradeSlots[i].SetUpgradeItem(availableForDisplay[i], price, this);
 
                 if (!shownUpgrades.Contains(availableForDisplay[i]))

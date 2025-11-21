@@ -22,4 +22,4 @@ MonoBehaviour:
   forwardOnly: 0
   passThroughFriendlies: 0
   maxStride: 8
-  shopPrice: 100
+  shopPrice: 25
