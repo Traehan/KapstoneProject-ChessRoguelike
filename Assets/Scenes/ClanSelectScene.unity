@@ -857,8 +857,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22eb7fc162035b340a2b38cb406aa1a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CurrencyManager
-  startingCoins: 1000
-  encounterVictoryReward: 30
+  startingCoins: 100
+  encounterVictoryReward: 100
 --- !u!4 &742579258
 Transform:
   m_ObjectHideFlags: 0
