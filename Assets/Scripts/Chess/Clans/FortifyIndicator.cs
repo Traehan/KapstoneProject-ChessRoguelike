@@ -8,10 +8,10 @@ namespace Chess
     {
         [Header("Visuals")]
         [SerializeField] Sprite shieldSprite;     // your Aseprite sprite
-        [SerializeField] int maxPips = 3;
+        [SerializeField] int maxPips = 5;
         [SerializeField] float spacing = 0.14f;
-        [SerializeField] float scale = 0.12f;
-        [SerializeField] Vector3 localOffset = new Vector3(0f, 0.05f, 0f); // start with Z=0
+        [SerializeField] float scale = 0.50f;
+        [SerializeField] Vector3 localOffset = new Vector3(-.25f, 1f, 0f); // start with Z=0
         [SerializeField] bool billboardToCamera = true;
         [SerializeField] string sortingLayerName = "Pieces";
         [SerializeField] int sortingOrder = 20;

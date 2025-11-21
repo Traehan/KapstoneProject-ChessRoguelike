@@ -6,7 +6,7 @@ namespace Chess
     [CreateAssetMenu(menuName = "Clans/Abilities/Iron March/Fortify End Turn")]
     public class IronMarch_FortifyEndTurn : AbilitySO
     {
-        [SerializeField, Min(1)] int maxStacks = 3;
+        [SerializeField, Min(1)] int maxStacks = 5;
 
         public override void OnEndPlayerTurn(ClanRuntime ctx)
         {

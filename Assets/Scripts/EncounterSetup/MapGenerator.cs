@@ -42,6 +42,12 @@ public class MapGenerator : MonoBehaviour
     [Header("Boss Settings")]
     [Tooltip("The encounter that will be used by the final Boss node at the top of the map.")]
     public EncounterDefinition bossEncounter;
+    
+    [Header("Run Complete UI")]
+    [SerializeField] GameObject runCompletePanel;
+    [SerializeField] Button restartRunButton;
+    [SerializeField] Button quitGameButton;
+    [SerializeField] string clanSelectSceneName = "ClanSelectScene";
 
     private List<List<MapNode>> mapRows = new List<List<MapNode>>();
     private Dictionary<MapNode, MapNodeVisual> nodeVisuals = new Dictionary<MapNode, MapNodeVisual>();
@@ -55,6 +61,17 @@ public class MapGenerator : MonoBehaviour
     {
         Debug.Log($"[MapGenerator] OnEnable in scene {SceneManager.GetActiveScene().name}");
         LoadOrGenerateMap();
+        
+        if (runCompletePanel != null)
+            runCompletePanel.SetActive(false);
+
+        if (restartRunButton != null)
+            restartRunButton.onClick.AddListener(OnRestartRunClicked);
+
+        if (quitGameButton != null)
+            quitGameButton.onClick.AddListener(OnQuitGameClicked);
+        
+        CheckIfRunIsCompletePanel();
     }
     
     void LoadOrGenerateMap()
@@ -419,6 +436,8 @@ public class MapGenerator : MonoBehaviour
             case MapNodeType.Boss:
                 targetScene = battleSceneName;
                 // Boss should always use the bossEncounter if assigned
+                gs.isBossBattle = true;
+                gs.bossDefeated = false;
                 if (bossEncounter != null)
                 {
                     gs.selectedEncounter = bossEncounter;
@@ -566,4 +585,45 @@ public class MapGenerator : MonoBehaviour
         if (gs == null) return null;
         return gs.PickRandomEncounter();
     }
+    
+    void CheckIfRunIsCompletePanel()
+    {
+        var gs = GameSession.I;
+        if (gs != null && gs.bossDefeated)
+        {
+            // Optional: lock map interaction here if needed
+            if (runCompletePanel != null)
+                runCompletePanel.SetActive(true);
+        }
+    }
+
+    void OnRestartRunClicked()
+    {
+        // Clear map state from previous run
+        MapState.ClearState();
+
+        var gs = GameSession.I;
+        if (gs != null)
+        {
+            gs.bossDefeated = false;
+            gs.isBossBattle = false;
+            gs.hasGrantedStartingTroop = false;
+            gs.army.Clear();
+            // If you have other per-run systems (currency, etc.) reset them here too
+            // e.g. CurrencyManager.Instance?.ResetForNewRun();
+        }
+
+        // Go back to Clan Select scene
+        SceneController.instance.GoTo(clanSelectSceneName);
+    }
+
+    void OnQuitGameClicked()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+    Application.Quit();
+#endif
+    }
+
 }

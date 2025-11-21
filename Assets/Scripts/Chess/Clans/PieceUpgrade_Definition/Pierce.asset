@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: Pierce
   m_EditorClassIdentifier: Assembly-CSharp::Chess.PieceUpgradeSO
   displayName: Pierce
-  description: Allows piece to penetrate attacks
+  description: Allows attack to hit multiple enemies in a line (rook or bishop)
   icon: {fileID: 21300000, guid: bd927f616ade0dd41967988a82657c84, type: 3}
   addMaxHP: 0
   addAttack: 0
   keywordAbility: {fileID: 11400000, guid: 8bb5197b5ce241c4fb79dd7c01bcc26c, type: 2}
-  shopPrice: 25
+  shopPrice: 50

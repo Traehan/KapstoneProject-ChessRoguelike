@@ -17,8 +17,8 @@ MonoBehaviour:
   iconPrefabOverride: {fileID: 7903322909935275479, guid: 3f1022ac7090e9340af488da896ecd44, type: 3}
   count: 1
   piecePrefab: {fileID: 4659720498933230980, guid: 72ca466d31c390b46905ab2df3fb2595, type: 3}
-  maxHP: 2
-  attack: 1
+  maxHP: 10
+  attack: 5
   forwardOnly: 0
   passThroughFriendlies: 0
   maxStride: 8

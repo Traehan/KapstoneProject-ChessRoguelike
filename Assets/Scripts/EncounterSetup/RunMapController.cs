@@ -20,6 +20,11 @@ public class RunMapController : MonoBehaviour
 
     [Tooltip("Battle HUD scene to load additively.")]
     public string uiSceneName = "UI_Battle";
+    
+    [Header("Run Complete UI")]
+    [SerializeField] GameObject runCompletePanel;
+    [SerializeField] Button restartRunButton;
+    [SerializeField] Button quitGameButton;
 
     void Awake()
     {
@@ -27,42 +32,41 @@ public class RunMapController : MonoBehaviour
         {
             mapGenerator = FindFirstObjectByType<MapGenerator>();
         }
-
-        if (leftButton != null)
-        {
-            leftButton.onClick.AddListener(OnBranchClicked);
-        }
         
-        if (rightButton != null)
-        {
-            rightButton.onClick.AddListener(OnBranchClicked);
-        }
+        // if (runCompletePanel != null)
+        //     runCompletePanel.SetActive(false);
+        //
+        // if (restartRunButton != null)
+        //     restartRunButton.onClick.AddListener(OnRestartRunClicked);
+        //
+        // if (quitGameButton != null)
+        //     quitGameButton.onClick.AddListener(OnQuitGameClicked);
     }
 
-    void OnBranchClicked()
-    {
-        var gs = GameSession.I;
-        if (gs == null)
-        {
-            Debug.LogError("GameSession missing in MapScene");
-            return;
-        }
+    // void OnBranchClicked()
+    // {
+    //     var gs = GameSession.I;
+    //     if (gs == null)
+    //     {
+    //         Debug.LogError("GameSession missing in MapScene");
+    //         return;
+    //     }
+    //
+    //     var chosen = gs.PickRandomEncounter();
+    //     if (chosen == null)
+    //     {
+    //         Debug.LogError("EncounterCatalog is empty");
+    //         return;
+    //     }
+    //
+    //     gs.selectedEncounter = chosen;
+    //     StartCoroutine(LoadBattleFlow(chosen));
+    // }
 
-        var chosen = gs.PickRandomEncounter();
-        if (chosen == null)
-        {
-            Debug.LogError("EncounterCatalog is empty");
-            return;
-        }
-
-        gs.selectedEncounter = chosen;
-        StartCoroutine(LoadBattleFlow(chosen));
-    }
-
-    IEnumerator LoadBattleFlow(EncounterDefinition encounter)
-    {
-        yield return SceneController.instance.GoTo(battleSceneName, encounter);
-    }
+    // IEnumerator LoadBattleFlow(EncounterDefinition encounter)
+    // {
+    //     yield return SceneController.instance.GoTo(battleSceneName, encounter);
+    // }
 
     public void ResetMapForNewRun()
     {

@@ -9,6 +9,7 @@ public class ShopSlot : MonoBehaviour
     [SerializeField] private Image itemIcon;
     [SerializeField] private TextMeshProUGUI itemNameText;
     [SerializeField] private TextMeshProUGUI itemDescriptionText;
+    [SerializeField] private TextMeshProUGUI innateAbilitiesText;
     [SerializeField] private TextMeshProUGUI priceText;
     [SerializeField] private Button buyButton;
     [SerializeField] private GameObject emptySlotIndicator;
@@ -56,6 +57,7 @@ public class ShopSlot : MonoBehaviour
         if (itemNameText != null) itemNameText.text = "";
         if (itemDescriptionText != null) itemDescriptionText.text = "";
         if (priceText != null) priceText.text = "";
+        if (innateAbilitiesText != null) innateAbilitiesText.text = "";
         
         if (emptySlotIndicator != null)
         {
@@ -81,6 +83,7 @@ public class ShopSlot : MonoBehaviour
             if (itemNameText != null) itemNameText.text = pieceItem.displayName;
             if (itemDescriptionText != null) itemDescriptionText.text = $"HP: {pieceItem.maxHP} | ATK: {pieceItem.attack}";
             if (priceText != null) priceText.text = price.ToString();
+            if (innateAbilitiesText != null) innateAbilitiesText.text = BuildInnateAbilityText(pieceItem);
         }
         else if (upgradeItem != null)
         {
@@ -88,6 +91,7 @@ public class ShopSlot : MonoBehaviour
             if (itemNameText != null) itemNameText.text = upgradeItem.displayName;
             if (itemDescriptionText != null) itemDescriptionText.text = upgradeItem.description;
             if (priceText != null) priceText.text = price.ToString();
+            if (innateAbilitiesText != null) innateAbilitiesText.text = ""; //upgrades do not have innate
         }
 
         UpdateBuyButton();
@@ -143,6 +147,46 @@ public class ShopSlot : MonoBehaviour
             }
         }
     }
+    
+    string BuildInnateAbilityText(PieceDefinition def)
+    {
+        if (def == null || def.piecePrefab == null)
+            return "";
+
+        // Try to read PieceLoadout from the prefab
+        var loadout = def.piecePrefab.GetComponent<PieceLoadout>();
+        if (loadout == null || loadout.innateAbilities == null || loadout.innateAbilities.Count == 0)
+            return ""; // or "Innate: None"
+
+        var abilities = loadout.innateAbilities;
+
+        // If there is exactly 1 innate ability, show a compact block
+        if (abilities.Count == 1)
+        {
+            var a = abilities[0];
+            if (a == null) return "";
+
+            string name = string.IsNullOrEmpty(a.displayName) ? a.name : a.displayName;
+            return $"Innate: {name}\n{a.description}";
+        }
+
+        // Otherwise, list them all
+        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+        sb.AppendLine("Innate Abilities:");
+
+        foreach (var a in abilities)
+        {
+            if (a == null) continue;
+            string name = string.IsNullOrEmpty(a.displayName) ? a.name : a.displayName;
+            if (!string.IsNullOrEmpty(a.description))
+                sb.AppendLine($"• {name} — {a.description}");
+            else
+                sb.AppendLine($"• {name}");
+        }
+
+        return sb.ToString();
+    }
+
 
     void OnEnable()
     {
