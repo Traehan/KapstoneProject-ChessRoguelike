@@ -30,7 +30,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 2.82953, y: 0, z: -0.53823}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
+  m_LocalScale: {x: 0.12, y: 0.12, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -82,12 +82,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: a6f0cbbbf843b7f40b23462b243192af, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 478ada5c0f66aca44929987b6cd73fd5, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 2.56, y: 2.56}
+  m_Size: {x: 10.24, y: 15.36}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -113,9 +113,9 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.25
-  m_Height: 2.56
+  m_Height: 10
   m_Direction: 1
-  m_Center: {x: 0, y: 1, z: 0}
+  m_Center: {x: 0, y: 5, z: 0}
 --- !u!114 &8065942175526427736
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -132,6 +132,7 @@ MonoBehaviour:
   maxHP: 1
   currentHP: 1
   attack: 1
+  fortifyStacks: 0
   hasMoved: 0
 --- !u!114 &1449731476884607493
 MonoBehaviour:

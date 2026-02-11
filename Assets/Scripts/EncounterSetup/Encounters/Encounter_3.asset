@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Encounter_3
   m_EditorClassIdentifier: Assembly-CSharp::Chess.EncounterDefinition
   waves:
-  - {fileID: 11400000, guid: ba4700fbe89ada7438bb21c0d266254c, type: 2}
-  - {fileID: 11400000, guid: db57930db3c9d874cb44b1d514499c64, type: 2}
+  - {fileID: 11400000, guid: 2a6c12c7e5c522b4d845d810b1001884, type: 2}
+  - {fileID: 11400000, guid: 8fd90403bb22b55479ff11ff8501101d, type: 2}
   clearExistingBlackPieces: 1

@@ -65,7 +65,7 @@ namespace Chess
 
         // --- Clan System ---
         [Header("Clan System")]
-        [SerializeField] private ClanDefinition selectedClan;   // assign CLAN_IronMarch etc.
+        [SerializeField] private ClanDefinition selectedClan;   // assign CLAN_IronMarch 
         [SerializeField] private Queen          queenLeader;    // runtime instance in scene
 
         ClanRuntime  _clan;
@@ -103,10 +103,7 @@ namespace Chess
             public bool queenMovedThisTurn_Before;
         }
         readonly List<LastPlayerMove> _moveStack = new();
-
-        // =========================
-        //  PUBLIC API (keep names)
-        // =========================
+        
 
         public void BeginEncounterFromPreparation()
         {

@@ -46,6 +46,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BoardSpawner
   boardPrefab: {fileID: 2023540425394469840, guid: f9cb0bc337b22e842b42113fae82d28c, type: 3}
+  columns: 8
+  rows: 8
+  tileSize: 1
+  playerPawnPrefab: {fileID: 0}
+  enemyPawnPrefab: {fileID: 0}
 --- !u!114 &5006227490735405871
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -60,4 +65,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PiecePlacer
   board: {fileID: 2023540425394469840, guid: f9cb0bc337b22e842b42113fae82d28c, type: 3}
   whitePawnPrefab: {fileID: 2761023210262823044, guid: 4389426a0a63dcc4e891cff5d01a979d, type: 3}
-  blackPawnPrefab: {fileID: 2761023210262823044, guid: 4389426a0a63dcc4e891cff5d01a979d, type: 3}

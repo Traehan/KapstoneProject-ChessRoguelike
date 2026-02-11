@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Chess.IronMarch_FortifyEndTurn
   description: Any Piece that has not moved during their turn will gain 1 Fortification
     shield that can withstand 1 attack damage
-  maxStacks: 5
+  maxStacks: 3

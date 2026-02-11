@@ -10,24 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 14201db801c8ca4449ce3dc7134ccb30, type: 3}
-  m_Name: Test_Wave2
+  m_Name: E5_Wave1
   m_EditorClassIdentifier: Assembly-CSharp::Chess.EncounterWave
   spawns:
-  - piece: {fileID: 11400000, guid: d3883e3ca600c6e449787739b4918791, type: 2}
-    coord: {x: 5, y: 1}
-    fromTop: 1
-  - piece: {fileID: 11400000, guid: d3883e3ca600c6e449787739b4918791, type: 2}
-    coord: {x: 6, y: 1}
-    fromTop: 1
-  - piece: {fileID: 11400000, guid: d3883e3ca600c6e449787739b4918791, type: 2}
-    coord: {x: 7, y: 1}
-    fromTop: 1
-  - piece: {fileID: 11400000, guid: f23cc6cba89df5141887086810997f7b, type: 2}
-    coord: {x: 6, y: 0}
-    fromTop: 1
-  - piece: {fileID: 11400000, guid: f23cc6cba89df5141887086810997f7b, type: 2}
-    coord: {x: 1, y: 0}
-    fromTop: 1
   - piece: {fileID: 11400000, guid: d3883e3ca600c6e449787739b4918791, type: 2}
     coord: {x: 0, y: 1}
     fromTop: 1
@@ -37,13 +22,40 @@ MonoBehaviour:
   - piece: {fileID: 11400000, guid: d3883e3ca600c6e449787739b4918791, type: 2}
     coord: {x: 2, y: 1}
     fromTop: 1
+  - piece: {fileID: 11400000, guid: d3883e3ca600c6e449787739b4918791, type: 2}
+    coord: {x: 3, y: 1}
+    fromTop: 1
+  - piece: {fileID: 11400000, guid: d3883e3ca600c6e449787739b4918791, type: 2}
+    coord: {x: 4, y: 1}
+    fromTop: 1
+  - piece: {fileID: 11400000, guid: d3883e3ca600c6e449787739b4918791, type: 2}
+    coord: {x: 5, y: 1}
+    fromTop: 1
+  - piece: {fileID: 11400000, guid: d3883e3ca600c6e449787739b4918791, type: 2}
+    coord: {x: 6, y: 1}
+    fromTop: 1
+  - piece: {fileID: 11400000, guid: d3883e3ca600c6e449787739b4918791, type: 2}
+    coord: {x: 7, y: 1}
+    fromTop: 1
+  - piece: {fileID: 11400000, guid: ec4c33d4f5053e44eb1dc58e90748206, type: 2}
+    coord: {x: 0, y: 0}
+    fromTop: 1
+  - piece: {fileID: 11400000, guid: ec4c33d4f5053e44eb1dc58e90748206, type: 2}
+    coord: {x: 7, y: 0}
+    fromTop: 1
+  - piece: {fileID: 11400000, guid: f23cc6cba89df5141887086810997f7b, type: 2}
+    coord: {x: 1, y: 0}
+    fromTop: 1
+  - piece: {fileID: 11400000, guid: f23cc6cba89df5141887086810997f7b, type: 2}
+    coord: {x: 6, y: 0}
+    fromTop: 1
   - piece: {fileID: 11400000, guid: 7bb6914516af23d4d8c6399c43ddb056, type: 2}
-    coord: {x: 3, y: 0}
+    coord: {x: 2, y: 0}
     fromTop: 1
   - piece: {fileID: 11400000, guid: 7bb6914516af23d4d8c6399c43ddb056, type: 2}
     coord: {x: 5, y: 0}
     fromTop: 1
-  trigger: 2
-  amount: 2
-  spawnInterval: 0.25
+  trigger: 0
+  amount: 0
+  spawnInterval: 0.15
   postWavePause: 0.25

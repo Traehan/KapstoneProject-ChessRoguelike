@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9825e9799da6e07468b05429de7da30a, type: 3}
+  m_Name: Encounter_5
+  m_EditorClassIdentifier: Assembly-CSharp::Chess.EncounterDefinition
+  waves:
+  - {fileID: 11400000, guid: 4fcd45eb901ede3438538126d1c6c0e8, type: 2}
+  - {fileID: 11400000, guid: 29a3d975d6d447a47a2c22df92fd2d6a, type: 2}
+  clearExistingBlackPieces: 1

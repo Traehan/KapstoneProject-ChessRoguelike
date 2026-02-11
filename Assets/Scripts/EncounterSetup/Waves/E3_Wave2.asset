@@ -13,25 +13,25 @@ MonoBehaviour:
   m_Name: E3_Wave2
   m_EditorClassIdentifier: Assembly-CSharp::Chess.EncounterWave
   spawns:
-  - piece: {fileID: 11400000, guid: d3883e3ca600c6e449787739b4918791, type: 2}
-    coord: {x: 2, y: 0}
-    fromTop: 1
-  - piece: {fileID: 11400000, guid: d3883e3ca600c6e449787739b4918791, type: 2}
+  - piece: {fileID: 11400000, guid: c5ec31a290371c1458aeab1ad95fd8b9, type: 2}
     coord: {x: 3, y: 0}
     fromTop: 1
-  - piece: {fileID: 11400000, guid: d3883e3ca600c6e449787739b4918791, type: 2}
+  - piece: {fileID: 11400000, guid: c5ec31a290371c1458aeab1ad95fd8b9, type: 2}
     coord: {x: 4, y: 0}
     fromTop: 1
-  - piece: {fileID: 11400000, guid: 21965604bf4e5544da4eb7d858f34bb7, type: 2}
-    coord: {x: 2, y: 1}
+  - piece: {fileID: 11400000, guid: f23cc6cba89df5141887086810997f7b, type: 2}
+    coord: {x: 1, y: 0}
     fromTop: 1
-  - piece: {fileID: 11400000, guid: 21965604bf4e5544da4eb7d858f34bb7, type: 2}
-    coord: {x: 3, y: 1}
+  - piece: {fileID: 11400000, guid: f23cc6cba89df5141887086810997f7b, type: 2}
+    coord: {x: 2, y: 0}
     fromTop: 1
-  - piece: {fileID: 11400000, guid: 21965604bf4e5544da4eb7d858f34bb7, type: 2}
-    coord: {x: 4, y: 1}
+  - piece: {fileID: 11400000, guid: f23cc6cba89df5141887086810997f7b, type: 2}
+    coord: {x: 6, y: 0}
+    fromTop: 1
+  - piece: {fileID: 11400000, guid: f23cc6cba89df5141887086810997f7b, type: 2}
+    coord: {x: 7, y: 0}
     fromTop: 1
   trigger: 2
-  amount: 2
-  spawnInterval: 0.25
+  amount: 3
+  spawnInterval: 0.15
   postWavePause: 0.25

@@ -44,8 +44,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c692622a7f42e044a647a597c952e5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChessBoard
-  columns: 8
-  rows: 8
+  columns: 12
+  rows: 12
   tileSize: 1
   tilePrefab: {fileID: 6371855978840990292, guid: 0dec68acf93213f4f80177b1b323ca25, type: 3}
   lightColor: {r: 0.9, g: 0.9, b: 0.9, a: 1}

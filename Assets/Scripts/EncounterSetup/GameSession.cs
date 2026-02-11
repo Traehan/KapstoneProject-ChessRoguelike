@@ -31,7 +31,7 @@ public class GameSession : MonoBehaviour
     // Tracks how many slots are used per runtime definition
     readonly Dictionary<PieceDefinition, int> _upgradeCounts = new();
 
-    // 🔹 NEW: queue of upgrades to apply when a piece instance spawns
+    // queue of upgrades to apply when a piece instance spawns
     readonly Dictionary<PieceDefinition, List<PieceUpgradeSO>> pendingUpgrades
         = new();
     

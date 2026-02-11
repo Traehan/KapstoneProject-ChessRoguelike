@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: IronMarch_QueenAura
   m_EditorClassIdentifier: Assembly-CSharp::Chess.IronMarch_QueenAura
   description: 
-  attackBonus: 2
+  attackBonus: 5
   hintColor: {r: 1, g: 0.85, b: 0.2, a: 1}

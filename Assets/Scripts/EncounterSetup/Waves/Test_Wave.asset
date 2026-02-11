@@ -16,26 +16,23 @@ MonoBehaviour:
   - piece: {fileID: 11400000, guid: d3883e3ca600c6e449787739b4918791, type: 2}
     coord: {x: 0, y: 1}
     fromTop: 1
-  - piece: {fileID: 11400000, guid: d3883e3ca600c6e449787739b4918791, type: 2}
+  - piece: {fileID: 11400000, guid: 7bb6914516af23d4d8c6399c43ddb056, type: 2}
     coord: {x: 1, y: 1}
     fromTop: 1
-  - piece: {fileID: 11400000, guid: 21965604bf4e5544da4eb7d858f34bb7, type: 2}
+  - piece: {fileID: 11400000, guid: b9e2d4cdd458deb4ab3730b96476eb2d, type: 2}
     coord: {x: 2, y: 1}
     fromTop: 1
-  - piece: {fileID: 11400000, guid: ec4c33d4f5053e44eb1dc58e90748206, type: 2}
-    coord: {x: 2, y: 0}
+  - piece: {fileID: 11400000, guid: c5ec31a290371c1458aeab1ad95fd8b9, type: 2}
+    coord: {x: 3, y: 1}
     fromTop: 1
-  - piece: {fileID: 11400000, guid: ec4c33d4f5053e44eb1dc58e90748206, type: 2}
-    coord: {x: 5, y: 0}
+  - piece: {fileID: 11400000, guid: f23cc6cba89df5141887086810997f7b, type: 2}
+    coord: {x: 4, y: 1}
     fromTop: 1
   - piece: {fileID: 11400000, guid: 21965604bf4e5544da4eb7d858f34bb7, type: 2}
     coord: {x: 5, y: 1}
     fromTop: 1
-  - piece: {fileID: 11400000, guid: d3883e3ca600c6e449787739b4918791, type: 2}
+  - piece: {fileID: 11400000, guid: ec4c33d4f5053e44eb1dc58e90748206, type: 2}
     coord: {x: 6, y: 1}
-    fromTop: 1
-  - piece: {fileID: 11400000, guid: d3883e3ca600c6e449787739b4918791, type: 2}
-    coord: {x: 7, y: 1}
     fromTop: 1
   trigger: 0
   amount: 0

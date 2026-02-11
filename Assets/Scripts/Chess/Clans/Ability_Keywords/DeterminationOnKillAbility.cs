@@ -40,9 +40,6 @@ namespace Chess
             if (_triggersThisTurn >= maxTriggersPerTurn) return;
 
             // Hack: TrySpendAP(-1) = "gain" 1 AP (since it subtracts negative).
-            // NOTE: This can push AP above the normal per-turn cap, which is a fun
-            // power fantasy for Determination. If you want to clamp it later,
-            // we can add a dedicated GainAP() method on TurnManager.
             bool success = tm.TrySpendAP(-1);
             if (success)
             {

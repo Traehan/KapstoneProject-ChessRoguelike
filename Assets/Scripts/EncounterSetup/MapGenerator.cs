@@ -53,8 +53,7 @@ public class MapGenerator : MonoBehaviour
     private Dictionary<MapNode, MapNodeVisual> nodeVisuals = new Dictionary<MapNode, MapNodeVisual>();
     private List<GameObject> pathLines = new List<GameObject>();
     private int currentRow = 0;
-
-    // Optional reference if you want to inspect which node is the boss at runtime
+    
     private MapNode bossNode;
 
     void OnEnable()

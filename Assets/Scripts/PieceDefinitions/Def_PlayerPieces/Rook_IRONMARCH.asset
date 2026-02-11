@@ -18,7 +18,7 @@ MonoBehaviour:
   count: 1
   piecePrefab: {fileID: 3756708735162278666, guid: 495020cc26406904cb8edba08431ca00, type: 3}
   maxHP: 5
-  attack: 7
+  attack: 4
   forwardOnly: 0
   passThroughFriendlies: 0
   maxStride: 8
