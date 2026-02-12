@@ -775,7 +775,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Chess.ChessBoard
   columns: 8
   rows: 8
-  tileSize: 2
+  tileSize: 1
   tilePrefab: {fileID: 6371855978840990292, guid: 0dec68acf93213f4f80177b1b323ca25, type: 3}
   lightColor: {r: 0.9, g: 0.9, b: 0.9, a: 1}
   darkColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}

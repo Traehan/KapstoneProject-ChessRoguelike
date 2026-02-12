@@ -103,6 +103,7 @@ public class ShopSlot : MonoBehaviour
 
         if (isPurchased)
         {
+            
             buyButton.interactable = false;
             if (priceText != null) priceText.text = "SOLD";
             return;
