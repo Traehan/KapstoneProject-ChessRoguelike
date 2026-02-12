@@ -1,39 +1,90 @@
-# --- Unity ---
+####################################
+# Unity generated folders
+####################################
 [Ll]ibrary/
 [Tt]emp/
 [Oo]bj/
-[Bb]uild/
 [Ll]ogs/
 [Mm]emoryCaptures/
 UserSettings/
 Recordings/
 SysInfo.txt
 
-# --- Crash/Profiler ---
+####################################
+# Unity builds / exports (DO NOT PUSH)
+####################################
+[Bb]uild/
+[Bb]uilds/
+*.exe
+*.apk
+*.aab
+*.app
+*.dll
+*.so
+*.dylib
+
+####################################
+# Unity crash & profiler
+####################################
 *.pidb
 *.svd
+*.pdb
+*.mdb
 
-# --- OS junk ---
-.DS_Store
-Thumbs.db
+####################################
+# Unity Recovery (crash scenes)
+####################################
+Assets/_Recovery/
 
-# --- IDE / Rider / VS ---
+####################################
+# IDE / Editor generated files
+####################################
 .vscode/
 .idea/
 *.suo
 *.user
 *.userprefs
-*.vcxproj*
-*.sln.iml
+*.opendb
+*.VC.db
+
+####################################
+# C# / .NET build helpers (Unity regenerates these)
+####################################
 *.csproj
+*.sln
 *.unityproj
 *.booproj
+
+####################################
+# Bezi (safe to ignore completely)
+####################################
 Bezisidekick/
-Bezi.Editor.csproj
 Bezi.Editor/
 BeziEditor/
-*Bezi
+Bezi.Editor.csproj
+*Bezi*
 
-# --- Packages/Lock (keep these!) ---
-# (Do NOT ignore Packages/ or Packages/manifest.json or packages-lock.json)
-_Recovery/
+####################################
+# Archives / large files (GitHub blockers)
+####################################
+*.zip
+*.rar
+*.7z
+*.tar
+*.gz
+
+####################################
+# OS junk
+####################################
+.DS_Store
+Thumbs.db
+desktop.ini
+
+####################################
+# KEEP THESE (do NOT ignore)
+####################################
+!Assets/
+!Packages/
+!ProjectSettings/
+!Packages/manifest.json
+!Packages/packages-lock.json
