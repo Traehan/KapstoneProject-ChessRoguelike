@@ -45,7 +45,7 @@ namespace Chess
                 p.currentHP -= dmg;
                 if (p.currentHP <= 0)
                 {
-                    board.RemovePiece(p);
+                    board.CapturePiece(p);
                 }
             }
         }

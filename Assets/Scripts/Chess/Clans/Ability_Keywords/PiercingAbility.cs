@@ -50,7 +50,7 @@ namespace Chess
                     int dmg = Mathf.Max(1, atk.baseDamage + atk.damageDelta + splashDamage);
                     piece.currentHP -= dmg;
                     if (piece.currentHP <= 0)
-                        board.RemovePiece(piece);
+                        board.CapturePiece(piece);
 
                     pierced++;
                 }

@@ -1,73 +1,117 @@
-// using System.Collections;
-// using UnityEngine;
-//
-// namespace Chess
-// {
-//     public partial class TurnManager
-//     {
-//         void SetPhase(TurnPhase next)
-//         {
-//             Phase = next;
-//             OnPhaseChanged?.Invoke(Phase);
-//         }
-//
-//         void BeginPreparation()
-//         {
-//             SetPhase(TurnPhase.Preparation);
-//         }
-//
-//         void BeginPlayerTurn()
-//         {
-//             _moveStack.Clear();
-//             SetPhase(TurnPhase.PlayerTurn);
-//
-//             CurrentAP = apPerTurn;
-//             OnAPChanged?.Invoke(CurrentAP, apPerTurn);
-//
-//             _movedThisPlayerTurn.Clear();
-//             _queenMovedThisTurn = false;
-//
-//             EnsureQueenLeaderBound();
-//             RecomputeEnemyIntentsAndPaint();
-//             NotifyAbilitiesBeginPlayerTurn();
-//             NotifyAllPlayerPieceRuntimes_BeginTurn();
-//             PaintAbilityHints();
-//             CaptureTurnStartSnapshot();
-//         }
-//
-//         IEnumerator EnemyTurnRoutine()
-//         {
-//             _moveStack.Clear();
-//             SetPhase(TurnPhase.EnemyTurn);
-//
-//             foreach (var enemy in GetSortedEnemies())
-//             {
-//                 if (enemy == null || !board.ContainsPiece(enemy)) continue;
-//
-//                 if (enemy.TryGetComponent<BossEnemy>(out var boss))
-//                 {
-//                     boss.ExecuteTurn(board);
-//                     yield return new WaitForSeconds(enemyMoveDelay);
-//                     continue;
-//                 }
-//
-//                 if (!TryResolveEnemyTarget(enemy, out var target)) continue;
-//                 TryMoveOrAttack(enemy, target);
-//                 yield return new WaitForSeconds(enemyMoveDelay);
-//             }
-//
-//             SetPhase(TurnPhase.Cleanup);
-//             yield return new WaitForSeconds(postEnemyTurnPause);
-//
-//             EnsureEncounterRunnerBound();
-//             if (encounterRunner != null && encounterRunner.IsVictoryReady(board))
-//             {
-//                 PlayerWon();
-//                 yield break;
-//             }
-//
-//             board.ClearHighlights();
-//             BeginPlayerTurn();
-//         }
-//     }
-// }
+using System.Collections;
+using UnityEngine;
+
+namespace Chess
+{
+    public partial class TurnManager
+    {
+        void SetPhase(TurnPhase next)
+        {
+            Phase = next;
+            OnPhaseChanged?.Invoke(Phase);
+            GameEvents.OnPhaseChanged?.Invoke(Phase);
+        }
+
+
+        void BeginPreparation()
+        {
+            SetPhase(TurnPhase.Preparation);
+        }
+
+        void BeginPlayerTurn()
+        {
+            SetPhase(TurnPhase.PlayerTurn);
+            _history.Clear();
+
+            CurrentAP = apPerTurn;
+            GameEvents.OnAPChanged?.Invoke(CurrentAP, apPerTurn);
+
+            _movedThisPlayerTurn.Clear();
+            _queenMovedThisTurn = false;
+
+            EnsureQueenLeaderBound();
+            RecomputeEnemyIntentsAndPaint();
+
+            NotifyAbilitiesBeginPlayerTurn();
+            NotifyAllPlayerPieceRuntimes_BeginTurn();
+
+            PaintAbilityHints();
+
+            // IMPORTANT: this enables the restart-turn button to restore the turn start
+            CaptureTurnStartSnapshot();
+        }
+
+        IEnumerator EnemyTurnRoutine()
+        {
+            SetPhase(TurnPhase.EnemyTurn);
+
+            foreach (var enemy in GetSortedEnemies())
+            {
+                if (enemy == null || !board.ContainsPiece(enemy)) continue;
+
+                if (enemy.TryGetComponent<BossEnemy>(out var boss))
+                {
+                    boss.ExecuteTurn(board);
+
+                    if (enemyMoveDelay > 0f)
+                        yield return new WaitForSeconds(enemyMoveDelay);
+
+                    continue;
+                }
+
+                if (!TryResolveEnemyTarget(enemy, out var target)) continue;
+
+                ExecuteEnemyActionAsCommand(enemy, target);
+
+                if (enemyMoveDelay > 0f)
+                    yield return new WaitForSeconds(enemyMoveDelay);
+            }
+            
+            void ExecuteEnemyActionAsCommand(Piece enemy, Vector2Int target)
+            {
+                if (board == null || enemy == null) return;
+                if (!board.ContainsPiece(enemy)) return;
+                if (!board.InBounds(target)) return;
+
+                var from = enemy.Coord;
+
+                // Re-fetch what's currently on the target square NOW
+                bool occupied = board.TryGetPiece(target, out var there) && there != null;
+
+                // Empty -> move
+                if (!occupied)
+                {
+                    var cmd = new EnemyMoveCommand(board, enemy, from, target);
+                    if (cmd.Execute())
+                        GameEvents.OnCommandExecuted?.Invoke(cmd);
+                    return;
+                }
+
+                // Ally blocks
+                if (there.Team == enemy.Team) return;
+
+                // Attack
+                var atk = new EnemyAttackCommand(this, board, enemy, there, from, target);
+                if (atk.Execute())
+                    GameEvents.OnCommandExecuted?.Invoke(atk);
+            }
+
+
+
+            SetPhase(TurnPhase.Cleanup);
+
+            if (postEnemyTurnPause > 0f)
+                yield return new WaitForSeconds(postEnemyTurnPause);
+
+            EnsureEncounterRunnerBound();
+            if (encounterRunner != null && encounterRunner.IsVictoryReady(board))
+            {
+                PlayerWon();
+                yield break;
+            }
+
+            board.ClearHighlights();
+            BeginPlayerTurn();
+        }
+    }
+}

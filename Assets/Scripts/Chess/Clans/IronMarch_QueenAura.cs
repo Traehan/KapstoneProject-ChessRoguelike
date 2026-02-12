@@ -24,7 +24,7 @@ namespace Chess
         public override void OnPieceMoved(ClanRuntime ctx, Piece piece)
         {
             if (ctx.queen != null && piece == ctx.queen)
-                _queenMovedThisTurn = true;
+                _queenMovedThisTurn = false;
         }
 
         public override void OnAttackResolved(ClanRuntime ctx, Piece attacker, Piece defender,

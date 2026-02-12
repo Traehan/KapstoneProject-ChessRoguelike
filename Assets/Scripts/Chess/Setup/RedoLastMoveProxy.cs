@@ -6,9 +6,14 @@ namespace Chess
     {
         public void OnClickRedo()
         {
-            var ok = TurnManager.Instance?.TryUndoLastPlayerMove() ?? false;
-            if (!ok) Debug.Log("Redo failed or not available.");
+            var tm = TurnManager.Instance;
+            if (tm == null)
+            {
+                Debug.LogWarning("Redo failed: TurnManager.Instance is null.");
+                return;
+            }
+
+            tm.UndoButton(); // this is void
         }
     }
 }
-

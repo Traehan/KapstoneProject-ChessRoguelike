@@ -10,6 +10,8 @@ namespace Chess
 {
     public class ChessBoard : MonoBehaviour
     {
+        [Header("Captured Pieces")]
+        [SerializeField] Transform capturedRoot;
     
         Dictionary<Vector2Int, Piece> _pieces = new Dictionary<Vector2Int, Piece>();
         [Header("Dimensions")]
@@ -290,6 +292,16 @@ namespace Chess
         
         // ======== FOR UNDO FEATURE ========
         
+        void EnsureCapturedRoot()
+        {
+            if (capturedRoot != null) return;
+
+            var go = new GameObject("CapturedPieces");
+            go.transform.SetParent(transform, false);
+            capturedRoot = go.transform;
+        }
+
+        
         public Piece GetPieceAt(Vector2Int c) => GetPiece(c);
         
         public void ClearCell(Vector2Int c)
@@ -300,17 +312,22 @@ namespace Chess
 
         /// Soft-capture: remove from occupancy and deactivate, but DON'T Destroy.
         /// Returns true if a piece was captured/removed from the board map.
+        /// Soft-capture: remove from occupancy and move under capturedRoot, but DON'T Destroy.
+        /// Returns true if a piece was captured/removed from the board map.
         public bool CapturePiece(Piece p)
         {
-        if (p == null) return false;
+            if (p == null) return false;
 
-        // Only remove if the board currently owns this piece at its coord
-        if (_pieces.TryGetValue(p.Coord, out var cur) && cur == p)
-            _pieces.Remove(p.Coord);
+            EnsureCapturedRoot();
 
-        // Hide/disable so it no longer participates in turns, but keep the object around
-        p.gameObject.SetActive(false);
-        return true;
+            // Only remove if the board currently owns this piece at its coord
+            if (_pieces.TryGetValue(p.Coord, out var cur) && cur == p)
+                _pieces.Remove(p.Coord);
+
+            // Move it "elsewhere" (graveyard) and deactivate
+            p.transform.SetParent(capturedRoot, true);
+            p.gameObject.SetActive(false);
+            return true;
         }
 
         /// Restore a previously soft-captured piece at coord (must be empty).
@@ -321,11 +338,15 @@ namespace Chess
             // Caller guarantees empty; if not, bail to avoid stomping
             if (_pieces.ContainsKey(coord)) return;
 
+            // Bring back under board hierarchy and reactivate
+            p.transform.SetParent(transform, true);
             p.gameObject.SetActive(true);
+
             // Snap transform/Coord via your piece helper, then register in map
             p.ApplyBoardMove(coord);
             _pieces[coord] = p;
         }
+
 
         /// Move with optional capture. Does NOT do legality checks; call only after you’ve
         /// decided the move is legal for the mover. Returns true on success and gives you

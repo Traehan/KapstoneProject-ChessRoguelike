@@ -18,6 +18,13 @@ namespace Chess
         [Header("Patrol Path (Board Coords)")]
         [Tooltip("Boss will loop through these positions in order. " +
                  "Default: (2,1) -> (2,3) -> (5,3) -> (5,1) -> repeat.")]
+        
+        public int PatrolIndex
+        {
+            get => patrolIndex;
+            set => patrolIndex = value;
+        }
+
         public Vector2Int[] patrolPath = new Vector2Int[]
         {
             new Vector2Int(2, 1),
@@ -66,31 +73,28 @@ namespace Chess
             var tm = TurnManager.Instance;
             if (tm == null) return;
 
-            // Step 1: attack from current position (no movement)
-            PerformMultiRayAttack(board, tm);
+            // Step 1: ray attacks as commands (events fire inside the command)
+            ExecuteMultiRayAsCommands(board, tm);
 
-            // Step 2: move to next patrol coordinate in the loop
-            AdvancePatrol(board);
+            // Step 2: patrol move as a command
+            ExecutePatrolAsCommand(board);
         }
+
 
         // ---------- ATTACK LOGIC ----------
-
-        void PerformMultiRayAttack(ChessBoard board, TurnManager tm)
+        
+        void ExecuteMultiRayAsCommands(ChessBoard board, TurnManager tm)
         {
-            // Rook-style rays
+            // rook rays
             foreach (var dir in DIRS_Rook)
-                RaycastAndAttack(board, tm, dir);
+                TryRayAttackAsCommand(board, tm, dir);
 
-            // Bishop-style rays
+            // bishop rays
             foreach (var dir in DIRS_Bishop)
-                RaycastAndAttack(board, tm, dir);
+                TryRayAttackAsCommand(board, tm, dir);
         }
 
-        /// <summary>
-        /// Walks along a ray from the boss, hitting the first player piece (if any),
-        /// but never taking damage itself. Rays cannot pass through any piece.
-        /// </summary>
-        void RaycastAndAttack(ChessBoard board, TurnManager tm, Vector2Int dir)
+        void TryRayAttackAsCommand(ChessBoard board, TurnManager tm, Vector2Int dir)
         {
             Vector2Int c = self.Coord;
 
@@ -100,58 +104,38 @@ namespace Chess
                 if (!board.InBounds(c)) break;
 
                 if (!board.TryGetPiece(c, out var target))
-                {
-                    // Empty tile, keep scanning
-                    continue;
-                }
+                    continue; // empty
 
-                // Friendly piece (enemy team) blocks but is not hit.
+                // friendly blocks
                 if (target.Team == self.Team)
-                {
                     break;
-                }
 
-                // Player piece: one-way damage (boss is immune on attack)
-                tm.ResolveBossAttack(self, target, out bool defenderDied);
+                // player piece -> command attack (one-way)
+                var cmd = new BossRayAttackCommand(tm, board, self, c);
+                if (cmd.Execute())
+                    GameEvents.OnCommandExecuted?.Invoke(cmd);
 
-                if (defenderDied)
-                {
-                    board.RemovePiece(target);
-                }
-
-                // Stop after the first piece in this direction
-                break;
+                break; // stop after first piece
             }
         }
 
-        // ---------- PATROL / MOVEMENT ----------
-
-        void AdvancePatrol(ChessBoard board)
+        void ExecutePatrolAsCommand(ChessBoard board)
         {
             if (patrolPath == null || patrolPath.Length == 0) return;
 
-            // Ensure we have a valid index and sync it to the closest patrol point
-            // on the first turn if needed.
+            // ensure valid index
             if (patrolIndex < 0 || patrolIndex >= patrolPath.Length)
-            {
                 patrolIndex = FindClosestIndexToCurrent();
-            }
 
             int nextIndex = (patrolIndex + 1) % patrolPath.Length;
             Vector2Int nextCoord = patrolPath[nextIndex];
 
-            // Only move if inside board; if tile is occupied we just stay put
-            // but still advance the index so the pattern continues.
-            if (board.InBounds(nextCoord))
-            {
-                if (!board.IsOccupied(nextCoord))
-                {
-                    board.TryMovePiece(self, nextCoord);
-                }
-            }
-
-            patrolIndex = nextIndex;
+            var cmd = new BossPatrolCommand(board, self, this, nextIndex, nextCoord);
+            if (cmd.Execute())
+                GameEvents.OnCommandExecuted?.Invoke(cmd);
         }
+
+        // ---------- PATROL / MOVEMENT ----------
 
         int FindClosestIndexToCurrent()
         {
