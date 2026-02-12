@@ -36,3 +36,4 @@ BeziEditor/
 
 # --- Packages/Lock (keep these!) ---
 # (Do NOT ignore Packages/ or Packages/manifest.json or packages-lock.json)
+_Recovery/
