@@ -834,7 +834,7 @@ MonoBehaviour:
   encounterRunner: {fileID: 506964576}
   enemyMoveDelay: 0.35
   postEnemyTurnPause: 0.15
-  apPerTurn: 3
+  apPerTurn: 4
   enemyIntentColor: {r: 1, g: 0, b: 0, a: 0.85}
   bossIntentColor: {r: 0.7, g: 0.3, b: 1, a: 0.9}
   playerLives: 3

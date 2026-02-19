@@ -6,6 +6,9 @@ namespace Chess
     public class ClanDefinition : ScriptableObject
     {
         public string clanName;
+        public string ClanPassiveDescription;
+        public string QueenAuraDescription;
+        public Sprite Queen;
         public Color uiColor = Color.white;
 
         [Header("Leader")]
@@ -13,5 +16,7 @@ namespace Chess
 
         [Header("Queen Abilities (in order)")]
         public AbilitySO[] abilities;
+        
+        
     }
 }

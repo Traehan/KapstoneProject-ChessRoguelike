@@ -5,6 +5,7 @@ using GameManager;
 using Chess;
 using System.Collections.Generic;
 using TMPro;
+using UnityEngine.Rendering;
 
 public class ClanSelectUI : MonoBehaviour
 {
@@ -26,6 +27,12 @@ public class ClanSelectUI : MonoBehaviour
     public string mapSceneName = "MapScene";
 
     ClanDefinition _chosen;
+    
+    public TextMeshProUGUI clanNameText;
+    public TextMeshProUGUI clanPassiveText;
+    public TextMeshProUGUI queenAuraText;
+    public Image queenIcon;
+    
 
     void Start()
     {
@@ -40,7 +47,10 @@ public class ClanSelectUI : MonoBehaviour
             Debug.LogError("[ClanSelectUI] No clanButtons configured. Assign buttons + clans in the inspector.");
             return;
         }
-
+        
+        //set image false for aesthetic until image is called
+        queenIcon.gameObject.SetActive(false);
+        
         // Setup Start Run button
         startRunButton.interactable = false;
         startRunButton.onClick.RemoveAllListeners();
@@ -91,6 +101,12 @@ public class ClanSelectUI : MonoBehaviour
         _chosen = def;
         startRunButton.interactable = (_chosen != null);
         Debug.Log($"[ClanSelectUI] Picked clan: {(_chosen ? _chosen.clanName : "NULL")}");
+        clanNameText.text = _chosen.clanName;
+        clanPassiveText.text = _chosen.ClanPassiveDescription;
+        queenAuraText.text = _chosen.QueenAuraDescription;
+        queenIcon.gameObject.SetActive(true);
+        queenIcon.sprite = _chosen.Queen;
+        // clanPassiveText.text = _chosen.clanPassiveDescription
     }
 
     void OnStartRun()
