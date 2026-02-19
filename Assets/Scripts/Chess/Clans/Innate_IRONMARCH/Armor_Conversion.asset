@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Armor_Conversion
   m_EditorClassIdentifier: Assembly-CSharp::Chess.ArmorConversionAbility
   displayName: Armor Conversion
-  description: Every Fortify on piece = +2 attack!
+  description: Every Fortify on piece gives +2 attack damage!
   bonusPerFortify: 2

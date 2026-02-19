@@ -11,6 +11,7 @@ namespace Chess
             GameEvents.OnPieceCaptured += HandlePieceCaptured;
             GameEvents.OnPieceRestored += HandlePieceRestored;
             GameEvents.OnPieceDamaged += HandlePieceDamaged;
+            
 
 
             GameEvents.OnCommandExecuted += HandleCommandExecuted;

@@ -8,6 +8,9 @@ namespace Chess
         public static System.Action<Team> OnTurnStarted;
         public static System.Action<Team> OnTurnEnded;
         public static System.Action<TurnPhase> OnPhaseChanged;
+        // GameEvents.cs
+        public static System.Action<Piece> OnPieceStatsChanged;
+
 
         // Commands
         public static System.Action<IGameCommand> OnCommandExecuted;

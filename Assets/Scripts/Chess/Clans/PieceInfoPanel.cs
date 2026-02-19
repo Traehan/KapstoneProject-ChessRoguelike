@@ -45,6 +45,8 @@ public class PieceInfoPanel : MonoBehaviour
         if (root != null)
             root.SetActive(false);
     }
+    
+    
 
     /// <summary>Show info for the given piece runtime.</summary>
     public void Show(PieceRuntime runtime)
@@ -92,7 +94,8 @@ public class PieceInfoPanel : MonoBehaviour
             var piece = runtime.Owner;
             if (piece != null)
             {
-                statsText.text = $"ATK: {piece.attack}\nHP: {piece.currentHP} / {piece.maxHP}";
+                int displayedAtk = runtime.GetDisplayedAttack();
+                statsText.text = $"ATK: {displayedAtk}\nHP: {piece.currentHP} / {piece.maxHP}";
             }
             else
             {
@@ -145,5 +148,89 @@ public class PieceInfoPanel : MonoBehaviour
             var entry = Instantiate(upgradeEntryPrefab, upgradesContainer);
             entry.Bind(u);
         }
+        
+            void OnEnable()
+{
+    // If your GameEvents lives in Chess namespace, you already have `using Chess;`
+    GameEvents.OnPieceMoved += OnAnyPieceMoved;
+    GameEvents.OnAttackResolved += OnAttackResolved;
+    GameEvents.OnPieceDamaged += OnPieceDamaged;
+    GameEvents.OnPieceHealed += OnPieceHealed;
+    GameEvents.OnPieceCaptured += OnPieceCaptured;
+    GameEvents.OnPieceRestored += OnPieceRestored;
+
+    GameEvents.OnCommandUndone += OnAnyCommandChanged;
+    GameEvents.OnCommandRedone += OnAnyCommandChanged;
+    GameEvents.OnCommandExecuted += OnAnyCommandChanged;
+}
+
+void OnDisable()
+{
+    GameEvents.OnPieceMoved -= OnAnyPieceMoved;
+    GameEvents.OnAttackResolved -= OnAttackResolved;
+    GameEvents.OnPieceDamaged -= OnPieceDamaged;
+    GameEvents.OnPieceHealed -= OnPieceHealed;
+    GameEvents.OnPieceCaptured -= OnPieceCaptured;
+    GameEvents.OnPieceRestored -= OnPieceRestored;
+
+    GameEvents.OnCommandUndone -= OnAnyCommandChanged;
+    GameEvents.OnCommandRedone -= OnAnyCommandChanged;
+    GameEvents.OnCommandExecuted -= OnAnyCommandChanged;
+}
+
+bool IsCurrent(Piece p) => _current != null && _current.Owner == p;
+
+void RefreshStatsOnly()
+{
+    if (_current == null || _current.Owner == null) return;
+
+    var piece = _current.Owner;
+
+    if (statsText != null)
+    {
+        int displayedAtk = _current.GetDisplayedAttack();
+        statsText.text = $"ATK: {displayedAtk}\nHP: {piece.currentHP} / {piece.maxHP}";
+    }
+}
+
+// ---- Event handlers ----
+
+void OnAnyPieceMoved(Piece piece, Vector2Int from, Vector2Int to, MoveReason reason)
+{
+    if (IsCurrent(piece)) RefreshStatsOnly();
+}
+
+void OnAttackResolved(AttackReport r)
+{
+    if (IsCurrent(r.attacker) || IsCurrent(r.defender)) RefreshStatsOnly();
+}
+
+void OnPieceDamaged(Piece target, int amount, Piece source)
+{
+    if (IsCurrent(target) || IsCurrent(source)) RefreshStatsOnly();
+}
+
+void OnPieceHealed(Piece target, int amount, Piece source)
+{
+    if (IsCurrent(target) || IsCurrent(source)) RefreshStatsOnly();
+}
+
+void OnPieceCaptured(Piece victim, Piece by, Vector2Int at)
+{
+    if (IsCurrent(victim)) Hide();       // selected piece got removed
+    else if (IsCurrent(by)) RefreshStatsOnly();
+}
+
+void OnPieceRestored(Piece piece, Vector2Int at)
+{
+    if (IsCurrent(piece)) RefreshStatsOnly();
+}
+
+void OnAnyCommandChanged(IGameCommand cmd)
+{
+    // safest: undo/redo often changes HP/fortify/position.
+    if (_current != null) RefreshStatsOnly();
+}
+
     }
 }
