@@ -3,6 +3,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using Chess;
 using Card;
+using GameManager;
+
 
 public class PrepPanel : MonoBehaviour
 {
@@ -55,7 +57,9 @@ public class PrepPanel : MonoBehaviour
     {
         TurnManager.Instance?.BeginEncounterFromPreparation();
         gameObject.SetActive(false);
+        SceneController.instance.LoadAdditive("UI_Battle");
     }
+
 
     public void OnIconConsumed(DraggablePieceIcon icon)
     {
