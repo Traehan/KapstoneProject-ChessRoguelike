@@ -33,6 +33,8 @@ namespace Chess
             if (target <= current) return;
 
             self.fortifyStacks = target;
+            GameEvents.OnPieceStatsChanged?.Invoke(self);
+
         }
 
         bool HasAdjacentAlly(ChessBoard board, Piece self)

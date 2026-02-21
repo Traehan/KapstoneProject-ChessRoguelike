@@ -1,23 +1,43 @@
-using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 namespace Chess
 {
     [DisallowMultipleComponent]
     public class FortifyIndicator : MonoBehaviour
     {
-        [Header("Visuals")]
-        [SerializeField] Sprite shieldSprite;     // your Aseprite sprite
-        [SerializeField] int maxPips = 5;
-        [SerializeField] float spacing = 0.14f;
-        [SerializeField] float scale = 0.50f;
-        [SerializeField] Vector3 localOffset = new Vector3(-.25f, 1f, 0f); // start with Z=0
-        [SerializeField] bool billboardToCamera = true;
+        [Header("Sprite")]
+        [SerializeField] Sprite shieldSprite;
+        [SerializeField] int maxStacksShown = 99;
+
+        [Header("Sorting")]
         [SerializeField] string sortingLayerName = "Pieces";
         [SerializeField] int sortingOrder = 20;
 
-        Piece _piece;                     // found in parent
-        readonly List<SpriteRenderer> _pips = new();
+        [Header("Billboard")]
+        [SerializeField] bool billboardToCamera = true;
+
+        [Header("Icon Transform (LOCAL)")]
+        [SerializeField] Vector3 iconLocalPosition = new Vector3(0.75f, 1.2f, -0.1f);
+        [SerializeField] Vector3 iconLocalRotationEuler = new Vector3(10f, 0f, 0f);
+        [SerializeField] Vector3 iconLocalScale = new Vector3(0.4f, 0.4f, 0.15f);
+
+        [Header("Text Transform (LOCAL, relative to Icon)")]
+        // Default: centered inside the shield (looks like your screenshot)
+        [SerializeField] Vector3 textLocalPosition = Vector3.zero;
+        [SerializeField] Vector3 textLocalRotationEuler = Vector3.zero;
+        [SerializeField] Vector3 textLocalScale = Vector3.one;
+
+        [Header("Text Style")]
+        [SerializeField] bool showWhenZero = false;
+        [SerializeField] bool showOnlyWhenGreaterThanOne = false; // you’re showing “3”, keep false if you want always show
+        [SerializeField] float fontSize = 10f;
+        [SerializeField] Color fontColor = Color.black;
+        [SerializeField] TextAlignmentOptions alignment = TextAlignmentOptions.Center;
+
+        Piece _piece;
+        SpriteRenderer _icon;
+        TextMeshPro _countText;
 
         void Awake()
         {
@@ -28,67 +48,84 @@ namespace Chess
                 enabled = false;
                 return;
             }
-            BuildPips();
+
+            BuildVisual();
         }
 
         void OnEnable()
         {
-            // place the indicator child at the desired local offset relative to the piece
-            transform.localPosition = localOffset;
             SyncToStacks();
         }
 
         void LateUpdate()
         {
-            // keep indicator anchored in local space
-            transform.localPosition = localOffset;
-
-            // read current stacks and toggle pips
             SyncToStacks();
 
             if (billboardToCamera && Camera.main != null)
-            {
-                // make only the indicator face the camera (doesn't rotate the piece)
                 transform.forward = Camera.main.transform.forward;
-            }
         }
 
-        void BuildPips()
+        void BuildVisual()
         {
-            foreach (var r in _pips) if (r) Destroy(r.gameObject);
-            _pips.Clear();
+            // wipe old children (ex: previous pip objects)
+            for (int i = transform.childCount - 1; i >= 0; i--)
+                Destroy(transform.GetChild(i).gameObject);
 
-            for (int i = 0; i < maxPips; i++)
-            {
-                var go = new GameObject($"FortifyPip_{i}");
-                go.transform.SetParent(transform, false);
-                var sr = go.AddComponent<SpriteRenderer>();
-                sr.sprite = shieldSprite;
-                sr.sortingLayerName = sortingLayerName;
-                sr.sortingOrder = sortingOrder;
-                sr.enabled = false;
-                go.transform.localScale = Vector3.one * scale;
-                _pips.Add(sr);
-            }
+            // --- Icon ---
+            var iconGO = new GameObject("FortifyIcon");
+            iconGO.transform.SetParent(transform, false);
+            iconGO.transform.localPosition = iconLocalPosition;
+            iconGO.transform.localRotation = Quaternion.Euler(iconLocalRotationEuler);
+            iconGO.transform.localScale = iconLocalScale;
+
+            _icon = iconGO.AddComponent<SpriteRenderer>();
+            _icon.sprite = shieldSprite;
+            _icon.sortingLayerName = sortingLayerName;
+            _icon.sortingOrder = sortingOrder;
+
+            // --- Text ---
+            var textGO = new GameObject("FortifyCount");
+            textGO.transform.SetParent(iconGO.transform, false);
+            textGO.transform.localPosition = new Vector3(0f, 1.2f, 0f);
+            textGO.transform.localRotation = Quaternion.Euler(textLocalRotationEuler);
+            textGO.transform.localScale = textLocalScale;
+
+            _countText = textGO.AddComponent<TextMeshPro>();
+            _countText.text = "";
+            _countText.fontSize = fontSize;
+            _countText.color = fontColor;
+            _countText.alignment = alignment;
+
+            // ensure it renders on top of the icon
+            _countText.sortingLayerID = SortingLayer.NameToID(sortingLayerName);
+            _countText.sortingOrder = sortingOrder + 1;
         }
 
         void SyncToStacks()
         {
-            if (_piece == null) return;
+            if (_piece == null || _icon == null || _countText == null) return;
 
-            int stacks = Mathf.Clamp(_piece.fortifyStacks, 0, maxPips);
+            int stacks = Mathf.Clamp(_piece.fortifyStacks, 0, maxStacksShown);
 
-            float totalWidth = (maxPips - 1) * spacing;
-            for (int i = 0; i < _pips.Count; i++)
+            bool shouldShow = showWhenZero ? stacks >= 0 : stacks > 0;
+            _icon.enabled = shouldShow;
+
+            if (!shouldShow)
             {
-                var sr = _pips[i];
-                if (!sr) continue;
+                _countText.enabled = false;
+                _countText.text = "";
+                return;
+            }
 
-                bool on = i < stacks;
-                sr.enabled = on;
-
-                float x = (i * spacing) - (totalWidth * 0.5f);
-                sr.transform.localPosition = new Vector3(x, 0f, 0f);
+            if (showOnlyWhenGreaterThanOne && stacks <= 1)
+            {
+                _countText.enabled = false;
+                _countText.text = "";
+            }
+            else
+            {
+                _countText.enabled = true;
+                _countText.text = stacks.ToString();
             }
         }
     }

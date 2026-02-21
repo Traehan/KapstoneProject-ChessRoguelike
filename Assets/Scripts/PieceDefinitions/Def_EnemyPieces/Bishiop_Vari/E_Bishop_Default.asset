@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ded2e13f6ebd3434dad991b06601023a, type: 3}
   m_Name: E_Bishop_Default
   m_EditorClassIdentifier: Assembly-CSharp::Chess.PieceDefinition
-  displayName: Bishop
-  icon: {fileID: 0}
+  displayName: SkeliBishop
+  icon: {fileID: 21300000, guid: 7c9dd2b2a8de5c146bb1d4ad24926238, type: 3}
   iconPrefabOverride: {fileID: 0}
   count: 1
   piecePrefab: {fileID: 8784958972727818190, guid: 400b2ccf1a7f8194bbc873014a00b3a9, type: 3}

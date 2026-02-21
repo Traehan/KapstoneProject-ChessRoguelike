@@ -19,6 +19,10 @@ namespace Chess
         public int MaxHP { get; set; }
         public int CurrentHP { get; set; }
         public int Attack { get; set; }
+        
+        public int Movement { get; set; }
+        
+        public int CurrentAttack { get; set; }
 
         // Slots & lists
         [SerializeField, Min(1)] int slotsMax = 2;
@@ -45,6 +49,7 @@ namespace Chess
             MaxHP = owner.maxHP;
             CurrentHP = owner.currentHP;
             Attack = owner.attack;
+            Movement = owner.Definition != null ? owner.Definition.maxStride : 1;
 
             // Load prefab loadout, if present
             if (owner.TryGetComponent<PieceLoadout>(out var loadout))
@@ -133,6 +138,30 @@ namespace Chess
             foreach (var a in innate) a.OnUndo(ctx);
             foreach (var a in keywordAbilities) a.OnUndo(ctx);
         }
+        
+        // Add inside PieceRuntime class
+
+        public int GetDisplayedAttack()
+        {
+            if (Owner == null) return Attack;
+
+            int atk = Owner.attack;
+
+            var ctx = new PieceAbilitySO.PieceCtx(Owner, Board, TM);
+
+            // Innate abilities
+            foreach (var a in innate)
+                if (a is IDisplayStatModifier mod)
+                    atk += mod.GetDisplayedAttackBonus(ctx);
+
+            // Keyword abilities from upgrades
+            foreach (var a in keywordAbilities)
+                if (a is IDisplayStatModifier mod)
+                    atk += mod.GetDisplayedAttackBonus(ctx);
+
+            return atk;
+        }
+
 
         /// <summary>
         /// Collect pre-damage modifiers from both innate and keyword abilities.
@@ -191,8 +220,8 @@ namespace Chess
                 return;
 
             // Only show info for the player's pieces
-            if (Owner.Team != TM.PlayerTeam)
-                return;
+            // if (Owner.Team != TM.PlayerTeam)
+            //     return;
 
             // Ask the global UI panel to show info for this piece
             if (PieceInfoPanel.Instance != null)

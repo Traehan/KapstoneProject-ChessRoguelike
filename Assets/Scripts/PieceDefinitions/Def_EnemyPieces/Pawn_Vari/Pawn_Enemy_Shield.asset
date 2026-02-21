@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ded2e13f6ebd3434dad991b06601023a, type: 3}
   m_Name: Pawn_Enemy_Shield
   m_EditorClassIdentifier: Assembly-CSharp::Chess.PieceDefinition
-  displayName: Pawn
-  icon: {fileID: 0}
+  displayName: Shield Pawn
+  icon: {fileID: 21300000, guid: c319657821cad634e86093e4b03b3513, type: 3}
   iconPrefabOverride: {fileID: 0}
   count: 1
   piecePrefab: {fileID: 8065942175526427736, guid: eb94fa0ea66dcad429db530fa7191418, type: 3}
@@ -21,5 +21,5 @@ MonoBehaviour:
   attack: 1
   forwardOnly: 1
   passThroughFriendlies: 0
-  maxStride: 2
+  maxStride: 1
   shopPrice: 100

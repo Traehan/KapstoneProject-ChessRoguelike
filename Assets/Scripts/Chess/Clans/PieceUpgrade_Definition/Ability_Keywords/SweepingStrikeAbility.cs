@@ -11,7 +11,7 @@ namespace Chess
     {
         [Header("Sweeping Strike Settings")]
         [Tooltip("Damage dealt to enemies left/right of the main target.")]
-        public int sideDamage = 1;
+        public int sideDamage = 0;
 
         public override void OnAttackResolved(PieceCtx ctx, AttackCtx atk)
         {
@@ -39,7 +39,7 @@ namespace Chess
                 if (!board.TryGetPiece(pos, out var p)) continue;
                 if (p.Team == attacker.Team) continue; // only hit enemies
 
-                int dmg = Mathf.Max(0, sideDamage);
+                int dmg = Mathf.Max(0, ctx.piece.attack);
                 if (dmg <= 0) continue;
 
                 p.currentHP -= dmg;

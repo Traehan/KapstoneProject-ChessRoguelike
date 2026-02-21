@@ -10,10 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4ec08b46787a78d499fd596cf85f11e7, type: 3}
-  m_Name: IronMarch
+  m_Name: IronDominion
   m_EditorClassIdentifier: Assembly-CSharp::Chess.ClanDefinition
-  clanName: THe Iron march hold the line! The better the integrity of their structure,
-    the stronger they Get!
+  clanName: THE IRON DOMINION
+  ClanPassiveDescription: <size=22><color=#FF0000><i>Clan Passive Ability</i></color></size>\n\nIf
+    a Piece Does not move for a turn, It Gains +1 Fortify
+  QueenAuraDescription: <size=22><color=#FF0000><i>Queen Aura Ability</i></color></size>
+    \n\n grants surrounding troops +5 Damage
+  Queen: {fileID: 21300000, guid: f1a770d4197fe7e4ebdb41af1415b74e, type: 3}
   uiColor: {r: 0.8, g: 0.8, b: 0.8, a: 1}
   queenPrefab: {fileID: 6979421579680749516, guid: 7596a633edc3d86428dbdaba5d22f998, type: 3}
   abilities:

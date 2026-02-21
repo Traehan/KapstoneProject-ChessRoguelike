@@ -2,30 +2,25 @@ using UnityEngine;
 
 namespace Chess
 {
-    public class AttackCommand : IGameCommand
+    public sealed class AttackCommand : IGameCommand
     {
         readonly TurnManager _tm;
         readonly ChessBoard _board;
-
         readonly Piece _attacker;
         readonly Piece _defender;
-
         readonly Vector2Int _attackerAt;
         readonly Vector2Int _defenderAt;
         readonly int _apCost;
 
-        // snapshots
         int _attackerHP_Before;
         int _defenderHP_Before;
-        int _attackerFortify_Before;
-        int _defenderFortify_Before;
-        bool _attackerPawnHadMoved_Before;
-
-        bool _attackerWasCaptured;
         bool _defenderWasCaptured;
+        bool _attackerWasCaptured;
 
-        public AttackCommand(TurnManager tm, ChessBoard board, Piece attacker, Piece defender,
-            Vector2Int attackerAt, Vector2Int defenderAt, int apCost = 1)
+        public AttackCommand(TurnManager tm, ChessBoard board,
+            Piece attacker, Piece defender,
+            Vector2Int attackerAt, Vector2Int defenderAt,
+            int apCost = 1)
         {
             _tm = tm;
             _board = board;
@@ -40,48 +35,54 @@ namespace Chess
         {
             if (_tm == null || _board == null) return false;
             if (_attacker == null || _defender == null) return false;
-            if (_tm.Phase != TurnPhase.PlayerTurn) return false;
 
-            // sanity: must still be on-board at expected coords
-            if (!_board.TryGetPiece(_attackerAt, out var aNow) || aNow != _attacker) return false;
-            if (!_board.TryGetPiece(_defenderAt, out var dNow) || dNow != _defender) return false;
+            // Allow BOTH player-turn and enemy-turn attacks.
+            // Player attacks are one-way (defender takes damage).
+            // Enemy attacks are simultaneous (both can take damage).
+            bool attackerIsPlayer = (_attacker.Team == _tm.PlayerTeam);
 
-            if (!_tm.TrySpendAP(_apCost)) return false;
+            if (attackerIsPlayer && _tm.Phase != TurnPhase.PlayerTurn) return false;
+            if (!attackerIsPlayer && _tm.Phase != TurnPhase.EnemyTurn) return false;
 
-            // snapshot
+            // Ensure still on expected cells
+            if (_board.GetPieceAt(_attackerAt) != _attacker) return false;
+            if (_board.GetPieceAt(_defenderAt) != _defender) return false;
+
+            // Snapshot HP for undo
             _attackerHP_Before = _attacker.currentHP;
             _defenderHP_Before = _defender.currentHP;
-            _attackerFortify_Before = _attacker.fortifyStacks;
-            _defenderFortify_Before = _defender.fortifyStacks;
-            _attackerPawnHadMoved_Before = (_attacker is Pawn pw) && pw.hasMoved;
 
-            // resolve
-            _tm.ResolveCombat(_attacker, _defender, attackerIsPlayer: true,
+            // Only player actions spend AP.
+            if (attackerIsPlayer)
+            {
+                if (!_tm.TrySpendAP(_apCost)) return false;
+            }
+
+            // Resolve combat (this is where PieceRuntime hooks + abilities run)
+            _tm.ResolveCombat(_attacker, _defender, attackerIsPlayer: attackerIsPlayer,
                 out bool attackerDied, out bool defenderDied);
 
+            // After damage, compute deltas for event report
             int dmgToDef = Mathf.Max(0, _defenderHP_Before - _defender.currentHP);
             int dmgToAtk = Mathf.Max(0, _attackerHP_Before - _attacker.currentHP);
 
-            if (dmgToDef > 0) GameEvents.OnPieceDamaged?.Invoke(_defender, dmgToDef, _attacker);
-            if (dmgToAtk > 0) GameEvents.OnPieceDamaged?.Invoke(_attacker, dmgToAtk, _defender);
-
-            _attackerWasCaptured = false;
+            // Capture/remove pieces (soft capture)
             _defenderWasCaptured = false;
-
-            if (attackerDied)
-            {
-                _board.CapturePiece(_attacker);
-                _attackerWasCaptured = true;
-                GameEvents.OnPieceCaptured?.Invoke(_attacker, _defender, _attackerAt);
-            }
+            _attackerWasCaptured = false;
 
             if (defenderDied)
             {
                 _board.CapturePiece(_defender);
                 _defenderWasCaptured = true;
-                GameEvents.OnPieceCaptured?.Invoke(_defender, _attacker, _defenderAt);
             }
 
+            if (attackerDied)
+            {
+                _board.CapturePiece(_attacker);
+                _attackerWasCaptured = true;
+            }
+
+            // Fire events (optional, but nice for UI/analytics)
             var report = new AttackReport
             {
                 attacker = _attacker,
@@ -90,45 +91,39 @@ namespace Chess
                 damageToAttacker = dmgToAtk,
                 attackerDied = attackerDied,
                 defenderDied = defenderDied,
-                bypassedFortify = false // set later if you expose ctx
+                bypassedFortify = false
             };
 
             GameEvents.OnAttackResolved?.Invoke(report);
+
+            if (dmgToDef > 0) GameEvents.OnPieceDamaged?.Invoke(_defender, dmgToDef, _attacker);
+            if (dmgToAtk > 0) GameEvents.OnPieceDamaged?.Invoke(_attacker, dmgToAtk, _defender);
+
+            if (_defenderWasCaptured) GameEvents.OnPieceCaptured?.Invoke(_defender, _attacker, _defenderAt);
+            if (_attackerWasCaptured) GameEvents.OnPieceCaptured?.Invoke(_attacker, _defender, _attackerAt);
+
             return true;
         }
 
         public void Undo()
         {
-            if (_tm == null || _board == null) return;
-            if (_attacker == null || _defender == null) return;
-
-            // restore defender first
+            // Restore pieces if they were captured
             if (_defenderWasCaptured)
-            {
                 _board.RestoreCapturedPiece(_defender, _defenderAt);
-                GameEvents.OnPieceRestored?.Invoke(_defender, _defenderAt);
-            }
 
             if (_attackerWasCaptured)
-            {
                 _board.RestoreCapturedPiece(_attacker, _attackerAt);
-                GameEvents.OnPieceRestored?.Invoke(_attacker, _attackerAt);
-            }
 
-            // restore stats
-            _attacker.currentHP = _attackerHP_Before;
-            _defender.currentHP = _defenderHP_Before;
+            // Restore HP
+            if (_attacker != null) _attacker.currentHP = _attackerHP_Before;
+            if (_defender != null) _defender.currentHP = _defenderHP_Before;
 
-            _attacker.fortifyStacks = _attackerFortify_Before;
-            _defender.fortifyStacks = _defenderFortify_Before;
+            // Refund AP only for player actions
+            if (_attacker != null && _attacker.Team == _tm.PlayerTeam)
+                _tm.RefundAP(_apCost);
 
-            if (_attacker is Pawn pw)
-                pw.hasMoved = _attackerPawnHadMoved_Before;
-
-            _tm.RefundAP(_apCost);
-
-            _attacker.GetComponent<PieceRuntime>()?.Notify_Undo();
-            _defender.GetComponent<PieceRuntime>()?.Notify_Undo();
+            // Optional event
+            GameEvents.OnCommandUndone?.Invoke(this);
         }
     }
 }

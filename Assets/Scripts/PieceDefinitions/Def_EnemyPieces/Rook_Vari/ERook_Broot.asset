@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ded2e13f6ebd3434dad991b06601023a, type: 3}
   m_Name: ERook_Broot
   m_EditorClassIdentifier: Assembly-CSharp::Chess.PieceDefinition
-  displayName: Rook_Hard
-  icon: {fileID: 0}
+  displayName: Broot Rook
+  icon: {fileID: 21300000, guid: 1fff9f0b3778bfc42912447199142261, type: 3}
   iconPrefabOverride: {fileID: 0}
   count: 1
   piecePrefab: {fileID: 7077751289521428780, guid: 1b3c5f618edfacc409551932aec950ce, type: 3}
