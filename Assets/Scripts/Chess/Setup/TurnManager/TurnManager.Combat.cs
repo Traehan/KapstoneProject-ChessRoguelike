@@ -47,7 +47,20 @@ namespace Chess
             attacker.GetComponent<PieceRuntime>()?.Notify_AttackResolved(ctx);
             defender.GetComponent<PieceRuntime>()?.Notify_AttackResolved(ctx);
 
-            // (optional but recommended) fire events based on atkToDef/defToAtk here if you want
+            // Fire combat report event (drives clan abilities + UI + analytics)
+            GameEvents.OnAttackResolved?.Invoke(new AttackReport
+            {
+                attacker = attacker,
+                defender = defender,
+                damageToDefender = atkToDef,
+                damageToAttacker = defToAtk,
+                attackerDied = attackerDied,
+                defenderDied = defenderDied,
+                bypassedFortify = ctx.bypassFortify,
+                attackerTeam = attacker != null ? attacker.Team : Team.White,
+                isBossAttack = false,
+                reason = MoveReason.Forced // optional; currently unused
+            });
         }
 
 

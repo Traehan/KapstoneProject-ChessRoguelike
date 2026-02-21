@@ -146,6 +146,12 @@ namespace Chess
 
                     var pieceComp = p as Piece;
                     if (pieceComp) pieceComp.EnsureDefinition(spec.piece);
+                    
+                    //attaches piece runtime
+                    var tm = TurnManager.Instance ?? FindObjectOfType<TurnManager>();
+                    var rt = p.GetComponent<PieceRuntime>();
+                    if (rt == null) rt = p.gameObject.AddComponent<PieceRuntime>();
+                    rt.Init(p, board, tm);
 
                     if (!p.TryGetComponent<IEnemyBehavior>(out _))
                         EnemyBehaviorFactory.EnsureBehaviorFor(p as Piece, difficultyTier);

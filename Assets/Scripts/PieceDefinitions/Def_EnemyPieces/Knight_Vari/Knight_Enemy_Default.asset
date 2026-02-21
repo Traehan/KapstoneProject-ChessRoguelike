@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ded2e13f6ebd3434dad991b06601023a, type: 3}
   m_Name: Knight_Enemy_Default
   m_EditorClassIdentifier: Assembly-CSharp::Chess.PieceDefinition
-  displayName: Pawn
-  icon: {fileID: 0}
+  displayName: Lizard Knight
+  icon: {fileID: 21300000, guid: cad832cae121abb4ea6a759f20543bac, type: 3}
   iconPrefabOverride: {fileID: 0}
   count: 1
   piecePrefab: {fileID: 3621383225441128277, guid: 2860336377c5645458cddfc3aa4ad558, type: 3}

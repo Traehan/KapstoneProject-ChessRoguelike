@@ -20,6 +20,8 @@ namespace Chess
         public int CurrentHP { get; set; }
         public int Attack { get; set; }
         
+        public int Movement { get; set; }
+        
         public int CurrentAttack { get; set; }
 
         // Slots & lists
@@ -47,6 +49,7 @@ namespace Chess
             MaxHP = owner.maxHP;
             CurrentHP = owner.currentHP;
             Attack = owner.attack;
+            Movement = owner.Definition != null ? owner.Definition.maxStride : 1;
 
             // Load prefab loadout, if present
             if (owner.TryGetComponent<PieceLoadout>(out var loadout))
@@ -217,8 +220,8 @@ namespace Chess
                 return;
 
             // Only show info for the player's pieces
-            if (Owner.Team != TM.PlayerTeam)
-                return;
+            // if (Owner.Team != TM.PlayerTeam)
+            //     return;
 
             // Ask the global UI panel to show info for this piece
             if (PieceInfoPanel.Instance != null)

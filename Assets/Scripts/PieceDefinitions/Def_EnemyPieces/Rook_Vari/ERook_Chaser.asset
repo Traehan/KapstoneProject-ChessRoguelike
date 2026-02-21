@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ded2e13f6ebd3434dad991b06601023a, type: 3}
   m_Name: ERook_Chaser
   m_EditorClassIdentifier: Assembly-CSharp::Chess.PieceDefinition
-  displayName: Rook
-  icon: {fileID: 0}
+  displayName: Chaser
+  icon: {fileID: 21300000, guid: 40cd81ad259303d4d86b61bf0935c82d, type: 3}
   iconPrefabOverride: {fileID: 0}
   count: 1
   piecePrefab: {fileID: 7077751289521428780, guid: a95d30d53c190444a88154c06b861826, type: 3}

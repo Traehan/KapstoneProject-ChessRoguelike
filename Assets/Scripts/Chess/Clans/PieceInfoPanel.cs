@@ -30,6 +30,11 @@ public class PieceInfoPanel : MonoBehaviour
     public PieceUpgradeEntryUI upgradeEntryPrefab;
     [Tooltip("Shown when there are no upgrades on this piece.")]
     public TextMeshProUGUI noUpgradesText;
+    [Tooltip("StatTextboxes")]
+    public TextMeshProUGUI currHealthtext;
+    public TextMeshProUGUI maxHealthtext;
+    public TextMeshProUGUI Attacktext;
+    public TextMeshProUGUI Movementtext;
 
     PieceRuntime _current;
 
@@ -95,7 +100,12 @@ public class PieceInfoPanel : MonoBehaviour
             if (piece != null)
             {
                 int displayedAtk = runtime.GetDisplayedAttack();
-                statsText.text = $"ATK: {displayedAtk}\nHP: {piece.currentHP} / {piece.maxHP}";
+                // statsText.text = $"ATK: {displayedAtk}\nHP: {piece.currentHP} / {piece.maxHP}";
+
+                Attacktext.text = $"{displayedAtk}";
+                currHealthtext.text = $"{piece.currentHP}";
+                maxHealthtext.text = $"{piece.maxHP}";
+                Movementtext.text = $"{runtime.Movement}";
             }
             else
             {
@@ -150,22 +160,22 @@ public class PieceInfoPanel : MonoBehaviour
         }
         
             void OnEnable()
-{
-    // If your GameEvents lives in Chess namespace, you already have `using Chess;`
-    GameEvents.OnPieceMoved += OnAnyPieceMoved;
-    GameEvents.OnAttackResolved += OnAttackResolved;
-    GameEvents.OnPieceDamaged += OnPieceDamaged;
-    GameEvents.OnPieceHealed += OnPieceHealed;
-    GameEvents.OnPieceCaptured += OnPieceCaptured;
-    GameEvents.OnPieceRestored += OnPieceRestored;
+    {
+    
+        GameEvents.OnPieceMoved += OnAnyPieceMoved;
+        GameEvents.OnAttackResolved += OnAttackResolved;
+        GameEvents.OnPieceDamaged += OnPieceDamaged;
+        GameEvents.OnPieceHealed += OnPieceHealed;
+        GameEvents.OnPieceCaptured += OnPieceCaptured;
+        GameEvents.OnPieceRestored += OnPieceRestored;
 
-    GameEvents.OnCommandUndone += OnAnyCommandChanged;
-    GameEvents.OnCommandRedone += OnAnyCommandChanged;
-    GameEvents.OnCommandExecuted += OnAnyCommandChanged;
-}
+        GameEvents.OnCommandUndone += OnAnyCommandChanged;
+        GameEvents.OnCommandRedone += OnAnyCommandChanged;
+        GameEvents.OnCommandExecuted += OnAnyCommandChanged;
+    }
 
-void OnDisable()
-{
+        void OnDisable()
+    {
     GameEvents.OnPieceMoved -= OnAnyPieceMoved;
     GameEvents.OnAttackResolved -= OnAttackResolved;
     GameEvents.OnPieceDamaged -= OnPieceDamaged;

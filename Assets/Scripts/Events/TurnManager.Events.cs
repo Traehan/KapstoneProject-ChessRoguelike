@@ -60,6 +60,11 @@ namespace Chess
 
         void HandleAttackResolved(AttackReport r)
         {
+            if (_abilities != null)
+            {
+                foreach (var a in _abilities)
+                    a?.OnAttackResolved(_clan, r.attacker, r.defender, r.damageToDefender, r.damageToAttacker);
+            }
             
             RecomputeEnemyIntentsAndPaint();
             PaintAbilityHints();
