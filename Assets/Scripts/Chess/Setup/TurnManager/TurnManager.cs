@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using TMPro;
+using Card;
 
 namespace Chess
 {
@@ -73,6 +74,10 @@ namespace Chess
 
         [Header("Turn Config")]
         [Min(0)] public int apPerTurn = 3;
+        
+        [Header("Card System")]
+        [SerializeField] private DeckManager deckManager;
+
 
         // Enemy intents
         readonly List<Vector2Int> _enemyIntents = new();
@@ -107,6 +112,9 @@ namespace Chess
         public void EndPlayerTurnButton()
         {
             if (!IsPlayerTurn) return;
+
+            //discard remaining cards
+            deckManager.DiscardRemainingHand();
 
             // clan abilities
             NotifyAbilitiesEndPlayerTurn();

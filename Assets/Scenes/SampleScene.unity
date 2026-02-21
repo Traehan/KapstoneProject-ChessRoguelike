@@ -442,6 +442,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -717,6 +718,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -1129,6 +1131,7 @@ GameObject:
   - component: {fileID: 506964574}
   - component: {fileID: 506964575}
   - component: {fileID: 506964576}
+  - component: {fileID: 506964578}
   m_Layer: 0
   m_Name: GameRoot
   m_TagString: Untagged
@@ -1192,7 +1195,7 @@ Transform:
   m_GameObject: {fileID: 506964566}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 3.9184265, y: 0.76, z: 4.4}
+  m_LocalPosition: {x: 3.9184265, y: 0.76, z: 5.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1251,7 +1254,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 506964566}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c580bace2cadf744e9fdfa2dba0a2d87, type: 3}
+  m_Script: {fileID: 11500000, guid: 7169ce8c0bbe77849821cd3c424902db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Chess.TurnManager
   board: {fileID: 506964572}
@@ -1260,13 +1263,31 @@ MonoBehaviour:
   encounterRunner: {fileID: 506964576}
   enemyMoveDelay: 0.35
   postEnemyTurnPause: 0.15
-  apPerTurn: 4
+  apPerTurn: 3
+  deckManager: {fileID: 506964578}
   enemyIntentColor: {r: 1, g: 0, b: 0, a: 0.85}
   bossIntentColor: {r: 0.7, g: 0.3, b: 1, a: 0.9}
   playerLives: 3
   livesText: {fileID: 0}
   selectedClan: {fileID: 0}
   queenLeader: {fileID: 0}
+--- !u!114 &506964578
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 506964566}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8440842fde3204ed1bb727557294e2b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Card.DeckManager
+  pawn: {fileID: 11400000, guid: 595f3e6689409d140aee48be998daa39, type: 2}
+  rook: {fileID: 11400000, guid: d3ce1abcc8bd471439947cf5ef924296, type: 2}
+  knight: {fileID: 11400000, guid: f2d8868517e7ed7488470ba520d47433, type: 2}
+  bishop: {fileID: 11400000, guid: b4529fb9ecab0f642a3eb0b3a75d3fb4, type: 2}
+  queen: {fileID: 11400000, guid: cf66237b103af9842bb278c16556a7c0, type: 2}
 --- !u!1 &522071946
 GameObject:
   m_ObjectHideFlags: 0
@@ -1546,6 +1567,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -2135,6 +2157,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -3013,6 +3036,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -3110,12 +3134,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0268a1546d966a419107677e8b7d933, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PrepPanel
-  options:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  useGameSessionArmy: 1
+  deckManager: {fileID: 506964578}
   gridParent: {fileID: 1768484477}
   iconPrefab: {fileID: 274019802292542436, guid: 3702456115791e540b20e90f6b698193, type: 3}
   confirmButton: {fileID: 763991274}

@@ -15,6 +15,9 @@ namespace Chess
 
         void BeginPreparation()
         {
+            deckManager.InitializeBattleDeck();
+            deckManager.DrawPrepCards();
+            
             SetPhase(TurnPhase.Preparation);
         }
 
@@ -24,6 +27,13 @@ namespace Chess
             _history.Clear();
 
             CurrentAP = apPerTurn;
+            deckManager.DrawUpTo(4);
+
+            Debug.Log("=== COMBAT HAND ===");
+            foreach (var card in deckManager.Hand)
+            {
+                Debug.Log("Card in hand: " + card.Definition.displayName);
+            }
             GameEvents.OnAPChanged?.Invoke(CurrentAP, apPerTurn);
 
             _movedThisPlayerTurn.Clear();

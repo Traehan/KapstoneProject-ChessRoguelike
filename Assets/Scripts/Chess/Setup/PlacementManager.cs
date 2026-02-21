@@ -2,6 +2,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using Chess;
+using Card;
 
 public class PlacementManager : MonoBehaviour
 {
@@ -15,14 +16,14 @@ public class PlacementManager : MonoBehaviour
     // Track what the player placed during Preparation
     class PlacedRecord
     {
-        public PieceDefinition def;
+        public Card.Card card;
         public Vector2Int coord;
         public Piece instance;
     }
+
     readonly List<PlacedRecord> _placed = new();
     readonly HashSet<Vector2Int> _occupied = new();
 
-    // NEW: TurnManager so we can init PieceRuntime
     [SerializeField] TurnManager turnManager;
 
     void Awake()
@@ -37,20 +38,25 @@ public class PlacementManager : MonoBehaviour
         if (!board.InBounds(c)) return false;
         if (board.IsOccupied(c) || _occupied.Contains(c)) return false;
 
-        bool rowOK = false;
-        foreach (var y in allowedRows) { if (c.y == y) { rowOK = true; break; } }
-        return rowOK;
+        foreach (var y in allowedRows)
+            if (c.y == y)
+                return true;
+
+        return false;
     }
 
-    public bool TryPlace(PieceDefinition def, Vector2Int c)
+    public bool TryPlace(Card.Card card, Vector2Int c)
     {
+        if (card == null) return false;
+
+        var def = card.Definition;
+
         if (!CanPlace(def, c))
         {
             Debug.Log($"Cannot place {def?.displayName} at {c}");
             return false;
         }
 
-        // Ask the board to place the prefab; expect a Piece back
         var placed = board.PlacePiece(def.piecePrefab, c, playerTeam);
         if (placed == null)
         {
@@ -58,55 +64,61 @@ public class PlacementManager : MonoBehaviour
             return false;
         }
 
-        // 🔹 IMPORTANT: make sure this instance uses the *runtime* PieceDefinition
-        // that the shop/army is working with (so ConsumeUpgradesFor finds the right key).
         placed.EnsureDefinition(def);
 
-        // --- ensure each spawned piece has a PieceRuntime and initialize it ---
-        var go = placed.gameObject;
-        var runtime = go.GetComponent<PieceRuntime>();
-        if (runtime == null) runtime = go.AddComponent<PieceRuntime>();
-        runtime.Init(placed, board, turnManager);   // innate abilities + slots seeded here
+        var runtime = placed.GetComponent<PieceRuntime>();
+        if (runtime == null)
+            runtime = placed.gameObject.AddComponent<PieceRuntime>();
 
-        // Bookkeeping for local undo/reset
+        runtime.Init(placed, board, turnManager);
+
         _occupied.Add(c);
-        _placed.Add(new PlacedRecord { def = def, coord = c, instance = placed });
+        _placed.Add(new PlacedRecord
+        {
+            card = card,
+            coord = c,
+            instance = placed
+        });
 
         return true;
     }
 
-
-    // Undo last placement (returns the definition so the Prep panel can restore an icon)
-    public bool UndoLast(out PieceDefinition def)
+    // Undo last placement (returns the Card)
+    public bool UndoLast(out Card.Card card)
     {
-        def = null;
-        if (_placed.Count == 0) return false;
+        card = null;
+
+        if (_placed.Count == 0)
+            return false;
 
         var rec = _placed[_placed.Count - 1];
         _placed.RemoveAt(_placed.Count - 1);
-        def = rec.def;
+
+        card = rec.card;
         _occupied.Remove(rec.coord);
 
-        // Remove from board
         if (!board.TryRemovePieceAt(rec.coord))
         {
-            // Fallback: destroy instance if the board didn't remove it
-            if (rec.instance != null) Destroy(rec.instance.gameObject);
+            if (rec.instance != null)
+                Destroy(rec.instance.gameObject);
         }
+
         return true;
     }
 
-    // Reset all placements (used by a Reset button)
     public void ResetAll()
     {
         for (int i = _placed.Count - 1; i >= 0; i--)
         {
             var rec = _placed[i];
+
             if (!board.TryRemovePieceAt(rec.coord))
             {
-                if (rec.instance != null) Destroy(rec.instance.gameObject);
+                if (rec.instance != null)
+                    Destroy(rec.instance.gameObject);
             }
         }
+
         _placed.Clear();
         _occupied.Clear();
     }

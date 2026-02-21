@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Chess;
+using Card;
 
 [RequireComponent(typeof(Image), typeof(CanvasGroup))]
 public class DraggablePieceIcon : MonoBehaviour,
@@ -10,10 +11,10 @@ public class DraggablePieceIcon : MonoBehaviour,
     [Header("Raycast")]
     public LayerMask boardMask = ~0; // optional: restrict to Tiles layer if you have one
 
-    PieceDefinition _def;
+    Card.Card _card;
     PlacementManager _placer;
     PrepPanel _panel;
-
+    
     RectTransform _rt;
     Canvas _canvas;
     CanvasGroup _cg;
@@ -25,10 +26,13 @@ public class DraggablePieceIcon : MonoBehaviour,
     bool _canPlaceHere;
     static Plane _boardPlane;   // fallback when no collider was hit
 
-    public void Init(PieceDefinition def, PlacementManager placer, PrepPanel panel)
+    public void Init(Card.Card card, PlacementManager placer, PrepPanel panel)
     {
-        _def = def; _placer = placer; _panel = panel;
-        GetComponent<Image>().sprite = def.icon;
+        _card = card;
+        _placer = placer;
+        _panel = panel;
+
+        GetComponent<Image>().sprite = card.Definition.icon;
     }
 
     void Awake()
@@ -89,9 +93,9 @@ public class DraggablePieceIcon : MonoBehaviour,
             // Lazy-build ghost the first time we have a valid coord
             if (_ghostPiece == null)
             {
-                if (_def.piecePrefab == null) return; // no prefab set
-
-                _ghostPiece = Instantiate(_def.piecePrefab, _placer.board.transform);
+                if (_card.Definition.piecePrefab == null) return;
+                
+                _ghostPiece = Instantiate(_card.Definition.piecePrefab, _placer.board.transform);
                 _ghost = _ghostPiece.gameObject;
                 _ghostPiece.Init(_placer.board, _placer.playerTeam, c);
                 SetGhostVisual(0.5f, true);
@@ -105,7 +109,7 @@ public class DraggablePieceIcon : MonoBehaviour,
             _ghostPiece.ApplyBoardMove(c);
             _snapCoord = c;
 
-            _canPlaceHere = _placer.CanPlace(_def, c);
+            _canPlaceHere = _placer.CanPlace(_card.Definition, c);
             TintGhost(_canPlaceHere);
         }
     }
@@ -117,10 +121,14 @@ public class DraggablePieceIcon : MonoBehaviour,
         bool placed = false;
         if (_ghostPiece != null && _canPlaceHere)
         {
-            placed = _placer.TryPlace(_def, _snapCoord);
+            placed = _placer.TryPlace(_card, _snapCoord);
         }
 
-        if (placed) _panel.OnIconConsumed(this);
+        if (placed)
+        {
+            TurnManager.Instance.GetComponent<DeckManager>().ConsumeCard(_card);
+            _panel.OnIconConsumed(this);
+        }
 
         if (_ghost) Destroy(_ghost);
         _ghostPiece = null;
