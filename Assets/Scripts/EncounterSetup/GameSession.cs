@@ -105,6 +105,7 @@ public class GameSession : MonoBehaviour
     public void StartNewRun(ClanDefinition clan)
     {
         selectedClan = clan;
+        startingTroopPool = (clan != null) ? clan.StartingTroopPool : null;
         army.Clear();
         _upgradeCounts.Clear();
         pendingUpgrades.Clear();
@@ -168,5 +169,20 @@ public class GameSession : MonoBehaviour
         // visuals for PrepPanel icon
         _queenDefRuntime.icon = queenIconFallback;
         _queenDefRuntime.iconPrefabOverride = queenIconPrefabOverride;
+    }
+
+    private void ClearStartingTroopPool(PieceDefinition[] Pool)
+    {
+        //Clears starting troop pool
+    }
+
+    private void FillStartingTroopPool(PieceDefinition[] ClanPool, PieceDefinition[] StartingTroopPool)
+    {
+        //fills starting troop pool with ClanPool definitions
+    }
+
+    private void AssignArmyGivenClan(ClanDefinition clan, PieceDefinition[] Pool, PieceDefinition[] StartingTroopPool)
+    {
+        //on each clan button click, if another clanArmyPool is present within the starting troop pool, clears it and fills it with other clan pool
     }
 }

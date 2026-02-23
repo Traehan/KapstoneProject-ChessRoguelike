@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 7077751289521428780}
   - component: {fileID: -7788345429536753289}
   - component: {fileID: -5411198679672895669}
+  - component: {fileID: 1524935310796880161}
   m_Layer: 0
   m_Name: E_Rook_Chaser
   m_TagString: Untagged
@@ -32,7 +33,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.18, y: 0.18, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 4739575137116031692}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &4071762067827595184
@@ -148,3 +150,53 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e57187176bfb074b9a674fa8e3abf5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Chess.EnemyChaseClosest
+--- !u!114 &1524935310796880161
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5210646609092542360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0eae33ce61fece046b10c498505ee2b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BleedPipUI
+  pipPrefab: {fileID: 1826886801726850873, guid: 84a94cfec6cc2774ebbc3e34fd203cd8, type: 3}
+  anchor: {fileID: 4739575137116031692}
+  localOffset: {x: 0, y: 0, z: 0}
+  localEulerOffset: {x: 0, y: 0, z: 0}
+  worldScale: 0.01
+  faceCamera: 1
+  lockUpright: 1
+--- !u!1 &6251983906816149706
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4739575137116031692}
+  m_Layer: 0
+  m_Name: StatusAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4739575137116031692
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6251983906816149706}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 5, y: 8, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3165218035715988667}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

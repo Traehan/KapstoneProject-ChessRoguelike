@@ -1579,27 +1579,27 @@ PrefabInstance:
     - target: {fileID: 7882225745780591430, guid: af55ef0f1e9ca4144b3f95a0a6923738, type: 3}
       propertyPath: 'startingTroopPool.Array.data[0]'
       value: 
-      objectReference: {fileID: 11400000, guid: caaba4aec4be4504e8a8df17ded31d0d, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 7882225745780591430, guid: af55ef0f1e9ca4144b3f95a0a6923738, type: 3}
       propertyPath: 'startingTroopPool.Array.data[1]'
       value: 
-      objectReference: {fileID: 11400000, guid: 7f003049c03d88440ba3260e8dba1515, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 7882225745780591430, guid: af55ef0f1e9ca4144b3f95a0a6923738, type: 3}
       propertyPath: 'startingTroopPool.Array.data[2]'
       value: 
-      objectReference: {fileID: 11400000, guid: 8898d83dfd7480a4b9237ff27c4d5b83, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 7882225745780591430, guid: af55ef0f1e9ca4144b3f95a0a6923738, type: 3}
       propertyPath: 'startingTroopPool.Array.data[3]'
       value: 
-      objectReference: {fileID: 11400000, guid: b4529fb9ecab0f642a3eb0b3a75d3fb4, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 7882225745780591430, guid: af55ef0f1e9ca4144b3f95a0a6923738, type: 3}
       propertyPath: 'startingTroopPool.Array.data[4]'
       value: 
-      objectReference: {fileID: 11400000, guid: f2d8868517e7ed7488470ba520d47433, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 7882225745780591430, guid: af55ef0f1e9ca4144b3f95a0a6923738, type: 3}
       propertyPath: 'startingTroopPool.Array.data[5]'
       value: 
-      objectReference: {fileID: 11400000, guid: d3ce1abcc8bd471439947cf5ef924296, type: 2}
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: LawkeeperStrike
   m_EditorClassIdentifier: Assembly-CSharp::Chess.LawkeeperStrikeAbility
   displayName: Lawkeeper Strike
-  description: When attacking at MAX fortify, will gain +2 attack permanently
-  maxStacks: 3
+  description: When attacking at 3 or more fortify, will gain +2 attack permanently
+  maxStacks: 10
   requiredFortify: 3
   attackPerStack: 2
   stacksGained: 0

@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: +4HP-1ATTCK
   m_EditorClassIdentifier: Assembly-CSharp::Chess.PieceUpgradeSO
   displayName: Big Hunk
-  description: Boosts Max Health by 4, but Attack Decreases by 1
+  description: Boosts Max Health by 10, but Attack Decreases by 3
   icon: {fileID: 21300000, guid: 256d3a43e88b9ed4c96e57d95d6b370c, type: 3}
-  addMaxHP: 4
-  addAttack: -1
+  addMaxHP: 5
+  addAttack: -3
   keywordAbility: {fileID: 0}
+  shopPrice: 25

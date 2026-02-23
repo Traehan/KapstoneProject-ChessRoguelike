@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: +2ATTCK
   m_EditorClassIdentifier: Assembly-CSharp::Chess.PieceUpgradeSO
   displayName: Sharpened Blade
-  description: Boosts attack damage by 4!
+  description: Boosts attack damage by 5!
   icon: {fileID: 21300000, guid: 51eb30503c3b74b45a43ccf29ef50a33, type: 3}
   addMaxHP: 0
-  addAttack: 2
+  addAttack: 5
   keywordAbility: {fileID: 0}
   shopPrice: 25

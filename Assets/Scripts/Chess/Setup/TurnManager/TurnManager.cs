@@ -115,6 +115,8 @@ namespace Chess
             NotifyAllPlayerPieceRuntimes_EndTurn();
 
             PaintAbilityHints();
+            //eliminates any enemies who have bleed before turnstart
+            BleedSystem.TickAll(board);
             StartCoroutine(EnemyTurnRoutine()); // in TurnFlow partial
         }
 

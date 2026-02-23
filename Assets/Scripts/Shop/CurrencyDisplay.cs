@@ -5,7 +5,7 @@ public class CurrencyDisplay : MonoBehaviour
 {
     [Header("UI References")]
     [SerializeField] private TextMeshProUGUI coinText;
-    [SerializeField] private string textFormat = "Coins: {0}";
+    [SerializeField] private string textFormat = "{0}";
 
     void Start()
     {

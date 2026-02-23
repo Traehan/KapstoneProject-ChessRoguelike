@@ -2533,12 +2533,12 @@ MonoBehaviour:
   - {fileID: 1612916967}
   - {fileID: 1364767551}
   availablePieces:
-  - {fileID: 11400000, guid: 7f003049c03d88440ba3260e8dba1515, type: 2}
-  - {fileID: 11400000, guid: caaba4aec4be4504e8a8df17ded31d0d, type: 2}
-  - {fileID: 11400000, guid: 8898d83dfd7480a4b9237ff27c4d5b83, type: 2}
-  - {fileID: 11400000, guid: f2d8868517e7ed7488470ba520d47433, type: 2}
-  - {fileID: 11400000, guid: b4529fb9ecab0f642a3eb0b3a75d3fb4, type: 2}
-  - {fileID: 11400000, guid: d3ce1abcc8bd471439947cf5ef924296, type: 2}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   availableUpgrades:
   - {fileID: 11400000, guid: 70e3aa569103f0e4ab9731b711af9635, type: 2}
   - {fileID: 11400000, guid: 3bb739d54deaac34fb4e297d4dc31ca1, type: 2}
@@ -2557,6 +2557,7 @@ MonoBehaviour:
   leaveButton: {fileID: 1240464508}
   prepPanel: {fileID: 0}
   mapSceneName: MapScene
+  useGameSessionStartingPool: 1
 --- !u!1 &782116803
 GameObject:
   m_ObjectHideFlags: 0

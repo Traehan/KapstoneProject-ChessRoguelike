@@ -34,17 +34,35 @@ namespace Chess
 
         void NotifyAbilitiesBeginPlayerTurn()
         {
+            if (_abilities == null) return;
             foreach (var a in _abilities) a?.OnBeginPlayerTurn(_clan);
         }
 
         void NotifyAbilitiesEndPlayerTurn()
         {
+            if (_abilities == null) return;
             foreach (var a in _abilities) a?.OnEndPlayerTurn(_clan);
         }
 
         public void NotifyAbilitiesPieceMoved(Piece p)
         {
+            if (_abilities == null) return;
             foreach (var a in _abilities) a?.OnPieceMoved(_clan, p);
+        }
+
+        // ✅ NEW: forward OnAttackResolved → abilities
+        void NotifyAbilitiesAttackResolved(AttackReport r)
+        {
+            if (_abilities == null) return;
+
+            foreach (var a in _abilities)
+            {
+                a?.OnAttackResolved(_clan,
+                    r.attacker,
+                    r.defender,
+                    r.damageToDefender,
+                    r.damageToAttacker);
+            }
         }
     }
 }

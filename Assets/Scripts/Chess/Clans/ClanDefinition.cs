@@ -17,6 +17,8 @@ namespace Chess
         [Header("Queen Abilities (in order)")]
         public AbilitySO[] abilities;
         
+        public PieceDefinition[] StartingTroopPool;
+        
         
     }
 }
