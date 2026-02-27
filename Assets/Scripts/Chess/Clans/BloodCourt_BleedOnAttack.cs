@@ -20,10 +20,10 @@ namespace Chess
             // Optional: if they died, don’t bother stacking bleed
             if (defender.currentHP <= 0) return;
 
-            var bleed = defender.GetComponent<BleedStatus>();
-            if (bleed == null) bleed = defender.gameObject.AddComponent<BleedStatus>();
-
-            bleed.Add(bleedPerAttack);
+            var sc = defender.GetComponent<StatusController>(); //gets status controller to take over for the bleed status
+            if (sc == null) sc = defender.gameObject.AddComponent<StatusController>();
+            sc.AddStacks(StatusId.Bleed, bleedPerAttack);
+            Debug.Log("Gave enemy bleed");
         }
     }
 }

@@ -7,7 +7,10 @@ namespace Chess
         void OnEnable()
         {
             GameEvents.OnPieceMoved += HandlePieceMoved;
+            
+            GameEvents.OnAttackResolved -= HandleAttackResolved;
             GameEvents.OnAttackResolved += HandleAttackResolved;
+            
             GameEvents.OnPieceCaptured += HandlePieceCaptured;
             GameEvents.OnPieceRestored += HandlePieceRestored;
             GameEvents.OnPieceDamaged += HandlePieceDamaged;
@@ -59,6 +62,7 @@ namespace Chess
 
             RecomputeEnemyIntentsAndPaint();
             PaintAbilityHints();
+            Debug.Log($"OnAttackResolved fired: attacker={r.attacker?.name} defender={r.defender?.name}");
         }
 
         void HandlePieceCaptured(Piece victim, Piece by, Vector2Int at)

@@ -6,23 +6,25 @@ using Chess;
 public sealed class BleedPipUI : MonoBehaviour
 {
     [Header("Assign in Inspector")]
-    [SerializeField] GameObject pipPrefab;     // UI_BleedPip prefab (Canvas on root, World Space)
-    [SerializeField] Transform anchor;         // StatusAnchor on the piece
+    [SerializeField] private GameObject pipPrefab; // UI_BleedPip prefab (Canvas on root, World Space)
+    [SerializeField] private Transform anchor;     // StatusAnchor on the piece
 
     [Header("Placement")]
-    [SerializeField] Vector3 localOffset = new Vector3(0f, 0.8f, 0f);
-    [SerializeField] Vector3 localEulerOffset = Vector3.zero; // optional extra rotation
-    [SerializeField] float worldScale = 0.01f;
+    [Tooltip("Extra local offset from the anchor. If you want to control position ONLY via anchor, set this to (0,0,0).")]
+    [SerializeField] private Vector3 localOffset = Vector3.zero;
+
+    [Tooltip("Controls how big the pip is in world space. Keep small (ex: 0.01).")]
+    [SerializeField] private float worldScale = 0.01f;
 
     [Header("Facing")]
-    [SerializeField] bool faceCamera = true;
-    [SerializeField] bool lockUpright = true; // keeps it from tilting with camera pitch
+    [SerializeField] private bool faceCamera = true;
+    [SerializeField] private bool lockUpright = true; // avoids tilting with camera pitch
 
-    GameObject _pip;
-    TextMeshProUGUI _count;
-    Piece _piece;
-    BleedStatus _bleed;
-    Camera _cam;
+    private GameObject _pip;
+    private TextMeshProUGUI _count;
+    private Piece _piece;
+    private BleedStatus _bleed;
+    private Camera _cam;
 
     void Awake()
     {
@@ -44,18 +46,17 @@ public sealed class BleedPipUI : MonoBehaviour
 
     void LateUpdate()
     {
-        if (_pip == null || !_pip.activeSelf) return;
         if (!faceCamera) return;
+        if (_pip == null || !_pip.activeSelf) return;
 
         if (_cam == null) _cam = Camera.main;
         if (_cam == null) return;
 
-        // Billboard: face camera
         var t = _pip.transform;
 
         if (lockUpright)
         {
-            // Face camera, but stay upright (no pitching down/up)
+            // Face camera but stay upright
             Vector3 toCam = _cam.transform.position - t.position;
             toCam.y = 0f;
             if (toCam.sqrMagnitude > 0.0001f)
@@ -66,10 +67,6 @@ public sealed class BleedPipUI : MonoBehaviour
             // Fully face camera
             t.forward = _cam.transform.forward;
         }
-
-        // Apply any extra rotation you want (rarely needed)
-        if (localEulerOffset != Vector3.zero)
-            t.rotation *= Quaternion.Euler(localEulerOffset);
     }
 
     void OnPieceStatsChanged(Piece changed)
@@ -84,18 +81,32 @@ public sealed class BleedPipUI : MonoBehaviour
 
         if (pipPrefab == null)
         {
-            Debug.LogError("[BleedPipUI] pipPrefab not assigned.", this);
+            Debug.LogError("[BleedPipUI] pipPrefab is NULL (assign UI_BleedPip prefab).", this);
             return;
         }
 
-        if (anchor == null) anchor = transform;
+        if (anchor == null)
+        {
+            Debug.LogWarning("[BleedPipUI] anchor is NULL (assign StatusAnchor). Using self.", this);
+            anchor = transform;
+        }
 
         _pip = Instantiate(pipPrefab, anchor);
-        _pip.transform.localPosition = localOffset;
-        _pip.transform.localScale = Vector3.one * worldScale;
+        _pip.name = "UI_BleedPip(Clone)";
 
-        // IMPORTANT: don't inherit weird rotations from anchor
+        // Position relative to the anchor
+        _pip.transform.localPosition = localOffset;
+
+        // IMPORTANT: do not inherit anchor rotation (we billboard in LateUpdate)
         _pip.transform.localRotation = Quaternion.identity;
+
+        // ✅ IMPORTANT: cancel out the anchor's scale so anchor can be 1.2,1.2,1 and pip remains stable.
+        Vector3 a = anchor.lossyScale;
+        float invX = (a.x != 0f) ? 1f / a.x : 1f;
+        float invY = (a.y != 0f) ? 1f / a.y : 1f;
+        float invZ = (a.z != 0f) ? 1f / a.z : 1f;
+
+        _pip.transform.localScale = new Vector3(invX, invY, invZ) * worldScale;
 
         _count = _pip.GetComponentInChildren<TextMeshProUGUI>(true);
         if (_count == null)

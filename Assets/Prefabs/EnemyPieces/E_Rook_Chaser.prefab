@@ -10,10 +10,11 @@ GameObject:
   m_Component:
   - component: {fileID: 3165218035715988667}
   - component: {fileID: 4071762067827595184}
+  - component: {fileID: 9185911731933486173}
   - component: {fileID: 7077751289521428780}
   - component: {fileID: -7788345429536753289}
   - component: {fileID: -5411198679672895669}
-  - component: {fileID: 1524935310796880161}
+  - component: {fileID: 7891592006996150527}
   m_Layer: 0
   m_Name: E_Rook_Chaser
   m_TagString: Untagged
@@ -95,6 +96,18 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &9185911731933486173
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5210646609092542360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 963de47befe14574080e5675e02813e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Chess.StatusController
 --- !u!114 &7077751289521428780
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -150,7 +163,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e57187176bfb074b9a674fa8e3abf5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Chess.EnemyChaseClosest
---- !u!114 &1524935310796880161
+--- !u!114 &7891592006996150527
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -159,16 +172,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 5210646609092542360}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0eae33ce61fece046b10c498505ee2b3, type: 3}
+  m_Script: {fileID: 11500000, guid: 32f9fc81c61747b48aebb621269569d0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BleedPipUI
-  pipPrefab: {fileID: 1826886801726850873, guid: 84a94cfec6cc2774ebbc3e34fd203cd8, type: 3}
+  m_EditorClassIdentifier: Assembly-CSharp::Chess.StatusIndicatorWidget
+  database: {fileID: 11400000, guid: a1c1aa1713cc17443a5e4fbc4a3897d7, type: 2}
   anchor: {fileID: 4739575137116031692}
+  iconPrefab: {fileID: 1019079167299063384, guid: e787a9f73dd261b47b8ea9facc564988, type: 3}
+  chipPrefab: {fileID: 6001622697872831897, guid: 7d86de16bfb34b44eb2119de6d2923fa, type: 3}
+  expandedMaxIcons: 2
+  iconSpacing: 0.35
   localOffset: {x: 0, y: 0, z: 0}
-  localEulerOffset: {x: 0, y: 0, z: 0}
-  worldScale: 0.01
-  faceCamera: 1
-  lockUpright: 1
 --- !u!1 &6251983906816149706
 GameObject:
   m_ObjectHideFlags: 0
@@ -194,8 +207,8 @@ Transform:
   m_GameObject: {fileID: 6251983906816149706}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5, y: 8, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 10, z: 0}
+  m_LocalScale: {x: 0.18, y: 0.18, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3165218035715988667}
