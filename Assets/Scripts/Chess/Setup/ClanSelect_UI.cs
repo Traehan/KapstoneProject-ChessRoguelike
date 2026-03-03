@@ -106,7 +106,7 @@ public class ClanSelectUI : MonoBehaviour
         queenAuraText.text = _chosen.QueenAuraDescription;
         queenIcon.gameObject.SetActive(true);
         queenIcon.sprite = _chosen.Queen;
-        // clanPassiveText.text = _chosen.clanPassiveDescription
+        
     }
 
     void OnStartRun()

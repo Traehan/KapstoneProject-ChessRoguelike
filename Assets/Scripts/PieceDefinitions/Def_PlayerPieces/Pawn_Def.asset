@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Pawn_Def
   m_EditorClassIdentifier: Assembly-CSharp::Chess.PieceDefinition
   displayName: Pawn
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 112a2d4349b6f430bbc0e73f846bdc4b, type: 3}
   iconPrefabOverride: {fileID: 0}
   count: 1
   piecePrefab: {fileID: 5260526475563677331, guid: 95a8fa6630fb9b04489e81fa8bc60830, type: 3}

@@ -15,9 +15,6 @@ namespace Chess
 
         void BeginPreparation()
         {
-            deckManager.InitializeBattleDeck();
-            deckManager.DrawPrepCards();
-            
             SetPhase(TurnPhase.Preparation);
         }
 
@@ -27,13 +24,16 @@ namespace Chess
             _history.Clear();
 
             CurrentAP = apPerTurn;
-            deckManager.DrawUpTo(4);
-
-            Debug.Log("=== COMBAT HAND ===");
-            foreach (var card in deckManager.Hand)
+            deckManager?.DrawUpTo(4);
+            FindObjectOfType<HandPanel>()?.RebuildHand();
+            
+            if (deckManager != null)
             {
-                Debug.Log("Card in hand: " + card.Definition.displayName);
+                Debug.Log("=== COMBAT HAND ===");
+                foreach (var def in deckManager.Hand)
+                    Debug.Log("Card in hand: " + def.displayName);
             }
+            
             GameEvents.OnAPChanged?.Invoke(CurrentAP, apPerTurn);
 
             _movedThisPlayerTurn.Clear();

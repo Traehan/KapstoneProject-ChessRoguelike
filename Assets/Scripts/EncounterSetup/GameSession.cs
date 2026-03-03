@@ -22,6 +22,10 @@ public class GameSession : MonoBehaviour
     public Sprite queenIconFallback;                  // assign a queen sprite in the inspector
     public GameObject queenIconPrefabOverride;        // optional: per-queen icon prefab
     
+    [Header("Combat Deck (non-leaders, persistent for run)")]
+    public PieceDefinition pawnTemplate;                 // assign Pawn_Def in inspector
+    public List<PieceDefinition> runDeckNonLeaders = new(); // Pawn x8 + shop adds
+    
     // One-time grant flag per run
     public bool hasGrantedStartingTroop = false;
 
@@ -104,24 +108,52 @@ public class GameSession : MonoBehaviour
     /// Call when the player picks a clan on the Clan Select scene.
     public void StartNewRun(ClanDefinition clan)
     {
+        // --- persist clan + pools ---
         selectedClan = clan;
-        army.Clear();
+        startingTroopPool = (clan != null) ? clan.StartingTroopPool : null;
+
+        // --- reset run state ---
+        army.Clear();                 // leaders for prep: queen + troop
+        runDeckNonLeaders.Clear();    // combat deck: pawns + shop adds
+
         _upgradeCounts.Clear();
         pendingUpgrades.Clear();
+
         _queenDefRuntime = null;
         hasGrantedStartingTroop = false;
 
         MapState.ClearState();
         CurrencyManager.ClearSavedCurrency();
-        
         if (CurrencyManager.Instance != null)
-        {
             CurrencyManager.Instance.ResetCurrency();
-        }
 
+        // --- build leaders (prep only) ---
         EnsureQueenPieceDefinition();
         if (_queenDefRuntime != null && !army.Contains(_queenDefRuntime))
             army.Add(_queenDefRuntime);
+
+        var troop = GrantRandomStartingTroop(); // adds to army + sets hasGrantedStartingTroop
+
+        // --- build combat deck (non-leaders) ---
+        if (pawnTemplate == null)
+        {
+            Debug.LogError("[GameSession] pawnTemplate is not assigned.");
+        }
+        else
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                var pawnRuntime = CreateRuntimePiece(pawnTemplate);
+                runDeckNonLeaders.Add(pawnRuntime);
+            }
+        }
+
+        // --- logs (milestone proof) ---
+        Debug.Log($"[GameSession] Clan: {selectedClan?.clanName}");
+        Debug.Log($"[GameSession] Queen leader: {_queenDefRuntime?.displayName}");
+        Debug.Log($"[GameSession] Troop leader: {troop?.displayName}");
+        Debug.Log($"[GameSession] Leaders (army) count: {army.Count}");
+        Debug.Log($"[GameSession] NonLeaderDeck count: {runDeckNonLeaders.Count} (expected 8)");
     }
 
     /// Called by Map scene once (on first open) to grant a random starting troop.
@@ -168,5 +200,20 @@ public class GameSession : MonoBehaviour
         // visuals for PrepPanel icon
         _queenDefRuntime.icon = queenIconFallback;
         _queenDefRuntime.iconPrefabOverride = queenIconPrefabOverride;
+    }
+
+    private void ClearStartingTroopPool(PieceDefinition[] Pool)
+    {
+        //Clears starting troop pool
+    }
+
+    private void FillStartingTroopPool(PieceDefinition[] ClanPool, PieceDefinition[] StartingTroopPool)
+    {
+        //fills starting troop pool with ClanPool definitions
+    }
+
+    private void AssignArmyGivenClan(ClanDefinition clan, PieceDefinition[] Pool, PieceDefinition[] StartingTroopPool)
+    {
+        //on each clan button click, if another clanArmyPool is present within the starting troop pool, clears it and fills it with other clan pool
     }
 }

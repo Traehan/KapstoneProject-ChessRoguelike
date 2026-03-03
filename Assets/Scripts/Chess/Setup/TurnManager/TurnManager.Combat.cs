@@ -4,7 +4,6 @@ namespace Chess
 {
     public partial class TurnManager
     {
-        
         int GetAttackValue(Piece p)
         {
             if (p == null) return 0;
@@ -18,7 +17,14 @@ namespace Chess
         public void ResolveCombat(Piece attacker, Piece defender, bool attackerIsPlayer,
             out bool attackerDied, out bool defenderDied)
         {
-            int baseDmg = GetAttackValue(attacker); 
+            if (attacker == null || defender == null)
+            {
+                attackerDied = false;
+                defenderDied = false;
+                return;
+            }
+
+            int baseDmg = GetAttackValue(attacker);
 
             if (_ironMarchAura != null)
                 baseDmg += _ironMarchAura.GetAttackBonusIfEligible(_clan, attacker);
@@ -38,6 +44,13 @@ namespace Chess
 
             int defToAtk = attackerIsPlayer ? 0 : Mathf.Max(0, defender.attack - attacker.fortifyStacks);
 
+            // --- Apply damage ---
+            if (atkToDef > 0)
+                GameEvents.OnPieceDamaged?.Invoke(defender, atkToDef, attacker);
+
+            if (defToAtk > 0)
+                GameEvents.OnPieceDamaged?.Invoke(attacker, defToAtk, defender);
+
             defender.currentHP -= atkToDef;
             attacker.currentHP -= defToAtk;
 
@@ -47,7 +60,7 @@ namespace Chess
             attacker.GetComponent<PieceRuntime>()?.Notify_AttackResolved(ctx);
             defender.GetComponent<PieceRuntime>()?.Notify_AttackResolved(ctx);
 
-            // Fire combat report event (drives clan abilities + UI + analytics)
+            // ✅ CRITICAL: fire attack resolved event so clan abilities (Bleed) can react
             GameEvents.OnAttackResolved?.Invoke(new AttackReport
             {
                 attacker = attacker,
@@ -57,12 +70,11 @@ namespace Chess
                 attackerDied = attackerDied,
                 defenderDied = defenderDied,
                 bypassedFortify = ctx.bypassFortify,
-                attackerTeam = attacker != null ? attacker.Team : Team.White,
+                attackerTeam = attacker.Team,
                 isBossAttack = false,
-                reason = MoveReason.Forced // optional; currently unused
+                reason = MoveReason.Forced // not used yet, safe default
             });
         }
-
 
         public void ResolveBossAttack(Piece attacker, Piece defender, out bool defenderDied)
         {
@@ -73,10 +85,28 @@ namespace Chess
             if (_ironMarchAura != null)
                 dmg += _ironMarchAura.GetAttackBonusIfEligible(_clan, attacker);
 
-            defender.currentHP -= Mathf.Max(0, dmg - defender.fortifyStacks);
+            int final = Mathf.Max(0, dmg - defender.fortifyStacks);
+
+            if (final > 0)
+                GameEvents.OnPieceDamaged?.Invoke(defender, final, attacker);
+
+            defender.currentHP -= final;
             defenderDied = defender.currentHP <= 0;
+
+            // ✅ Also fire OnAttackResolved for boss attacks (optional but consistent)
+            GameEvents.OnAttackResolved?.Invoke(new AttackReport
+            {
+                attacker = attacker,
+                defender = defender,
+                damageToDefender = final,
+                damageToAttacker = 0,
+                attackerDied = false,
+                defenderDied = defenderDied,
+                bypassedFortify = false,
+                attackerTeam = attacker.Team,
+                isBossAttack = true,
+                reason = MoveReason.Forced
+            });
         }
-
-
     }
 }

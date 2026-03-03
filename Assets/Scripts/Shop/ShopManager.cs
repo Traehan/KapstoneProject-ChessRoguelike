@@ -33,6 +33,7 @@ public class ShopManager : MonoBehaviour
 
     private List<PieceUpgradeSO> shownUpgrades = new List<PieceUpgradeSO>();
     private bool hasRefreshed = false;
+    [SerializeField] bool useGameSessionStartingPool = true;
 
     void Start()
     {
@@ -52,18 +53,33 @@ public class ShopManager : MonoBehaviour
     {
         if (pieceSlots == null || pieceSlots.Length == 0) return;
 
-        List<PieceDefinition> shuffledPieces = new List<PieceDefinition>(availablePieces);
-        ShuffleList(shuffledPieces);
+        // ✅ Pull from GameSession clan pool
+        List<PieceDefinition> source;
+        if (useGameSessionStartingPool && GameSession.I != null && GameSession.I.startingTroopPool != null)
+            source = new List<PieceDefinition>(GameSession.I.startingTroopPool);
+        else
+            source = new List<PieceDefinition>(availablePieces); // fallback
+
+        // Safety: remove nulls + duplicates
+        source.RemoveAll(x => x == null);
+
+        // (Optional) remove Queen / leader if it shouldn't appear in shop:
+        // source.RemoveAll(x => x != null && x.isLeader); // depending on your fields
+
+        ShuffleList(source);
 
         for (int i = 0; i < pieceSlots.Length; i++)
         {
-            if (i < shuffledPieces.Count)
+            if (i < source.Count)
             {
-                PieceDefinition def = shuffledPieces[i];
+                PieceDefinition def = source[i];
                 int price = def.shopPrice;
-                pieceSlots[i].SetPieceItem(shuffledPieces[i], price, this);
+                pieceSlots[i].SetPieceItem(def, price, manager: this);
             }
-            else pieceSlots[i].Clear();
+            else
+            {
+                pieceSlots[i].Clear();
+            }
         }
     }
 

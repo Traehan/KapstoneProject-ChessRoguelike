@@ -16,7 +16,7 @@ public class PlacementManager : MonoBehaviour
     // Track what the player placed during Preparation
     class PlacedRecord
     {
-        public Card.Card card;
+        public PieceDefinition def;
         public Vector2Int coord;
         public Piece instance;
     }
@@ -36,7 +36,7 @@ public class PlacementManager : MonoBehaviour
     {
         if (board == null || def == null || def.piecePrefab == null) return false;
         if (!board.InBounds(c)) return false;
-        if (board.IsOccupied(c) || _occupied.Contains(c)) return false;
+        if (board.IsOccupied(c)) return false;
 
         foreach (var y in allowedRows)
             if (c.y == y)
@@ -45,11 +45,9 @@ public class PlacementManager : MonoBehaviour
         return false;
     }
 
-    public bool TryPlace(Card.Card card, Vector2Int c)
+    public bool TryPlace(PieceDefinition def, Vector2Int c)
     {
-        if (card == null) return false;
-
-        var def = card.Definition;
+        if (def == null) return false;
 
         if (!CanPlace(def, c))
         {
@@ -75,7 +73,7 @@ public class PlacementManager : MonoBehaviour
         _occupied.Add(c);
         _placed.Add(new PlacedRecord
         {
-            card = card,
+            def = def,
             coord = c,
             instance = placed
         });
@@ -84,9 +82,9 @@ public class PlacementManager : MonoBehaviour
     }
 
     // Undo last placement (returns the Card)
-    public bool UndoLast(out Card.Card card)
+    public bool UndoLast(out PieceDefinition def)
     {
-        card = null;
+        def = null;
 
         if (_placed.Count == 0)
             return false;
@@ -94,7 +92,7 @@ public class PlacementManager : MonoBehaviour
         var rec = _placed[_placed.Count - 1];
         _placed.RemoveAt(_placed.Count - 1);
 
-        card = rec.card;
+        def = rec.def;
         _occupied.Remove(rec.coord);
 
         if (!board.TryRemovePieceAt(rec.coord))

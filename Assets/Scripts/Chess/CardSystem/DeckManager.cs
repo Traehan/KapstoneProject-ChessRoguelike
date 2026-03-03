@@ -6,92 +6,70 @@ namespace Card
 {
     public class DeckManager : MonoBehaviour
     {
-        public List<Card> Deck { get; private set; } = new();
-        public List<Card> Discard { get; private set; } = new();
-        public List<Card> Hand { get; private set; } = new();
-        public List<Card> PrepHand { get; private set; } = new();
+        // Battle piles (reset every battle)
+        public List<PieceDefinition> DrawPile { get; private set; } = new();
+        public List<PieceDefinition> Hand { get; private set; } = new();
+        public List<PieceDefinition> Discard { get; private set; } = new();
+        public List<PieceDefinition> PlayedThisBattle { get; } = new();
 
-        [Header("Piece Definitions")]
-        public PieceDefinition pawn;
-        public PieceDefinition rook;
-        public PieceDefinition knight;
-        public PieceDefinition bishop;
-        public PieceDefinition queen;
+        // For undo-friendly play later (Milestone 6)
+        public List<PieceDefinition> PlayedThisTurn { get; private set; } = new();
 
-        public void InitializeBattleDeck()
+        public void InitializeBattleFromRunDeck(List<PieceDefinition> runDeckNonLeaders)
         {
-            Deck.Clear();
-            Discard.Clear();
+            DrawPile.Clear();
             Hand.Clear();
-            PrepHand.Clear();
+            Discard.Clear();
+            PlayedThisBattle.Clear();
+            PlayedThisTurn.Clear();
 
-            for (int i = 0; i < 8; i++)
-                Deck.Add(new Card(pawn));
-
-            Deck.Add(new Card(rook));
-            Deck.Add(new Card(knight));
-            Deck.Add(new Card(bishop));
-            Deck.Add(new Card(queen));
-
-            Shuffle(Deck);
-        }
-
-        public void DrawPrepCards()
-        {
-            Debug.Log("DrawPrepCards ENTERED");
-            var elites = Deck.FindAll(c => c.Definition != pawn);
-            Shuffle(elites);
-
-            for (int i = 0; i < Mathf.Min(2, elites.Count); i++)
+            if (runDeckNonLeaders == null)
             {
-                Debug.Log("Adding prep card: " + elites[i].Definition);
-                PrepHand.Add(elites[i]);
-                Deck.Remove(elites[i]);
+                Debug.LogError("[DeckManager] runDeckNonLeaders is null.");
+                return;
             }
+
+            DrawPile.AddRange(runDeckNonLeaders);
+            Shuffle(DrawPile);
+
+            Debug.Log($"[DeckManager] Battle init. DrawPile={DrawPile.Count}, Hand={Hand.Count}, Discard={Discard.Count}");
         }
 
         public void DrawUpTo(int amount)
         {
             while (Hand.Count < amount)
             {
-                if (Deck.Count == 0)
-                    Reshuffle();
+                if (DrawPile.Count == 0)
+                    ReshuffleDiscardIntoDraw();
 
-                if (Deck.Count == 0)
+                if (DrawPile.Count == 0)
                     break;
 
-                var card = Deck[0];
-                Deck.RemoveAt(0);
-                Hand.Add(card);
+                var top = DrawPile[0];
+                DrawPile.RemoveAt(0);
+                Hand.Add(top);
             }
         }
 
-        public void DiscardRemainingHand()
+        public void DiscardEndOfTurn()
         {
+            // Unplayed cards
             Discard.AddRange(Hand);
             Hand.Clear();
         }
 
-        public void ConsumeCard(Card card)
-        {
-            Debug.Log("Consumed card: " + card.Definition.displayName);
-            Debug.Log("Deck remaining: " + Deck.Count);
-            Debug.Log("Discard count: " + Discard.Count);
-
-            Hand.Remove(card);
-            PrepHand.Remove(card);
-        }
-
-        void Reshuffle()
+        void ReshuffleDiscardIntoDraw()
         {
             if (Discard.Count == 0) return;
 
-            Deck.AddRange(Discard);
+            DrawPile.AddRange(Discard);
             Discard.Clear();
-            Shuffle(Deck);
+            Shuffle(DrawPile);
+
+            Debug.Log($"[DeckManager] Reshuffled. DrawPile={DrawPile.Count}");
         }
 
-        void Shuffle(List<Card> list)
+        void Shuffle(List<PieceDefinition> list)
         {
             for (int i = 0; i < list.Count; i++)
             {

@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: +1HP+1ATTCK
   m_EditorClassIdentifier: Assembly-CSharp::Chess.PieceUpgradeSO
   displayName: Combat Training
-  description: Boosts Max health and Attack by 1
+  description: Boosts Max health and Attack by 2
   icon: {fileID: 21300000, guid: 3ccf5d82f2c90fb4cab7af5b7e6879fa, type: 3}
-  addMaxHP: 1
-  addAttack: 1
+  addMaxHP: 2
+  addAttack: 2
   keywordAbility: {fileID: 0}
+  shopPrice: 25

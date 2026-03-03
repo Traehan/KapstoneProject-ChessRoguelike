@@ -22,3 +22,8 @@ MonoBehaviour:
   queenPrefab: {fileID: 5587423889380339668, guid: 6108990944c8b7540897dbd9ac91c8cf, type: 3}
   abilities:
   - {fileID: 11400000, guid: 83af93f6eef53354ab0676430a465793, type: 2}
+  - {fileID: 11400000, guid: fac02ea5b2dfc77499696ded6b5f17f8, type: 2}
+  StartingTroopPool:
+  - {fileID: 11400000, guid: caaba4aec4be4504e8a8df17ded31d0d, type: 2}
+  - {fileID: 11400000, guid: 7f003049c03d88440ba3260e8dba1515, type: 2}
+  - {fileID: 11400000, guid: 8898d83dfd7480a4b9237ff27c4d5b83, type: 2}

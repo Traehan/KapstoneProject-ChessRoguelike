@@ -23,3 +23,10 @@ MonoBehaviour:
   abilities:
   - {fileID: 11400000, guid: 18cbc162a4759cf439410e914e9ddcd5, type: 2}
   - {fileID: 11400000, guid: 7910056497fdbba4b8030fde4fee99e2, type: 2}
+  StartingTroopPool:
+  - {fileID: 11400000, guid: b4529fb9ecab0f642a3eb0b3a75d3fb4, type: 2}
+  - {fileID: 11400000, guid: f2d8868517e7ed7488470ba520d47433, type: 2}
+  - {fileID: 11400000, guid: d3ce1abcc8bd471439947cf5ef924296, type: 2}
+  - {fileID: 11400000, guid: 8898d83dfd7480a4b9237ff27c4d5b83, type: 2}
+  - {fileID: 11400000, guid: caaba4aec4be4504e8a8df17ded31d0d, type: 2}
+  - {fileID: 11400000, guid: 7f003049c03d88440ba3260e8dba1515, type: 2}

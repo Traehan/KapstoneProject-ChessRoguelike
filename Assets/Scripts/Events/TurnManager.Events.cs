@@ -7,12 +7,13 @@ namespace Chess
         void OnEnable()
         {
             GameEvents.OnPieceMoved += HandlePieceMoved;
+            
+            GameEvents.OnAttackResolved -= HandleAttackResolved;
             GameEvents.OnAttackResolved += HandleAttackResolved;
+            
             GameEvents.OnPieceCaptured += HandlePieceCaptured;
             GameEvents.OnPieceRestored += HandlePieceRestored;
             GameEvents.OnPieceDamaged += HandlePieceDamaged;
-            
-
 
             GameEvents.OnCommandExecuted += HandleCommandExecuted;
             GameEvents.OnCommandUndone += HandleCommandUndone;
@@ -26,7 +27,6 @@ namespace Chess
             GameEvents.OnPieceCaptured -= HandlePieceCaptured;
             GameEvents.OnPieceRestored -= HandlePieceRestored;
             GameEvents.OnPieceDamaged -= HandlePieceDamaged;
-
 
             GameEvents.OnCommandExecuted -= HandleCommandExecuted;
             GameEvents.OnCommandUndone -= HandleCommandUndone;
@@ -51,25 +51,19 @@ namespace Chess
                     LoseLifeAndDespawn(piece);
             }
 
-            // Only repaint intents during player turn (when they matter)
             if (Phase == TurnPhase.PlayerTurn)
                 RecomputeEnemyIntentsAndPaint();
         }
 
-
-
         void HandleAttackResolved(AttackReport r)
         {
-            if (_abilities != null)
-            {
-                foreach (var a in _abilities)
-                    a?.OnAttackResolved(_clan, r.attacker, r.defender, r.damageToDefender, r.damageToAttacker);
-            }
-            
+            // ✅ CRITICAL: forward to clan abilities
+            NotifyAbilitiesAttackResolved(r);
+
             RecomputeEnemyIntentsAndPaint();
             PaintAbilityHints();
+            Debug.Log($"OnAttackResolved fired: attacker={r.attacker?.name} defender={r.defender?.name}");
         }
-
 
         void HandlePieceCaptured(Piece victim, Piece by, Vector2Int at)
         {
@@ -78,18 +72,17 @@ namespace Chess
                 PlayerWon();
         }
 
-
         void HandlePieceRestored(Piece piece, Vector2Int at)
         {
             RecomputeEnemyIntentsAndPaint();
             PaintAbilityHints();
         }
-        
+
         void HandlePieceDamaged(Piece target, int amount, Piece source)
         {
-            
+            // optional: UI updates, SFX, etc.
+            GameEvents.OnPieceStatsChanged?.Invoke(target);
         }
-
 
         void HandleCommandUndone(IGameCommand cmd) { }
         void HandleCommandRedone(IGameCommand cmd) { }

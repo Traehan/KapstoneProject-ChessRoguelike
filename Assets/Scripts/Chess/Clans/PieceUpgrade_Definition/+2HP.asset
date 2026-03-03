@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: +2HP
   m_EditorClassIdentifier: Assembly-CSharp::Chess.PieceUpgradeSO
   displayName: Fortified Edges
-  description: Boosts Max health by 2
+  description: Boosts Max health by 5
   icon: {fileID: 21300000, guid: 256d3a43e88b9ed4c96e57d95d6b370c, type: 3}
-  addMaxHP: 2
+  addMaxHP: 5
   addAttack: 0
   keywordAbility: {fileID: 0}
+  shopPrice: 25

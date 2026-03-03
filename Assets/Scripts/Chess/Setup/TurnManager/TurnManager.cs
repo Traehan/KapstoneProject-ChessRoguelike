@@ -38,6 +38,8 @@ namespace Chess
         public System.Action<int, int> OnAPChanged;      // (current, max)
         public System.Action<TurnPhase> OnPhaseChanged;
         
+        public bool ExecuteCommand(IGameCommand cmd) => _history.Execute(cmd);
+        
         public event System.Action OnPlayerWon;
         
         public void RefundAP(int amount)
@@ -106,6 +108,10 @@ namespace Chess
         public void BeginEncounterFromPreparation()
         {
             if (Phase != TurnPhase.Preparation) return;
+
+            if (GameSession.I != null && deckManager != null)
+                deckManager.InitializeBattleFromRunDeck(GameSession.I.runDeckNonLeaders);
+
             BeginPlayerTurn(); // in TurnFlow partial
         }
 
@@ -113,17 +119,14 @@ namespace Chess
         {
             if (!IsPlayerTurn) return;
 
-            //discard remaining cards
-            deckManager.DiscardRemainingHand();
+            deckManager?.DiscardEndOfTurn();
 
-            // clan abilities
             NotifyAbilitiesEndPlayerTurn();
-
-            // piece runtimes
             NotifyAllPlayerPieceRuntimes_EndTurn();
 
             PaintAbilityHints();
-            StartCoroutine(EnemyTurnRoutine()); // in TurnFlow partial
+            StatusTickSystem.TickEndOfPlayerTurn(board);
+            StartCoroutine(EnemyTurnRoutine());
         }
 
         public bool TrySpendAP(int amount = 1)

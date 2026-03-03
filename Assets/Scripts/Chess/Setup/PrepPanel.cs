@@ -24,24 +24,26 @@ public class PrepPanel : MonoBehaviour
     void Start()
     {
         Debug.Log("DeckManager ref: " + deckManager);
-        Debug.Log("PrepHand count: " + (deckManager != null ? deckManager.PrepHand.Count : -1));
 
-        foreach (var card in deckManager.PrepHand)
+        if (GameSession.I == null)
         {
-            SpawnOneIcon(card);
+            Debug.LogError("[PrepPanel] GameSession.I is null.");
+            return;
+        }
+
+        // Leaders only: Queen + Troop (CurrentArmy should be exactly 2)
+        foreach (var def in GameSession.I.CurrentArmy)
+        {
+            if (def == null) continue;
+            SpawnOneIcon(def);
         }
 
         confirmButton.onClick.AddListener(OnConfirm);
     }
 
-    void SpawnOneIcon(Card.Card card)
+    void SpawnOneIcon(PieceDefinition def)
     {
-        var def = card.Definition;
-
-        var prefabToUse = def.iconPrefabOverride != null 
-            ? def.iconPrefabOverride 
-            : iconPrefab;
-
+        var prefabToUse = def.iconPrefabOverride != null ? def.iconPrefabOverride : iconPrefab;
         if (prefabToUse == null)
         {
             Debug.LogError("[PrepPanel] Icon Prefab is missing.");
@@ -50,7 +52,8 @@ public class PrepPanel : MonoBehaviour
 
         var go = Instantiate(prefabToUse, gridParent);
         var icon = go.GetComponent<DraggablePieceIcon>();
-        icon.Init(card, placementManager, this);
+        icon.Init(def, placementManager, this);
+        
     }
 
     void OnConfirm()
@@ -71,9 +74,12 @@ public class PrepPanel : MonoBehaviour
         for (int i = gridParent.childCount - 1; i >= 0; i--)
             Destroy(gridParent.GetChild(i).gameObject);
 
-        foreach (var card in deckManager.PrepHand)
+        if (GameSession.I == null) return;
+
+        foreach (var def in GameSession.I.CurrentArmy)
         {
-            SpawnOneIcon(card);
+            if (def == null) continue;
+            SpawnOneIcon(def);
         }
     }
 
@@ -85,9 +91,7 @@ public class PrepPanel : MonoBehaviour
 
     public void OnUndo()
     {
-        if (placementManager.UndoLast(out var card))
-        {
-            SpawnOneIcon(card);
-        }
+        if (placementManager.UndoLast(out var _def))
+            SpawnOneIcon(_def);
     }
 }

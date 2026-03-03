@@ -11,14 +11,23 @@ public class DraggablePieceIcon : MonoBehaviour,
     [Header("Raycast")]
     public LayerMask boardMask = ~0; // optional: restrict to Tiles layer if you have one
 
-    Card.Card _card;
+    PieceDefinition _def;
     PlacementManager _placer;
     PrepPanel _panel;
+    
+    HandPanel _handPanel;
+    DeckManager _deckManager;
+    bool _combatMode;
     
     RectTransform _rt;
     Canvas _canvas;
     CanvasGroup _cg;
     Camera _cam;
+    
+    //To snap icons back to place after wrong drag
+    Vector2 _startAnchoredPos;
+    Transform _startParent;
+    int _startSiblingIndex;
 
     GameObject _ghost;       // world-space ghost parent
     Piece _ghostPiece;
@@ -26,13 +35,23 @@ public class DraggablePieceIcon : MonoBehaviour,
     bool _canPlaceHere;
     static Plane _boardPlane;   // fallback when no collider was hit
 
-    public void Init(Card.Card card, PlacementManager placer, PrepPanel panel)
+    public void Init(PieceDefinition def, PlacementManager placer, PrepPanel panel)
     {
-        _card = card;
+        _def = def;
         _placer = placer;
         _panel = panel;
+        GetComponent<Image>().sprite = def.icon;
+    }
+    
+    public void InitForCombat(PieceDefinition def, PlacementManager placer, HandPanel handPanel, DeckManager deckManager)
+    {
+        _combatMode = true;
+        _def = def;
+        _placer = placer;
+        _handPanel = handPanel;
+        _deckManager = deckManager;
 
-        GetComponent<Image>().sprite = card.Definition.icon;
+        GetComponent<Image>().sprite = def.icon;
     }
 
     void Awake()
@@ -45,6 +64,9 @@ public class DraggablePieceIcon : MonoBehaviour,
 
     public void OnBeginDrag(PointerEventData e)
     {
+        _startAnchoredPos = _rt.anchoredPosition;
+        _startParent = _rt.parent;
+        _startSiblingIndex = _rt.GetSiblingIndex();
         _cg.blocksRaycasts = false;   // let pointer reach world
         _ghost = null;
         _ghostPiece = null;
@@ -93,9 +115,9 @@ public class DraggablePieceIcon : MonoBehaviour,
             // Lazy-build ghost the first time we have a valid coord
             if (_ghostPiece == null)
             {
-                if (_card.Definition.piecePrefab == null) return;
+                if (_def.piecePrefab == null) return;
                 
-                _ghostPiece = Instantiate(_card.Definition.piecePrefab, _placer.board.transform);
+                _ghostPiece = Instantiate(_def.piecePrefab, _placer.board.transform);
                 _ghost = _ghostPiece.gameObject;
                 _ghostPiece.Init(_placer.board, _placer.playerTeam, c);
                 SetGhostVisual(0.5f, true);
@@ -109,7 +131,7 @@ public class DraggablePieceIcon : MonoBehaviour,
             _ghostPiece.ApplyBoardMove(c);
             _snapCoord = c;
 
-            _canPlaceHere = _placer.CanPlace(_card.Definition, c);
+            _canPlaceHere = _placer.CanPlace(_def, c);
             TintGhost(_canPlaceHere);
         }
     }
@@ -119,17 +141,60 @@ public class DraggablePieceIcon : MonoBehaviour,
         _cg.blocksRaycasts = true;
 
         bool placed = false;
+        var tm = TurnManager.Instance;
+
         if (_ghostPiece != null && _canPlaceHere)
         {
-            placed = _placer.TryPlace(_card, _snapCoord);
+            if (_combatMode)
+            {
+                // Combat: execute an undoable command (AP + placement + Hand->Exhaust)
+                if (tm != null && _deckManager != null && _placer != null && _placer.board != null)
+                {
+                    var cmd = new Chess.PlayCardPlaceCommand(
+                        tm,
+                        _placer.board,
+                        _placer,
+                        _deckManager,
+                        _def,
+                        _snapCoord,
+                        apCost: 1
+                    );
+
+                    placed = tm.ExecuteCommand(cmd);
+                }
+            }
+            else
+            {
+                // Prep: no AP, just place
+                placed = _placer.TryPlace(_def, _snapCoord);
+            }
         }
 
         if (placed)
         {
-            TurnManager.Instance.GetComponent<DeckManager>().ConsumeCard(_card);
-            _panel.OnIconConsumed(this);
+            if (_combatMode)
+            {
+                // remove icon from hand UI (deck changes were done inside the command)
+                _handPanel?.OnCardPlayed(this);
+
+                // refresh hand to reflect updated Hand list
+                FindObjectOfType<HandPanel>()?.RebuildHand();
+            }
+            else
+            {
+                // prep behavior: consume icon
+                _panel.OnIconConsumed(this);
+            }
+        }
+        else
+        {
+            // Snap back to original spot in the hand UI
+            _rt.SetParent(_startParent);
+            _rt.SetSiblingIndex(_startSiblingIndex);
+            _rt.anchoredPosition = _startAnchoredPos;
         }
 
+        // Always clean up the ghost
         if (_ghost) Destroy(_ghost);
         _ghostPiece = null;
         _ghost = null;

@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Chess;
 
 public class StartTroopPopup : MonoBehaviour
 {
@@ -29,15 +30,28 @@ public class StartTroopPopup : MonoBehaviour
     void TryShowGrant()
     {
         if (GameSession.I == null) return;
-        if (GameSession.I.hasGrantedStartingTroop) return;
+        if (GameSession.I.selectedClan == null) return;
+        if (GameSession.I.selectedClan.queenPrefab == null) return;
 
-        var granted = GameSession.I.GrantRandomStartingTroop();
-        if (granted == null) return;
+        PieceDefinition troop = null;
 
-        // Populate UI
-        if (title) title.text = "Staring Troop Granted";
-        if (desc)  desc.text  = $"You received: {granted.displayName}";
-        if (pieceImage) pieceImage.sprite = granted.icon;
+        foreach (var def in GameSession.I.CurrentArmy)
+        {
+            if (def == null) continue;
+
+            // Skip the queen by prefab identity
+            if (def.piecePrefab == GameSession.I.selectedClan.queenPrefab)
+                continue;
+
+            troop = def;
+            break;
+        }
+
+        if (troop == null) return;
+
+        if (title) title.text = "Starting Troop Granted";
+        if (desc) desc.text = $"You received: {troop.displayName}";
+        if (pieceImage) pieceImage.sprite = troop.icon;
 
         panel.SetActive(true);
     }
