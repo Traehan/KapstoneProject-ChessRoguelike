@@ -24,7 +24,12 @@ public class HandPanel : MonoBehaviour
 
     public void RebuildHand()
     {
-        if (deckManager == null || gridParent == null) return;
+        if (deckManager == null || gridParent == null)
+        {
+            Debug.LogError("HandPanel rebuilding failed: missing either deckManager or gridParent");
+            return;
+        }
+            
 
         // clear old icons
         for (int i = gridParent.childCount - 1; i >= 0; i--)

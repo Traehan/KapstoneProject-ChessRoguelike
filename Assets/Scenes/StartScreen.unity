@@ -1463,6 +1463,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7882225745780591430, guid: af55ef0f1e9ca4144b3f95a0a6923738, type: 3}
+      propertyPath: pawnTemplate
+      value: 
+      objectReference: {fileID: 11400000, guid: 595f3e6689409d140aee48be998daa39, type: 2}
+    - target: {fileID: 7882225745780591430, guid: af55ef0f1e9ca4144b3f95a0a6923738, type: 3}
       propertyPath: army.Array.size
       value: 4
       objectReference: {fileID: 0}

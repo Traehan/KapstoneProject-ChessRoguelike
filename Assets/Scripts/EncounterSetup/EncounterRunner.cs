@@ -64,7 +64,6 @@ namespace Chess
             roundsCompleted    = 0;                    // reset between runs
 
             StartCoroutine(RunEncounter(chosen));
-            piecePlacer.PlaceClassicPawns();
         }
 
         
