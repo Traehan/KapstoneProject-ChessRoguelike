@@ -19,7 +19,7 @@ MonoBehaviour:
     \n\n gains +2 HP and Attack on ally death
   Queen: {fileID: 21300000, guid: f0ff594e7e8e9fd4dae03772d7902d6b, type: 3}
   uiColor: {r: 0.5849056, g: 0.17105722, b: 0.17105722, a: 1}
-  queenPrefab: {fileID: 5587423889380339668, guid: 6108990944c8b7540897dbd9ac91c8cf, type: 3}
+  queenDefinition: {fileID: 11400000, guid: cf66237b103af9842bb278c16556a7c0, type: 2}
   abilities:
   - {fileID: 11400000, guid: 83af93f6eef53354ab0676430a465793, type: 2}
   - {fileID: 11400000, guid: fac02ea5b2dfc77499696ded6b5f17f8, type: 2}

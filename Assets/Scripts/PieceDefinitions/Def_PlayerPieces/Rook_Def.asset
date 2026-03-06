@@ -21,5 +21,5 @@ MonoBehaviour:
   attack: 5
   forwardOnly: 0
   passThroughFriendlies: 0
-  maxStride: 8
+  maxStride: 4
   shopPrice: 25

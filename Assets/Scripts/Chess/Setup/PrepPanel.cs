@@ -5,7 +5,6 @@ using Chess;
 using Card;
 using GameManager;
 
-
 public class PrepPanel : MonoBehaviour
 {
     [Header("CardSystem")]
@@ -13,7 +12,7 @@ public class PrepPanel : MonoBehaviour
 
     [Header("UI")]
     public Transform gridParent;
-    public GameObject iconPrefab;
+    public GameObject iconPrefab; // MUST be CardIcon_generic
     public Button confirmButton;
     public Button resetButton;
     public Button undoButton;
@@ -23,50 +22,45 @@ public class PrepPanel : MonoBehaviour
 
     void Start()
     {
-        Debug.Log("DeckManager ref: " + deckManager);
-
         if (GameSession.I == null)
         {
             Debug.LogError("[PrepPanel] GameSession.I is null.");
             return;
         }
 
-        // Leaders only: Queen + Troop (CurrentArmy should be exactly 2)
-        foreach (var def in GameSession.I.CurrentArmy)
-        {
-            if (def == null) continue;
-            SpawnOneIcon(def);
-        }
+        SpawnAllIcons();
 
-        confirmButton.onClick.AddListener(OnConfirm);
+        if (confirmButton != null) confirmButton.onClick.AddListener(OnConfirm);
+        if (resetButton != null) resetButton.onClick.AddListener(OnReset);
+        if (undoButton != null) undoButton.onClick.AddListener(OnUndo);
     }
 
     void SpawnOneIcon(PieceDefinition def)
     {
-        var prefabToUse = def.iconPrefabOverride != null ? def.iconPrefabOverride : iconPrefab;
-        if (prefabToUse == null)
+        if (def == null) return;
+
+        // ALWAYS use the generic card prefab (NO iconPrefabOverride)
+        if (iconPrefab == null)
         {
-            Debug.LogError("[PrepPanel] Icon Prefab is missing.");
+            Debug.LogError("[PrepPanel] iconPrefab is missing. Assign CardIcon_generic.");
             return;
         }
 
-        var go = Instantiate(prefabToUse, gridParent);
+        var go = Instantiate(iconPrefab, gridParent);
+
+        // Bind visuals + stats
+        var view = go.GetComponent<CardView>();
+        if (view != null)
+            view.Bind(def, apCost: 0);
+
         var icon = go.GetComponent<DraggablePieceIcon>();
+        if (icon == null)
+        {
+            Debug.LogError("[PrepPanel] CardIcon_generic is missing DraggablePieceIcon.");
+            return;
+        }
+
         icon.Init(def, placementManager, this);
-        
-    }
-
-    void OnConfirm()
-    {
-        TurnManager.Instance?.BeginEncounterFromPreparation();
-        gameObject.SetActive(false);
-        SceneController.instance.LoadAdditive("UI_Battle");
-    }
-
-
-    public void OnIconConsumed(DraggablePieceIcon icon)
-    {
-        Destroy(icon.gameObject);
     }
 
     void SpawnAllIcons()
@@ -77,10 +71,19 @@ public class PrepPanel : MonoBehaviour
         if (GameSession.I == null) return;
 
         foreach (var def in GameSession.I.CurrentArmy)
-        {
-            if (def == null) continue;
             SpawnOneIcon(def);
-        }
+    }
+
+    void OnConfirm()
+    {
+        TurnManager.Instance?.BeginEncounterFromPreparation();
+        gameObject.SetActive(false);
+        SceneController.instance.LoadAdditive("UI_Battle");
+    }
+
+    public void OnIconConsumed(DraggablePieceIcon icon)
+    {
+        Destroy(icon.gameObject);
     }
 
     public void OnReset()
@@ -91,7 +94,7 @@ public class PrepPanel : MonoBehaviour
 
     public void OnUndo()
     {
-        if (placementManager.UndoLast(out var _def))
-            SpawnOneIcon(_def);
+        if (placementManager.UndoLast(out var def))
+            SpawnOneIcon(def);
     }
 }

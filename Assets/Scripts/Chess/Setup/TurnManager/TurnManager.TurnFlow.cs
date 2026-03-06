@@ -17,6 +17,46 @@ namespace Chess
         {
             SetPhase(TurnPhase.Preparation);
         }
+        
+        public void BeginEncounterFromPreparation()
+        {
+            if (Phase != TurnPhase.Preparation) return;
+
+            if (GameSession.I != null && deckManager != null)
+                deckManager.InitializeBattleFromRunDeck(GameSession.I.runDeckNonLeaders);
+
+            BeginSpellPhase(); 
+        }
+        
+        void BeginSpellPhase()
+        {
+            SetPhase(TurnPhase.SpellPhase);
+
+            // Mana reset for this phase
+            RefillManaForSpellPhase();
+            OnManaChanged?.Invoke(CurrentMana, MaxMana);
+
+            // Show hand + draw to full (your existing pattern)
+            deckManager?.DrawUpTo(4);
+
+            var hand = FindObjectOfType<HandPanel>();
+            if (hand != null)
+            {
+                hand.gameObject.SetActive(true);
+                hand.RebuildHand();
+            }
+        }
+        
+        public void EndSpellPhaseButton()
+        {
+            if (Phase != TurnPhase.SpellPhase) return;
+
+            // Hide hand while in PlayerTurn (movement/attacks)
+            var hand = FindObjectOfType<HandPanel>();
+            if (hand != null) hand.gameObject.SetActive(false);
+
+            BeginPlayerTurn(); 
+        }
 
         void BeginPlayerTurn()
         {
@@ -24,15 +64,6 @@ namespace Chess
             _history.Clear();
 
             CurrentAP = apPerTurn;
-            deckManager?.DrawUpTo(4);
-            FindObjectOfType<HandPanel>()?.RebuildHand();
-            
-            if (deckManager != null)
-            {
-                Debug.Log("=== COMBAT HAND ===");
-                foreach (var def in deckManager.Hand)
-                    Debug.Log("Card in hand: " + def.displayName);
-            }
             
             GameEvents.OnAPChanged?.Invoke(CurrentAP, apPerTurn);
 
@@ -121,7 +152,7 @@ namespace Chess
             }
 
             board.ClearHighlights();
-            BeginPlayerTurn();
+            BeginSpellPhase();
         }
     }
 }

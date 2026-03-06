@@ -128,9 +128,17 @@ public class GameSession : MonoBehaviour
             CurrencyManager.Instance.ResetCurrency();
 
         // --- build leaders (prep only) ---
-        EnsureQueenPieceDefinition();
-        if (_queenDefRuntime != null && !army.Contains(_queenDefRuntime))
-            army.Add(_queenDefRuntime);
+        // EnsureQueenPieceDefinition();
+        // --- build leaders (prep only) ---
+        if (selectedClan != null && selectedClan.queenDefinition != null)
+        {
+            var queenRuntime = CreateRuntimePiece(selectedClan.queenDefinition);
+            army.Add(queenRuntime);
+        }
+        else
+        {
+            Debug.LogError("[GameSession] selectedClan.queenDefinition not assigned.");
+        }
 
         var troop = GrantRandomStartingTroop(); // adds to army + sets hasGrantedStartingTroop
 
@@ -187,33 +195,19 @@ public class GameSession : MonoBehaviour
 
     // ==== Helpers ====
 
-    void EnsureQueenPieceDefinition()
-    {
-        if (_queenDefRuntime != null) return;
-        if (selectedClan == null || selectedClan.queenPrefab == null) return;
-
-        _queenDefRuntime = ScriptableObject.CreateInstance<PieceDefinition>();
-        _queenDefRuntime.displayName = $"{selectedClan.clanName} Queen";
-        _queenDefRuntime.piecePrefab = selectedClan.queenPrefab;
-        _queenDefRuntime.count = 1;
-
-        // visuals for PrepPanel icon
-        _queenDefRuntime.icon = queenIconFallback;
-        _queenDefRuntime.iconPrefabOverride = queenIconPrefabOverride;
-    }
-
-    private void ClearStartingTroopPool(PieceDefinition[] Pool)
-    {
-        //Clears starting troop pool
-    }
-
-    private void FillStartingTroopPool(PieceDefinition[] ClanPool, PieceDefinition[] StartingTroopPool)
-    {
-        //fills starting troop pool with ClanPool definitions
-    }
-
-    private void AssignArmyGivenClan(ClanDefinition clan, PieceDefinition[] Pool, PieceDefinition[] StartingTroopPool)
-    {
-        //on each clan button click, if another clanArmyPool is present within the starting troop pool, clears it and fills it with other clan pool
-    }
+    // void EnsureQueenPieceDefinition()
+    // {
+    //     if (_queenDefRuntime != null) return;
+    //     if (selectedClan == null || selectedClan.queenPrefab == null) return;
+    //
+    //     _queenDefRuntime = ScriptableObject.CreateInstance<PieceDefinition>();
+    //     _queenDefRuntime.displayName = $"{selectedClan.clanName} Queen";
+    //     _queenDefRuntime.piecePrefab = selectedClan.queenPrefab;
+    //     _queenDefRuntime.count = 1;
+    //
+    //     // visuals for PrepPanel icon
+    //     _queenDefRuntime.icon = queenIconFallback;
+    //     _queenDefRuntime.iconPrefabOverride = queenIconPrefabOverride;
+    // }
+    
 }

@@ -31,16 +31,19 @@ public class StartTroopPopup : MonoBehaviour
     {
         if (GameSession.I == null) return;
         if (GameSession.I.selectedClan == null) return;
-        if (GameSession.I.selectedClan.queenPrefab == null) return;
+        if (GameSession.I.selectedClan.queenDefinition == null) return;
 
         PieceDefinition troop = null;
+
+        var queenDef = GameSession.I.selectedClan.queenDefinition;
+        var queenPrefab = queenDef != null ? queenDef.piecePrefab : null;
 
         foreach (var def in GameSession.I.CurrentArmy)
         {
             if (def == null) continue;
 
-            // Skip the queen by prefab identity
-            if (def.piecePrefab == GameSession.I.selectedClan.queenPrefab)
+            // Skip queen by prefab identity (works even if runtime cloned)
+            if (queenPrefab != null && def.piecePrefab == queenPrefab)
                 continue;
 
             troop = def;

@@ -19,7 +19,7 @@ MonoBehaviour:
     \n\n grants surrounding troops +5 Damage
   Queen: {fileID: 21300000, guid: f1a770d4197fe7e4ebdb41af1415b74e, type: 3}
   uiColor: {r: 0.8, g: 0.8, b: 0.8, a: 1}
-  queenPrefab: {fileID: 6979421579680749516, guid: 7596a633edc3d86428dbdaba5d22f998, type: 3}
+  queenDefinition: {fileID: 11400000, guid: cdb56350a760c8b4abb356671a3f8e69, type: 2}
   abilities:
   - {fileID: 11400000, guid: 18cbc162a4759cf439410e914e9ddcd5, type: 2}
   - {fileID: 11400000, guid: 7910056497fdbba4b8030fde4fee99e2, type: 2}

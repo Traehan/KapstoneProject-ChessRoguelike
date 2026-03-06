@@ -35,19 +35,25 @@ public class HandPanel : MonoBehaviour
         for (int i = gridParent.childCount - 1; i >= 0; i--)
             Destroy(gridParent.GetChild(i).gameObject);
 
+        
         // spawn one icon per card in hand
         foreach (var def in deckManager.Hand)
         {
             if (def == null) continue;
+            if (iconPrefab == null) continue;
 
-            var prefabToUse = def.iconPrefabOverride != null ? def.iconPrefabOverride : iconPrefab;
-            if (prefabToUse == null) continue;
+            // ALWAYS use the one generic prefab
+            var go = Instantiate(iconPrefab, gridParent);
 
-            var go = Instantiate(prefabToUse, gridParent);
+            // Bind visuals from the PieceDefinition
+            var view = go.GetComponent<CardView>();
+            if (view != null)
+                view.Bind(def, apCost: 1); // later you can make AP per piece/card
+
+            // Drag logic
             var icon = go.GetComponent<DraggablePieceIcon>();
-
-            // IMPORTANT: we pass HandPanel so icon can notify on success
-            icon.InitForCombat(def, placementManager, this, deckManager);
+            if (icon != null)
+                icon.InitForCombat(def, placementManager, this, deckManager);
         }
     }
 

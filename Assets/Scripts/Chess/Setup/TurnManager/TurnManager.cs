@@ -10,7 +10,8 @@ namespace Chess
     public enum TurnPhase
     {
         Preparation,
-        PlayerTurn,
+        SpellPhase,        // NEW: summon + spells using mana
+        PlayerTurn,     
         EnemyTurn,
         Cleanup
     }
@@ -38,6 +39,38 @@ namespace Chess
         public System.Action<int, int> OnAPChanged;      // (current, max)
         public System.Action<TurnPhase> OnPhaseChanged;
         
+        [Header("Mana (Spell Phase)")]
+        [SerializeField] int manaPerSpellPhase = 3;
+        [SerializeField] int maxMana = 5;
+
+        public int CurrentMana { get; private set; }
+        public int MaxMana => maxMana;
+
+        public System.Action<int, int> OnManaChanged; // (current, max)
+
+        public bool IsSpellPhase => Phase == TurnPhase.SpellPhase;
+
+        public void RefillManaForSpellPhase()
+        {
+            // Interpretation: "starting 3 mana per phase" = you start each SpellPhase with 3 (no carryover).
+            CurrentMana = Mathf.Min(manaPerSpellPhase, maxMana);
+            OnManaChanged?.Invoke(CurrentMana, maxMana);
+            
+        }
+
+        public bool TrySpendMana(int amount)
+        {
+            if (!IsSpellPhase) return false;
+            if (amount <= 0) return true;
+            if (CurrentMana < amount) return false;
+
+            CurrentMana -= amount;
+            OnManaChanged?.Invoke(CurrentMana, maxMana);
+            return true;
+        }
+        
+        
+        
         public bool ExecuteCommand(IGameCommand cmd) => _history.Execute(cmd);
         
         public event System.Action OnPlayerWon;
@@ -47,6 +80,13 @@ namespace Chess
             CurrentAP = Mathf.Min(CurrentAP + amount, apPerTurn);
             OnAPChanged?.Invoke(CurrentAP, apPerTurn);
             GameEvents.OnAPChanged?.Invoke(CurrentAP, apPerTurn);
+        }
+        
+        public void RefundMana(int amount)
+        {
+            if (amount <= 0) return;
+            CurrentMana = Mathf.Min(CurrentMana + amount, MaxMana);
+            OnManaChanged?.Invoke(CurrentMana, MaxMana);
         }
 
         public bool WasMarkedMovedThisTurn(Piece p) => _movedThisPlayerTurn.Contains(p);
@@ -105,15 +145,7 @@ namespace Chess
         readonly HashSet<Piece> _movedThisPlayerTurn = new();
         bool _queenMovedThisTurn;
 
-        public void BeginEncounterFromPreparation()
-        {
-            if (Phase != TurnPhase.Preparation) return;
-
-            if (GameSession.I != null && deckManager != null)
-                deckManager.InitializeBattleFromRunDeck(GameSession.I.runDeckNonLeaders);
-
-            BeginPlayerTurn(); // in TurnFlow partial
-        }
+        
 
         public void EndPlayerTurnButton()
         {

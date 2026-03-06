@@ -12,7 +12,7 @@ namespace Chess
         public Color uiColor = Color.white;
 
         [Header("Leader")]
-        public Queen queenPrefab;               // leader piece prefab for this clan
+        public PieceDefinition queenDefinition;               // leader piece prefab for this clan
 
         [Header("Queen Abilities (in order)")]
         public AbilitySO[] abilities;

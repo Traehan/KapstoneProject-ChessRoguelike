@@ -34,6 +34,8 @@ public class DraggablePieceIcon : MonoBehaviour,
     Vector2Int _snapCoord;
     bool _canPlaceHere;
     static Plane _boardPlane;   // fallback when no collider was hit
+    
+    CanvasGroup canvasGroup;
 
     public void Init(PieceDefinition def, PlacementManager placer, PrepPanel panel)
     {
@@ -60,6 +62,7 @@ public class DraggablePieceIcon : MonoBehaviour,
         _cg = GetComponent<CanvasGroup>();
         _canvas = GetComponentInParent<Canvas>();
         _cam = Camera.main;
+        canvasGroup = GetComponent<CanvasGroup>();
     }
 
     public void OnBeginDrag(PointerEventData e)
@@ -70,6 +73,12 @@ public class DraggablePieceIcon : MonoBehaviour,
         _cg.blocksRaycasts = false;   // let pointer reach world
         _ghost = null;
         _ghostPiece = null;
+        
+        if (canvasGroup != null)
+        {
+            canvasGroup.alpha = 0.45f;       // transparency level
+            canvasGroup.blocksRaycasts = false;
+        }
 
         if (_placer && _placer.board)
             _boardPlane = new Plane(_placer.board.transform.up, _placer.board.transform.position);
@@ -137,68 +146,83 @@ public class DraggablePieceIcon : MonoBehaviour,
     }
 
     public void OnEndDrag(PointerEventData e)
+{
+    _cg.blocksRaycasts = true;
+
+    bool placed = false;
+    var tm = TurnManager.Instance;
+
+    if (_ghostPiece != null && _canPlaceHere)
     {
-        _cg.blocksRaycasts = true;
-
-        bool placed = false;
-        var tm = TurnManager.Instance;
-
-        if (_ghostPiece != null && _canPlaceHere)
+        if (_combatMode)
         {
-            if (_combatMode)
+            // Combat: ONLY allow summons during SpellPhase (mana system)
+            if (tm != null &&
+                tm.Phase == TurnPhase.SpellPhase &&
+                _deckManager != null &&
+                _placer != null &&
+                _placer.board != null)
             {
-                // Combat: execute an undoable command (AP + placement + Hand->Exhaust)
-                if (tm != null && _deckManager != null && _placer != null && _placer.board != null)
-                {
-                    var cmd = new Chess.PlayCardPlaceCommand(
-                        tm,
-                        _placer.board,
-                        _placer,
-                        _deckManager,
-                        _def,
-                        _snapCoord,
-                        apCost: 1
-                    );
+                var cmd = new Chess.PlayCardPlaceCommand(
+                    tm,
+                    _placer.board,
+                    _placer,
+                    _deckManager,
+                    _def,
+                    _snapCoord,
+                    manaCost: 1
+                );
 
-                    placed = tm.ExecuteCommand(cmd);
-                }
+                placed = tm.ExecuteCommand(cmd);
             }
             else
             {
-                // Prep: no AP, just place
-                placed = _placer.TryPlace(_def, _snapCoord);
-            }
-        }
-
-        if (placed)
-        {
-            if (_combatMode)
-            {
-                // remove icon from hand UI (deck changes were done inside the command)
-                _handPanel?.OnCardPlayed(this);
-
-                // refresh hand to reflect updated Hand list
-                FindObjectOfType<HandPanel>()?.RebuildHand();
-            }
-            else
-            {
-                // prep behavior: consume icon
-                _panel.OnIconConsumed(this);
+                placed = false; // will snap back
             }
         }
         else
         {
-            // Snap back to original spot in the hand UI
-            _rt.SetParent(_startParent);
-            _rt.SetSiblingIndex(_startSiblingIndex);
-            _rt.anchoredPosition = _startAnchoredPos;
+            // Prep: no mana/AP, just place
+            placed = _placer.TryPlace(_def, _snapCoord);
         }
-
-        // Always clean up the ghost
-        if (_ghost) Destroy(_ghost);
-        _ghostPiece = null;
-        _ghost = null;
     }
+
+    if (placed)
+    {
+        if (_combatMode)
+        {
+            // remove icon from hand UI (deck changes were done inside the command)
+            _handPanel?.OnCardPlayed(this);
+
+            // refresh hand to reflect updated Hand list
+            FindObjectOfType<HandPanel>()?.RebuildHand();
+        }
+        else
+        {
+            // prep behavior: consume icon
+            _panel.OnIconConsumed(this);
+        }
+    }
+    else
+    {
+        // Snap back to original spot in the hand UI
+        _rt.SetParent(_startParent);
+        _rt.SetSiblingIndex(_startSiblingIndex);
+        _rt.anchoredPosition = _startAnchoredPos;
+    }
+
+    // Always clean up the ghost
+    if (_ghost) Destroy(_ghost);
+    _ghostPiece = null;
+    _ghost = null;
+
+    // Make card non-transparent again
+    if (canvasGroup != null)
+    {
+        canvasGroup.alpha = 1f;
+        canvasGroup.blocksRaycasts = true;
+    }
+}
 
     // ===== helpers =====
 

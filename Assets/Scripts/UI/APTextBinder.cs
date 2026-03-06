@@ -22,7 +22,7 @@ namespace Chess
         void Start()
         {
             TryBind();
-            Refresh();
+            if (!tm.IsSpellPhase) Refresh();
         }
 
         void Update()

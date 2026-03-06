@@ -770,6 +770,7 @@ GameObject:
   - component: {fileID: 330585544}
   - component: {fileID: 330585547}
   - component: {fileID: 330585548}
+  - component: {fileID: 330585549}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -909,6 +910,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BoardInput
   board: {fileID: 0}
   highlightColor: {r: 0, g: 0.45597482, b: 0.91194963, a: 0.8627451}
+--- !u!114 &330585549
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 330585543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31b86ed58339dd3429104e55411cc5a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Chess.CameraPhaseZoom
+  zoomOutPosition: {x: 3.94, y: 8.68, z: -7.2}
+  zoomInPosition: {x: 3.94, y: 8.5, z: -3.95}
+  zoomOutRotation: {x: 39.141, y: 0, z: 0}
+  zoomInRotation: {x: 39.141, y: 0, z: 0}
+  zoomSpeed: 3
 --- !u!1 &335972514
 GameObject:
   m_ObjectHideFlags: 0
@@ -1266,6 +1284,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c580bace2cadf744e9fdfa2dba0a2d87, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Chess.TurnManager
+  manaPerSpellPhase: 3
+  maxMana: 5
   board: {fileID: 506964572}
   playerTeam: 1
   enemyTeam: -1
@@ -2222,9 +2242,9 @@ RectTransform:
   - {fileID: 1659535829}
   m_Father: {fileID: 1483553201}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0}
-  m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 100}
+  m_AnchorMin: {x: 1, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &763991274
@@ -3293,7 +3313,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
   m_AnchoredPosition: {x: 0, y: 50}
-  m_SizeDelta: {x: 400, y: 100}
+  m_SizeDelta: {x: 500, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1483553202
 MonoBehaviour:
@@ -3309,7 +3329,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PrepPanel
   deckManager: {fileID: 506964578}
   gridParent: {fileID: 1768484477}
-  iconPrefab: {fileID: 274019802292542436, guid: 3702456115791e540b20e90f6b698193, type: 3}
+  iconPrefab: {fileID: 909304390185372414, guid: 9b2d4865c628049d9a2dc20513ddd19c, type: 3}
   confirmButton: {fileID: 763991274}
   resetButton: {fileID: 700944259}
   undoButton: {fileID: 1287900524}
@@ -3652,8 +3672,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 75, y: 75}
+  m_AnchoredPosition: {x: 0, y: 25}
+  m_SizeDelta: {x: 100, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1768484478
 MonoBehaviour:
@@ -3675,10 +3695,10 @@ MonoBehaviour:
   m_ChildAlignment: 4
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 50, y: 50}
+  m_CellSize: {x: 124, y: 200}
   m_Spacing: {x: 10, y: 10}
   m_Constraint: 2
-  m_ConstraintCount: 4
+  m_ConstraintCount: 1
 --- !u!1 &1776744808
 GameObject:
   m_ObjectHideFlags: 0

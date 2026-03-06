@@ -34,6 +34,7 @@ namespace Chess
 
         // Resources
         public static System.Action<int, int> OnAPChanged; // current, max
+        public static System.Action<int, int> OnManaChanged; // current, max
     }
 
     public enum MoveReason

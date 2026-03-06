@@ -7,10 +7,17 @@ namespace Chess
     {
         public void CallEndTurn()
         {
-            var tm = TurnManager.Instance ?? FindObjectOfType<TurnManager>();
-            if (tm == null) { Debug.LogError("EndTurnProxy: No TurnManager found in any loaded scene."); return; }
-            if (!tm.IsPlayerTurn) { Debug.Log("EndTurnProxy: Not player's turn."); return; }
-            tm.EndPlayerTurnButton();
+            var tm = TurnManager.Instance;
+            if (tm == null) return;
+
+            if (tm.Phase == TurnPhase.SpellPhase)
+            {
+                tm.EndSpellPhaseButton(); // Spell → Movement
+            }
+            else if (tm.Phase == TurnPhase.PlayerTurn)
+            {
+                tm.EndPlayerTurnButton(); // Movement → Enemy
+            }
         }
     }
 }
