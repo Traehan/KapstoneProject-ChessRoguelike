@@ -84,7 +84,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 4d7859de692345342b1f7bcce114bda1, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e57c33a00940a8e4dbc28ca5eaaece10, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -208,10 +208,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Chess.FortifyIndicator
   shieldSprite: {fileID: 21300000, guid: 3ae98330c7e08bb46a5700edf4410ca3, type: 3}
-  maxPips: 3
-  spacing: 0.3
-  scale: 0.15
-  localOffset: {x: 0, y: 0.1, z: 0}
-  billboardToCamera: 0
+  maxStacksShown: 99
   sortingLayerName: Pieces
   sortingOrder: 20
+  billboardToCamera: 0
+  iconLocalPosition: {x: 0.75, y: 1.2, z: -0.1}
+  iconLocalRotationEuler: {x: 10, y: 0, z: 0}
+  iconLocalScale: {x: 0.4, y: 0.4, z: 0.15}
+  textLocalPosition: {x: 0, y: 0, z: 0}
+  textLocalRotationEuler: {x: 0, y: 0, z: 0}
+  textLocalScale: {x: 1, y: 1, z: 1}
+  showWhenZero: 0
+  showOnlyWhenGreaterThanOne: 0
+  fontSize: 10
+  fontColor: {r: 0, g: 0, b: 0, a: 1}
+  alignment: 514
