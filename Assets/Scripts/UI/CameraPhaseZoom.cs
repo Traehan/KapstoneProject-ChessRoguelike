@@ -6,12 +6,12 @@ namespace Chess
     public class CameraPhaseZoom : MonoBehaviour
     {
         [Header("Camera Positions")]
-        [SerializeField] private Vector3 zoomOutPosition = new Vector3(3.94f, 8.68f, -7.2f); // spell
-        [SerializeField] private Vector3 zoomInPosition  = new Vector3(3.94f, 8.5f, -3.95f); // player turn
+        [SerializeField] private Vector3 zoomOutPosition = new Vector3(3.94f, 42.7f, -65.5f); // spell
+        [SerializeField] private Vector3 zoomInPosition  = new Vector3(3.94f, 47.13f, -50.99f); // player turn
 
         [Header("Rotation")]
-        [SerializeField] private Vector3 zoomOutRotation = new Vector3(39.141f, 0f, 0f);
-        [SerializeField] private Vector3 zoomInRotation  = new Vector3(39.141f, 0f, 0f);
+        [SerializeField] private Vector3 zoomOutRotation = new Vector3(37.912f, 0f, 0f);
+        [SerializeField] private Vector3 zoomInRotation  = new Vector3(48.412f, 0f, 0f);
 
         [Header("Speed")]
         [SerializeField] private float zoomSpeed = 3f;

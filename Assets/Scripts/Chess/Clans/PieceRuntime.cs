@@ -36,6 +36,45 @@ namespace Chess
         readonly List<PieceAbilitySO> keywordAbilities = new(); // abilities coming from upgrades
         
         bool initialized;
+        
+        
+        bool inspecting = false;
+
+        void Update()
+        {
+            // If right mouse button is being held
+            if (Input.GetMouseButton(1))
+            {
+                // Raycast check to see if THIS piece is being hovered
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                RaycastHit hit;
+
+                if (Physics.Raycast(ray, out hit))
+                {
+                    if (hit.collider != null && hit.collider.gameObject == gameObject)
+                    {
+                        if (!inspecting)
+                        {
+                            inspecting = true;
+
+                            if (PieceInfoPanel.Instance != null)
+                                PieceInfoPanel.Instance.Show(this);
+                        }
+
+                        return;
+                    }
+                }
+            }
+
+            // If right click released OR mouse moved away
+            if (inspecting && Input.GetMouseButtonUp(1))
+            {
+                inspecting = false;
+
+                if (PieceInfoPanel.Instance != null)
+                    PieceInfoPanel.Instance.Hide();
+            }
+        }
 
         // ---- Initialization ----
         public void Init(Piece owner, ChessBoard board, TurnManager tm)
@@ -224,11 +263,12 @@ namespace Chess
             //     return;
 
             // Ask the global UI panel to show info for this piece
-            if (PieceInfoPanel.Instance != null)
-            {
-                PieceInfoPanel.Instance.Show(this);
-            }
+            // if (PieceInfoPanel.Instance != null)
+            // {
+            //     PieceInfoPanel.Instance.Show(this);
+            // }
         }
-
+        
+        
     }
 }
