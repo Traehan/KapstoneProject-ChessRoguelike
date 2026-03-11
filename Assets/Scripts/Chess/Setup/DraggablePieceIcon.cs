@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -9,51 +10,76 @@ public class DraggablePieceIcon : MonoBehaviour,
     IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     [Header("Raycast")]
-    public LayerMask boardMask = ~0; // optional: restrict to Tiles layer if you have one
+    public LayerMask boardMask = ~0;
 
     PieceDefinition _def;
+    Card.Card _card;
+
     PlacementManager _placer;
     PrepPanel _panel;
-    
+
     HandPanel _handPanel;
     DeckManager _deckManager;
     bool _combatMode;
-    
+
     RectTransform _rt;
     Canvas _canvas;
     CanvasGroup _cg;
     Camera _cam;
-    
-    //To snap icons back to place after wrong drag
+
     Vector2 _startAnchoredPos;
     Transform _startParent;
     int _startSiblingIndex;
 
-    GameObject _ghost;       // world-space ghost parent
+    GameObject _ghost;
     Piece _ghostPiece;
     Vector2Int _snapCoord;
     bool _canPlaceHere;
-    static Plane _boardPlane;   // fallback when no collider was hit
-    
+    static Plane _boardPlane;
+
     CanvasGroup canvasGroup;
 
     public void Init(PieceDefinition def, PlacementManager placer, PrepPanel panel)
     {
+        _combatMode = false;
+        _card = null;
         _def = def;
         _placer = placer;
         _panel = panel;
-        GetComponent<Image>().sprite = def.icon;
+
+        var image = GetComponent<Image>();
+        if (image != null)
+            image.sprite = def != null ? def.icon : null;
     }
-    
+
+    // Compatibility overload so existing HandPanel calls still compile
     public void InitForCombat(PieceDefinition def, PlacementManager placer, HandPanel handPanel, DeckManager deckManager)
     {
         _combatMode = true;
         _def = def;
+        _card = null;
         _placer = placer;
         _handPanel = handPanel;
         _deckManager = deckManager;
 
-        GetComponent<Image>().sprite = def.icon;
+        var image = GetComponent<Image>();
+        if (image != null)
+            image.sprite = def != null ? def.icon : null;
+    }
+
+    // Preferred overload for the new card system
+    public void InitForCombat(Card.Card card, PlacementManager placer, HandPanel handPanel, DeckManager deckManager)
+    {
+        _combatMode = true;
+        _card = card;
+        _def = card != null ? card.GetSummonPieceDefinition() : null;
+        _placer = placer;
+        _handPanel = handPanel;
+        _deckManager = deckManager;
+
+        var image = GetComponent<Image>();
+        if (image != null)
+            image.sprite = card != null ? card.Art : (_def != null ? _def.icon : null);
     }
 
     void Awake()
@@ -70,13 +96,13 @@ public class DraggablePieceIcon : MonoBehaviour,
         _startAnchoredPos = _rt.anchoredPosition;
         _startParent = _rt.parent;
         _startSiblingIndex = _rt.GetSiblingIndex();
-        _cg.blocksRaycasts = false;   // let pointer reach world
+        _cg.blocksRaycasts = false;
         _ghost = null;
         _ghostPiece = null;
-        
+
         if (canvasGroup != null)
         {
-            canvasGroup.alpha = 0.45f;       // transparency level
+            canvasGroup.alpha = 0.45f;
             canvasGroup.blocksRaycasts = false;
         }
 
@@ -86,57 +112,49 @@ public class DraggablePieceIcon : MonoBehaviour,
 
     public void OnDrag(PointerEventData e)
     {
-        // Move icon with cursor for UI feedback
         _rt.anchoredPosition += e.delta / _canvas.scaleFactor;
 
         if (_placer == null || _placer.board == null) return;
         if (_cam == null) _cam = Camera.main;
         if (_cam == null) return;
+        if (_def == null) return;
 
         var ray = _cam.ScreenPointToRay(e.position);
 
-// 1) Try to hit colliders (tiles)
-        Vector3 worldPoint = default;   // <-- initialize it
+        Vector3 worldPoint = default;
         bool gotPoint = false;
 
-// Use either ALL positional args or ALL named args, not mixed.
-        if (Physics.Raycast(ray, out RaycastHit hit, 1000f, boardMask))   // positional ok
+        if (Physics.Raycast(ray, out RaycastHit hit, 1000f, boardMask))
         {
             worldPoint = hit.point;
             gotPoint = true;
         }
-        else
+        else if (_boardPlane.Raycast(ray, out float enter))
         {
-            // 2) Fallback to an infinite plane at board height
-            if (_boardPlane.Raycast(ray, out float enter))
-            {
-                worldPoint = ray.GetPoint(enter);
-                gotPoint = true;
-            }
+            worldPoint = ray.GetPoint(enter);
+            gotPoint = true;
         }
 
-        if (!gotPoint) return;   // guarantees worldPoint is set before use
+        if (!gotPoint) return;
 
-
-        // Convert to board coord
         if (_placer.board.WorldToBoard(worldPoint, out var c))
         {
-            // Lazy-build ghost the first time we have a valid coord
             if (_ghostPiece == null)
             {
                 if (_def.piecePrefab == null) return;
-                
+
                 _ghostPiece = Instantiate(_def.piecePrefab, _placer.board.transform);
                 _ghost = _ghostPiece.gameObject;
                 _ghostPiece.Init(_placer.board, _placer.playerTeam, c);
                 SetGhostVisual(0.5f, true);
 
-                // IMPORTANT: so the ghost never blocks our raycasts
-                SetLayerRecursive(_ghost.transform, LayerMask.NameToLayer("Ignore Raycast"));
+                int ignoreRaycastLayer = LayerMask.NameToLayer("Ignore Raycast");
+                if (ignoreRaycastLayer >= 0)
+                    SetLayerRecursive(_ghost.transform, ignoreRaycastLayer);
+
                 DisableColliders(_ghost, true);
             }
 
-            // Snap ghost to tile center
             _ghostPiece.ApplyBoardMove(c);
             _snapCoord = c;
 
@@ -146,118 +164,155 @@ public class DraggablePieceIcon : MonoBehaviour,
     }
 
     public void OnEndDrag(PointerEventData e)
-{
-    _cg.blocksRaycasts = true;
-
-    bool placed = false;
-    var tm = TurnManager.Instance;
-
-    if (_ghostPiece != null && _canPlaceHere)
     {
-        if (_combatMode)
-        {
-            // Combat: ONLY allow summons during SpellPhase (mana system)
-            if (tm != null &&
-                tm.Phase == TurnPhase.SpellPhase &&
-                _deckManager != null &&
-                _placer != null &&
-                _placer.board != null)
-            {
-                var cmd = new Chess.PlayCardPlaceCommand(
-                    tm,
-                    _placer.board,
-                    _placer,
-                    _deckManager,
-                    _def,
-                    _snapCoord,
-                    manaCost: 1
-                );
+        _cg.blocksRaycasts = true;
 
-                placed = tm.ExecuteCommand(cmd);
+        bool placed = false;
+        var tm = TurnManager.Instance;
+
+        if (_ghostPiece != null && _canPlaceHere)
+        {
+            if (_combatMode)
+            {
+                if (tm != null &&
+                    tm.Phase == TurnPhase.SpellPhase &&
+                    _deckManager != null &&
+                    _placer != null &&
+                    _placer.board != null)
+                {
+                    var cardToPlay = ResolveCombatCard();
+
+                    if (cardToPlay != null)
+                    {
+                        var cmd = new Chess.PlayCardPlaceCommand(
+                            tm,
+                            _placer.board,
+                            _placer,
+                            _deckManager,
+                            cardToPlay,
+                            _snapCoord
+                        );
+
+                        placed = tm.ExecuteCommand(cmd);
+                    }
+                }
             }
             else
             {
-                placed = false; // will snap back
+                placed = _placer.TryPlace(_def, _snapCoord);
+            }
+        }
+
+        if (placed)
+        {
+            if (_combatMode)
+            {
+                _handPanel?.OnCardPlayed(this);
+                FindObjectOfType<HandPanel>()?.RebuildHand();
+            }
+            else
+            {
+                _panel?.OnIconConsumed(this);
             }
         }
         else
         {
-            // Prep: no mana/AP, just place
-            placed = _placer.TryPlace(_def, _snapCoord);
+            _rt.SetParent(_startParent);
+            _rt.SetSiblingIndex(_startSiblingIndex);
+            _rt.anchoredPosition = _startAnchoredPos;
         }
-    }
 
-    if (placed)
-    {
-        if (_combatMode)
+        if (_ghost) Destroy(_ghost);
+        _ghostPiece = null;
+        _ghost = null;
+
+        if (canvasGroup != null)
         {
-            // remove icon from hand UI (deck changes were done inside the command)
-            _handPanel?.OnCardPlayed(this);
-
-            // refresh hand to reflect updated Hand list
-            FindObjectOfType<HandPanel>()?.RebuildHand();
+            canvasGroup.alpha = 1f;
+            canvasGroup.blocksRaycasts = true;
         }
-        else
+    }
+
+    Card.Card ResolveCombatCard()
+    {
+        if (_card != null)
+            return _card;
+
+        if (_deckManager == null || _def == null)
+            return null;
+
+        // Compatibility fallback:
+        // find the first unit card in hand that summons this same piece definition
+        var hand = _deckManager.Hand;
+        if (hand == null) return null;
+
+        for (int i = 0; i < hand.Count; i++)
         {
-            // prep behavior: consume icon
-            _panel.OnIconConsumed(this);
+            var candidate = hand[i];
+            if (candidate == null) continue;
+
+            var summonDef = candidate.GetSummonPieceDefinition();
+            if (summonDef == _def)
+                return candidate;
         }
-    }
-    else
-    {
-        // Snap back to original spot in the hand UI
-        _rt.SetParent(_startParent);
-        _rt.SetSiblingIndex(_startSiblingIndex);
-        _rt.anchoredPosition = _startAnchoredPos;
-    }
 
-    // Always clean up the ghost
-    if (_ghost) Destroy(_ghost);
-    _ghostPiece = null;
-    _ghost = null;
-
-    // Make card non-transparent again
-    if (canvasGroup != null)
-    {
-        canvasGroup.alpha = 1f;
-        canvasGroup.blocksRaycasts = true;
+        Debug.LogWarning("[DraggablePieceIcon] Could not resolve a runtime Card from hand for this dragged unit icon.");
+        return null;
     }
-}
-
-    // ===== helpers =====
 
     void SetGhostVisual(float alpha, bool includeChildren)
     {
-        var rends = includeChildren ? _ghost.GetComponentsInChildren<Renderer>() : _ghost.GetComponents<Renderer>();
+        if (_ghost == null) return;
+
+        var rends = includeChildren
+            ? _ghost.GetComponentsInChildren<Renderer>()
+            : _ghost.GetComponents<Renderer>();
+
         foreach (var r in rends)
         {
+            if (r == null || r.sharedMaterial == null) continue;
+
             var mpb = new MaterialPropertyBlock();
             r.GetPropertyBlock(mpb);
-            // try common color properties
+
             if (r.sharedMaterial.HasProperty("_BaseColor"))
             {
-                var c = r.sharedMaterial.GetColor("_BaseColor"); c.a = alpha;
+                var c = r.sharedMaterial.GetColor("_BaseColor");
+                c.a = alpha;
                 mpb.SetColor("_BaseColor", c);
             }
+
             if (r.sharedMaterial.HasProperty("_Color"))
             {
-                var c = r.sharedMaterial.GetColor("_Color"); c.a = alpha;
+                var c = r.sharedMaterial.GetColor("_Color");
+                c.a = alpha;
                 mpb.SetColor("_Color", c);
             }
+
             r.SetPropertyBlock(mpb);
         }
     }
 
     void TintGhost(bool ok)
     {
+        if (_ghost == null) return;
+
         var color = ok ? new Color(0f, 1f, 0f, 0.6f) : new Color(1f, 0f, 0f, 0.6f);
         var rends = _ghost.GetComponentsInChildren<Renderer>();
+
         foreach (var r in rends)
         {
+            if (r == null || r.sharedMaterial == null) continue;
+
             var mpb = new MaterialPropertyBlock();
             r.GetPropertyBlock(mpb);
-            if (r.sharedMaterial.HasProperty("_BaseColor")) mpb.SetColor("_BaseColor", color);
-            if (r.sharedMaterial.HasProperty("_Color")) mpb.SetColor("_Color", color);
+
+            if (r.sharedMaterial.HasProperty("_BaseColor"))
+                mpb.SetColor("_BaseColor", color);
+
+            if (r.sharedMaterial.HasProperty("_Color"))
+                mpb.SetColor("_Color", color);
+
             r.SetPropertyBlock(mpb);
         }
     }
@@ -271,6 +326,8 @@ public class DraggablePieceIcon : MonoBehaviour,
 
     static void DisableColliders(GameObject root, bool value)
     {
+        if (root == null) return;
+
         foreach (var c in root.GetComponentsInChildren<Collider>())
             c.enabled = !value;
     }

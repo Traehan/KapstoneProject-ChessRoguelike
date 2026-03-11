@@ -3,12 +3,13 @@ using System.Reflection;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Card;
 using Chess;
 
 public class CardView : MonoBehaviour
 {
-    [Header("UI")]
-    public Image artImage;
+    [Header("Main UI")]
+    public Image artImage;              // Full card art for units, blank spell card background for spells
     public TMP_Text titleText;
     public TMP_Text costText;
 
@@ -16,36 +17,118 @@ public class CardView : MonoBehaviour
     public TMP_Text healthStat;
     public TMP_Text attackStat;
     public TMP_Text moveStat;
+    public Image HealthImage;
+    public Image attackImage;
+    public Image moveImage;
 
-    public void Bind(PieceDefinition def, int apCost = 0)
+    [Header("Spell UI")]
+    public TMP_Text rulesText;
+    public Image SpellIconImage;
+
+    [Header("Spell Defaults")]
+    public Sprite defaultSpellCardBackground;
+
+    public void Bind(Card.Card card)
     {
-        if (def == null)
+        if (card == null)
         {
-            Debug.LogWarning("[CardView] Bind called with null def.");
+            Debug.LogWarning("[CardView] Bind called with null card.");
             return;
         }
 
-        // Art (your baked card sprite should be in def.icon)
+        if (titleText != null)
+            titleText.text = card.Title;
+
+        if (costText != null)
+            costText.text = card.ManaCost.ToString();
+
+        if (card.IsSpellCard())
+            BindSpellCard(card);
+        else
+            BindUnitCard(card);
+    }
+
+    void BindUnitCard(Card.Card card)
+    {
+        var unitPiece = card.GetSummonPieceDefinition();
+
         if (artImage != null)
         {
-            artImage.sprite = def.icon;
+            artImage.sprite = card.Art;
             artImage.enabled = (artImage.sprite != null);
         }
 
-        // Title / cost
-        if (titleText != null) titleText.text = !string.IsNullOrEmpty(def.displayName) ? def.displayName : def.name;
-        if (costText != null) costText.text = apCost.ToString();
+        if (SpellIconImage != null)
+        {
+            SpellIconImage.sprite = null;
+            SpellIconImage.enabled = false;
+        }
 
-        // Stats 
-        int hp = ReadInt(def, "maxHP", "MaxHP", "health", "Health", "hp", "HP", "maxHealth", "MaxHealth", "baseHealth", "BaseHealth");
-        int atk = ReadInt(def, "attack", "Attack", "damage", "Damage", "baseAttack", "BaseAttack");
-        int mov = ReadInt(def, "maxStride", "MaxStride", "stride", "Stride", "movement", "Movement", "move", "Move");
+        if (rulesText != null)
+            rulesText.gameObject.SetActive(false);
 
-        if (healthStat != null) healthStat.text = hp.ToString();
-        if (attackStat != null) attackStat.text = atk.ToString();
-        if (moveStat != null) moveStat.text = mov.ToString();
+        if (healthStat != null) healthStat.gameObject.SetActive(true);
+        if (attackStat != null) attackStat.gameObject.SetActive(true);
+        if (moveStat != null) moveStat.gameObject.SetActive(true);
 
-        Debug.Log($"[CardView] Bound def='{def.name}' display='{def.displayName}' -> HP={hp} ATK={atk} MOV={mov} icon={(def.icon != null ? def.icon.name : "NULL")}");
+        if (unitPiece != null)
+        {
+            int hp = ReadInt(unitPiece, "maxHP", "MaxHP", "health", "Health", "hp", "HP", "maxHealth", "MaxHealth", "baseHealth", "BaseHealth");
+            int atk = ReadInt(unitPiece, "attack", "Attack", "damage", "Damage", "baseAttack", "BaseAttack");
+            int mov = ReadInt(unitPiece, "maxStride", "MaxStride", "stride", "Stride", "movement", "Movement", "move", "Move");
+
+            if (healthStat != null) healthStat.text = hp.ToString();
+            if (attackStat != null) attackStat.text = atk.ToString();
+            if (moveStat != null) moveStat.text = mov.ToString();
+        }
+        else
+        {
+            if (healthStat != null) healthStat.text = "-";
+            if (attackStat != null) attackStat.text = "-";
+            if (moveStat != null) moveStat.text = "-";
+        }
+    }
+
+    void BindSpellCard(Card.Card card)
+    {
+        if (artImage != null)
+        {
+            artImage.sprite = defaultSpellCardBackground;
+            artImage.enabled = (artImage.sprite != null);
+        }
+
+        if (SpellIconImage != null)
+        {
+            SpellIconImage.sprite = card.Art;
+            SpellIconImage.enabled = (SpellIconImage.sprite != null);
+        }
+
+        if (rulesText != null)
+        {
+            rulesText.gameObject.SetActive(true);
+            rulesText.text = card.RulesText;
+        }
+
+        if (healthStat != null)
+        {
+            healthStat.text = "";
+            healthStat.gameObject.SetActive(false);
+            HealthImage.gameObject.SetActive(false);
+        }
+
+        if (attackStat != null)
+        {
+            attackStat.text = "";
+            attackStat.gameObject.SetActive(false);
+            attackImage.gameObject.SetActive(false);
+        }
+
+        if (moveStat != null)
+        {
+            moveStat.text = "";
+            moveStat.gameObject.SetActive(false);
+            moveImage.gameObject.SetActive(false);
+        }
     }
 
     static int ReadInt(object obj, params string[] names)
@@ -69,7 +152,6 @@ public class CardView : MonoBehaviour
 
         var t = obj.GetType();
 
-        // Field
         var field = t.GetField(memberName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
         if (field != null)
         {
@@ -77,7 +159,6 @@ public class CardView : MonoBehaviour
             return true;
         }
 
-        // Property
         var prop = t.GetProperty(memberName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
         if (prop != null && prop.CanRead)
         {

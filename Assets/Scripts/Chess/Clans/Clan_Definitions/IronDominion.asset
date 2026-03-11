@@ -17,7 +17,7 @@ MonoBehaviour:
     a Piece Does not move for a turn, It Gains +1 Fortify
   QueenAuraDescription: <size=22><color=#FF0000><i>Queen Aura Ability</i></color></size>
     \n\n grants surrounding troops +5 Damage
-  Queen: {fileID: 21300000, guid: f1a770d4197fe7e4ebdb41af1415b74e, type: 3}
+  Queen: {fileID: 21300000, guid: 33256db30130def4280394951b30ddb8, type: 3}
   uiColor: {r: 0.8, g: 0.8, b: 0.8, a: 1}
   queenDefinition: {fileID: 11400000, guid: cdb56350a760c8b4abb356671a3f8e69, type: 2}
   abilities:
@@ -27,3 +27,17 @@ MonoBehaviour:
   - {fileID: 11400000, guid: b4529fb9ecab0f642a3eb0b3a75d3fb4, type: 2}
   - {fileID: 11400000, guid: f2d8868517e7ed7488470ba520d47433, type: 2}
   - {fileID: 11400000, guid: d3ce1abcc8bd471439947cf5ef924296, type: 2}
+  startingBattleDeck:
+  - {fileID: 11400000, guid: 033b6958d52d9b24ab0e7fad4e3cb26f, type: 2}
+  - {fileID: 11400000, guid: 033b6958d52d9b24ab0e7fad4e3cb26f, type: 2}
+  - {fileID: 11400000, guid: 033b6958d52d9b24ab0e7fad4e3cb26f, type: 2}
+  - {fileID: 11400000, guid: 033b6958d52d9b24ab0e7fad4e3cb26f, type: 2}
+  - {fileID: 11400000, guid: 033b6958d52d9b24ab0e7fad4e3cb26f, type: 2}
+  - {fileID: 11400000, guid: 033b6958d52d9b24ab0e7fad4e3cb26f, type: 2}
+  - {fileID: 11400000, guid: 033b6958d52d9b24ab0e7fad4e3cb26f, type: 2}
+  - {fileID: 11400000, guid: 033b6958d52d9b24ab0e7fad4e3cb26f, type: 2}
+  - {fileID: 11400000, guid: 4521b98382d571246b05f294453f311a, type: 2}
+  - {fileID: 11400000, guid: 4521b98382d571246b05f294453f311a, type: 2}
+  - {fileID: 11400000, guid: 4521b98382d571246b05f294453f311a, type: 2}
+  - {fileID: 11400000, guid: 4521b98382d571246b05f294453f311a, type: 2}
+  - {fileID: 11400000, guid: 4521b98382d571246b05f294453f311a, type: 2}

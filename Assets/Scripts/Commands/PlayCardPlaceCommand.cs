@@ -9,9 +9,8 @@ namespace Chess
         readonly ChessBoard _board;
         readonly PlacementManager _placer;
         readonly DeckManager _deck;
-        readonly PieceDefinition _def;
+        readonly Card.Card _card;
         readonly Vector2Int _coord;
-        readonly int _manaCost;
 
         Piece _placedInstance;
 
@@ -20,59 +19,77 @@ namespace Chess
             ChessBoard board,
             PlacementManager placer,
             DeckManager deck,
-            PieceDefinition def,
-            Vector2Int coord,
-            int manaCost = 1)
+            Card.Card card,
+            Vector2Int coord)
         {
             _tm = tm;
             _board = board;
             _placer = placer;
             _deck = deck;
-            _def = def;
+            _card = card;
             _coord = coord;
-            _manaCost = manaCost;
         }
 
         public bool Execute()
         {
-            if (_tm == null || _board == null || _placer == null || _deck == null || _def == null) return false;
-            if (_tm.Phase != TurnPhase.SpellPhase) return false;
-            if (!_board.InBounds(_coord)) return false;
+            if (_tm == null || _board == null || _placer == null || _deck == null || _card == null)
+                return false;
 
-            // must be in hand
-            if (!_deck.Hand.Contains(_def)) return false;
+            if (_tm.Phase != TurnPhase.SpellPhase)
+                return false;
 
-            if (!_tm.TrySpendMana(_manaCost)) return false;
+            if (!_board.InBounds(_coord))
+                return false;
 
-            // place
-            if (!_placer.TryPlace(_def, _coord))
+            if (!_deck.IsInHand(_card))
+                return false;
+
+            var summonDef = _card.GetSummonPieceDefinition();
+            if (summonDef == null)
             {
-                _tm.RefundMana(_manaCost);
+                Debug.LogWarning("[PlayCardPlaceCommand] Tried to place a non-unit card.");
                 return false;
             }
 
-            // find placed instance
+            if (!_tm.TrySpendMana(_card.ManaCost))
+                return false;
+
+            if (!_placer.TryPlace(summonDef, _coord))
+            {
+                _tm.RefundMana(_card.ManaCost);
+                return false;
+            }
+
             if (!_board.TryGetPiece(_coord, out _placedInstance) || _placedInstance == null)
             {
-                _tm.RefundMana(_manaCost);
+                _tm.RefundMana(_card.ManaCost);
                 return false;
             }
 
-            // Hand -> Exhausted/PlayedThisBattle
-            _deck.Hand.Remove(_def);
+            _deck.RemoveFromHand(_card);
+            _deck.MoveToPlayedThisBattle(_card);
 
-            // Use whichever list name you actually have:
-            // _deck.ExhaustedThisBattle.Add(_def);
-            _deck.PlayedThisBattle.Add(_def);
+            var report = new UnitCardPlayReport
+            {
+                card = _card,
+                summonedDefinition = summonDef,
+                spawnedPiece = _placedInstance,
+                coord = _coord,
+                ownerTeam = _placedInstance.Team,
+                manaSpent = _card.ManaCost
+            };
+
+            GameEvents.OnCardPlayed?.Invoke(_card);
+            GameEvents.OnUnitCardPlayed?.Invoke(_card, report);
 
             return true;
         }
 
         public void Undo()
         {
-            if (_tm == null || _board == null || _deck == null || _def == null) return;
+            if (_tm == null || _board == null || _deck == null || _card == null)
+                return;
 
-            // remove the spawned piece
             if (_placedInstance != null)
             {
                 if (!_board.TryRemovePieceAt(_placedInstance.Coord))
@@ -83,13 +100,9 @@ namespace Chess
                 _board.TryRemovePieceAt(_coord);
             }
 
-            // refund AP
-            _tm.RefundMana(_manaCost);
-
-            // return card to hand
-            _deck.PlayedThisBattle.Remove(_def);
-            if (!_deck.Hand.Contains(_def))
-                _deck.Hand.Add(_def);
+            _tm.RefundMana(_card.ManaCost);
+            _deck.RemoveFromPlayed(_card);
+            _deck.ReturnToHand(_card);
         }
     }
 }

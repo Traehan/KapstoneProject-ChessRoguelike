@@ -12,7 +12,7 @@ public class PrepPanel : MonoBehaviour
 
     [Header("UI")]
     public Transform gridParent;
-    public GameObject iconPrefab; // MUST be CardIcon_generic
+    public GameObject iconPrefab;
     public Button confirmButton;
     public Button resetButton;
     public Button undoButton;
@@ -39,24 +39,26 @@ public class PrepPanel : MonoBehaviour
     {
         if (def == null) return;
 
-        // ALWAYS use the generic card prefab (NO iconPrefabOverride)
         if (iconPrefab == null)
         {
-            Debug.LogError("[PrepPanel] iconPrefab is missing. Assign CardIcon_generic.");
+            Debug.LogError("[PrepPanel] iconPrefab is missing. Assign your generic card prefab.");
             return;
         }
 
         var go = Instantiate(iconPrefab, gridParent);
 
-        // Bind visuals + stats
         var view = go.GetComponent<CardView>();
         if (view != null)
-            view.Bind(def, apCost: 0);
+        {
+            // Prep still works from PieceDefinition, so wrap it in a temporary compatibility Card.
+            var tempCard = new Card.Card(def, manaCost: 0);
+            view.Bind(tempCard);
+        }
 
         var icon = go.GetComponent<DraggablePieceIcon>();
         if (icon == null)
         {
-            Debug.LogError("[PrepPanel] CardIcon_generic is missing DraggablePieceIcon.");
+            Debug.LogError("[PrepPanel] iconPrefab is missing DraggablePieceIcon.");
             return;
         }
 
@@ -65,10 +67,17 @@ public class PrepPanel : MonoBehaviour
 
     void SpawnAllIcons()
     {
+        if (gridParent == null)
+        {
+            Debug.LogError("[PrepPanel] gridParent is not assigned.");
+            return;
+        }
+
         for (int i = gridParent.childCount - 1; i >= 0; i--)
             Destroy(gridParent.GetChild(i).gameObject);
 
         if (GameSession.I == null) return;
+        if (GameSession.I.CurrentArmy == null) return;
 
         foreach (var def in GameSession.I.CurrentArmy)
             SpawnOneIcon(def);
@@ -83,18 +92,21 @@ public class PrepPanel : MonoBehaviour
 
     public void OnIconConsumed(DraggablePieceIcon icon)
     {
-        Destroy(icon.gameObject);
+        if (icon != null)
+            Destroy(icon.gameObject);
     }
 
     public void OnReset()
     {
-        placementManager.ResetAll();
+        if (placementManager != null)
+            placementManager.ResetAll();
+
         SpawnAllIcons();
     }
 
     public void OnUndo()
     {
-        if (placementManager.UndoLast(out var def))
+        if (placementManager != null && placementManager.UndoLast(out var def))
             SpawnOneIcon(def);
     }
 }

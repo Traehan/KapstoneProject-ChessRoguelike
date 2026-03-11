@@ -10,18 +10,19 @@ namespace Chess
 
         public override void OnEndPlayerTurn(ClanRuntime ctx)
         {
-            // stationary allies are those not in the moved set (ask TM)
-            var moved = ctx.tm.MovedThisPlayerTurnSnapshot; // HashSet<Piece>
+            var moved = ctx.tm.MovedThisPlayerTurnSnapshot;
             foreach (var p in ctx.board.GetAllPieces().Where(p => p != null && p.Team == ctx.playerTeam))
             {
-                if (!moved.Contains(p)) p.AddFortify(maxStacks);
+                if (!moved.Contains(p))
+                    p.AddFortify(maxStacks);
             }
         }
 
         public override void OnPieceMoved(ClanRuntime ctx, Piece piece)
         {
-            if (piece != null && piece.Team == ctx.playerTeam)
-                piece.ClearFortify();
+            // Normal player movement already clears fortify inside MoveCommand.
+            // Spell repositioning should preserve fortify.
+            // So we intentionally do nothing here.
         }
     }
 }

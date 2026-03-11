@@ -23,7 +23,7 @@ namespace Chess
             if (Phase != TurnPhase.Preparation) return;
 
             if (GameSession.I != null && deckManager != null)
-                deckManager.InitializeBattleFromRunDeck(GameSession.I.runDeckNonLeaders);
+                deckManager.InitializeBattleFromCardDefinitions(GameSession.I.CurrentRunDeck);
 
             BeginSpellPhase(); 
         }

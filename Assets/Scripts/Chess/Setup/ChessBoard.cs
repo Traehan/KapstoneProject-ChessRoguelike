@@ -166,53 +166,6 @@ namespace Chess
             piece.OnPlaced();
             return piece;
         }
-
-
-        public bool MovePiece(Piece piece, Vector2Int to)
-        {
-            if (piece == null) return false;
-
-            var legal = new List<Vector2Int>();
-            piece.GetLegalMoves(legal);
-            if (!legal.Contains(to)) return false; //cancels if the 2d coord is not legal
-
-            // capture if enemy there
-            if (IsOccupied(to))
-            {
-                var enemy = GetPiece(to);
-                if (enemy != null && enemy.Team != piece.Team)
-                {
-                    enemy.OnCaptured(); //will change to an encounter with health/damage calculations
-                    _pieces.Remove(to);
-                }
-                else return false; // blocked by ally
-            }
-
-            // update map
-            _pieces.Remove(piece.Coord);
-            piece.transform.position = BoardToWorldCenter(to);
-            typeof(Piece).GetProperty("Coord")
-                .SetValue(piece, to, null); // set protected via reflection not ideal, but we’ll re-set below anyway
-
-            // cleaner: re-init coord only
-            var pawn = piece as Pawn;
-            if (pawn != null && !pawn.hasMoved) pawn.MarkMoved();
-
-            // force-set private via helper
-            var setter = piece.GetType().BaseType
-                .GetMethod("SetCoord", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
-            setter.Invoke(piece, new object[] { to, false });
-
-            _pieces[to] = piece;
-            return true;
-        }
-    
-        public void ClearPieces()
-        {
-            foreach (var kv in _pieces.ToList())
-                if (kv.Value != null) DestroyImmediate(kv.Value.gameObject);
-            _pieces.Clear();
-        }
     
         public bool InBounds(Vector2Int c)
         {
@@ -303,12 +256,6 @@ namespace Chess
 
         
         public Piece GetPieceAt(Vector2Int c) => GetPiece(c);
-        
-        public void ClearCell(Vector2Int c)
-        {
-            if (!InBounds(c)) return;
-            _pieces.Remove(c);
-        }
 
         /// Soft-capture: remove from occupancy and deactivate, but DON'T Destroy.
         /// Returns true if a piece was captured/removed from the board map.
@@ -348,74 +295,7 @@ namespace Chess
         }
 
 
-        /// Move with optional capture. Does NOT do legality checks; call only after you’ve
-        /// decided the move is legal for the mover. Returns true on success and gives you
-        /// the soft-captured piece (if any) so TurnManager can store it for undo.
-        public bool TryMoveWithCapture(Piece mover, Vector2Int to, out Piece captured)
-        {
-            captured = null;
-            if (mover == null || !InBounds(to)) return false;
-
-            // If same-team piece blocks destination, fail
-            if (IsOccupied(to))
-            {
-                var there = GetPiece(to);
-                if (there == null)
-                {
-                    // stale entry: clean and continue
-                    _pieces.Remove(to);
-                }
-                else if (there.Team == mover.Team)
-                {
-                    return false; // ally blocks
-                }
-                else
-                {
-                    // enemy present -> soft-capture so we can undo later
-                    captured = there;
-                    CapturePiece(captured); // removes from _pieces + deactivates
-                }
-            }
-
-            // Remove mover's old mapping if present
-            if (_pieces.TryGetValue(mover.Coord, out var cur) && cur == mover)
-                _pieces.Remove(mover.Coord);
-
-            // Snap mover to destination and register in map
-            mover.ApplyBoardMove(to);
-            _pieces[to] = mover;
-
-            return true;
-        }
-
-        /// Raw relocate (no capture logic). Use for undo to place a piece exactly at 'to'.
-        /// If p == null, this acts like ClearCell(to).
-        public void PlaceWithoutCapture(Piece p, Vector2Int to)
-        {
-            if (!InBounds(to)) return;
-
-            if (p == null)
-            {
-                _pieces.Remove(to);
-                return;
-            }
-
-            // Remove the piece's old entry if the board currently tracks it
-            if (_pieces.TryGetValue(p.Coord, out var cur) && cur == p)
-                _pieces.Remove(p.Coord);
-
-            // Ensure destination is free (caller should guarantee this in undo)
-            _pieces.Remove(to);
-
-            p.ApplyBoardMove(to);
-            _pieces[to] = p;
-        }
         
-        
-
-            // Remove by instance + destroy (used elsewhere too)
-        
-        public bool HasPieceAt(Vector2Int c) => _pieces.ContainsKey(c);
         
         
 
