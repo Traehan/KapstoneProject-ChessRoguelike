@@ -293,11 +293,70 @@ namespace Chess
             p.ApplyBoardMove(coord);
             _pieces[coord] = p;
         }
+        
+        public bool SwapPiecesWithoutCapture(Piece first, Piece second)
+        {
+            if (first == null || second == null) return false;
+            if (first == second) return false;
+
+            Vector2Int a = first.Coord;
+            Vector2Int b = second.Coord;
+
+            if (!InBounds(a) || !InBounds(b)) return false;
+
+            // Make sure the board really owns these pieces at these coords
+            if (!_pieces.TryGetValue(a, out var atA) || atA != first) return false;
+            if (!_pieces.TryGetValue(b, out var atB) || atB != second) return false;
+
+            // Remove both old entries first so neither destination looks occupied
+            _pieces.Remove(a);
+            _pieces.Remove(b);
+
+            // Move pieces
+            first.ApplyBoardMove(b);
+            second.ApplyBoardMove(a);
+
+            // Register new entries
+            _pieces[b] = first;
+            _pieces[a] = second;
+
+            return true;
+        }
 
 
-        
-        
-        
+        public bool PlaceWithoutCapture(Piece piece, Vector2Int to)
+        {
+            if (piece == null) return false;
+            if (!InBounds(to)) return false;
 
+            // Destination must be empty OR already occupied by this same piece
+            var existing = GetPiece(to);
+            if (existing != null && existing != piece)
+                return false;
+
+            Vector2Int from = piece.Coord;
+
+            // Remove old entry only if this board currently owns the piece there
+            if (_pieces.TryGetValue(from, out var current) && current == piece)
+                _pieces.Remove(from);
+            else
+            {
+                // fallback prune in case stale map data exists somewhere else
+                var staleKeys = _pieces
+                    .Where(kv => kv.Value == piece)
+                    .Select(kv => kv.Key)
+                    .ToList();
+
+                for (int i = 0; i < staleKeys.Count; i++)
+                    _pieces.Remove(staleKeys[i]);
+            }
+
+            // Snap transform + coord through the piece helper
+            piece.ApplyBoardMove(to);
+
+            // Register new occupancy
+            _pieces[to] = piece;
+            return true;
+        }
     }
 }

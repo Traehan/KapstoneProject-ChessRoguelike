@@ -40,6 +40,27 @@ namespace Card
 
             Debug.Log($"[DeckManager] Battle init from legacy run deck. DrawPile={DrawPile.Count}, Hand={Hand.Count}, Discard={Discard.Count}");
         }
+        
+        public void Draw(int count)
+        {
+            if (count <= 0) return;
+
+            for (int i = 0; i < count; i++)
+            {
+                if (DrawPile.Count == 0)
+                    ReshuffleDiscardIntoDraw();
+
+                if (DrawPile.Count == 0)
+                    break;
+
+                var top = DrawPile[0];
+                DrawPile.RemoveAt(0);
+                Hand.Add(top);
+
+                GameEvents.OnCardAddedToHand?.Invoke(top);
+                GameEvents.OnCardDrawn?.Invoke(top);
+            }
+        }
 
         /// <summary>
         /// New entrypoint for real card-definition decks.

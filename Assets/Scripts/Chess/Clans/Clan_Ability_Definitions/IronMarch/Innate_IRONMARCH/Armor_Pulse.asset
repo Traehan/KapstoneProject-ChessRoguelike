@@ -15,5 +15,5 @@ MonoBehaviour:
   displayName: Armor Pulse
   description: 'On end turn: +1 fortify to surrounding allies!'
   fortifyPerAlly: 1
-  maxFortify: 5
+  maxFortify: 100
   auraColor: {r: 0.4, g: 0.8, b: 1, a: 0.25}

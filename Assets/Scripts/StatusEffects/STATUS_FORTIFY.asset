@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11f6754eac53a92488128f4144629e1c, type: 3}
+  m_Name: STATUS_FORTIFY
+  m_EditorClassIdentifier: Assembly-CSharp::Chess.StatusDefinition
+  id: 1
+  icon: {fileID: 21300000, guid: 586933272add94648983d14af7131705, type: 3}
+  displayName: Fortify
+  description: Absorbs 1 damage per stack, loses 1 stack on movement
+  showStacks: 1
+  priority: 10

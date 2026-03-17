@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Reflection;
 using TMPro;
 using UnityEngine;
@@ -9,11 +10,12 @@ using Chess;
 public class CardView : MonoBehaviour
 {
     [Header("Main UI")]
-    public Image artImage;              // Full card art for units, blank spell card background for spells
+    public Image artImage;
     public TMP_Text titleText;
     public TMP_Text costText;
 
     [Header("Stats")]
+    public GameObject StatsPanel;
     public TMP_Text healthStat;
     public TMP_Text attackStat;
     public TMP_Text moveStat;
@@ -28,6 +30,49 @@ public class CardView : MonoBehaviour
     [Header("Spell Defaults")]
     public Sprite defaultSpellCardBackground;
 
+    [Header("Spell Targeting Motion")]
+    [SerializeField] float targetingLift = 35f;
+    [SerializeField] float targetingMoveDuration = 0.12f;
+    [SerializeField] AnimationCurve targetingEase = AnimationCurve.EaseInOut(0, 0, 1, 1);
+
+    bool _isSpellTargetingActive;
+    RectTransform _rect;
+    Vector2 _baseAnchoredPos;
+    Coroutine _moveRoutine;
+    bool _basePosInitialized;
+
+    Card.Card _boundCard;
+
+    void Awake()
+    {
+        _rect = GetComponent<RectTransform>();
+        CacheBasePosition();
+    }
+
+    void OnEnable()
+    {
+        if (SpellTargetingController.Instance != null)
+            SpellTargetingController.Instance.OnSpellTargetingStateChanged += HandleSpellTargetingStateChanged;
+    }
+
+    void OnDisable()
+    {
+        if (SpellTargetingController.Instance != null)
+            SpellTargetingController.Instance.OnSpellTargetingStateChanged -= HandleSpellTargetingStateChanged;
+    }
+
+    void CacheBasePosition()
+    {
+        if (_rect == null)
+            _rect = GetComponent<RectTransform>();
+
+        if (_rect == null)
+            return;
+
+        _baseAnchoredPos = _rect.anchoredPosition;
+        _basePosInitialized = true;
+    }
+
     public void Bind(Card.Card card)
     {
         if (card == null)
@@ -35,6 +80,9 @@ public class CardView : MonoBehaviour
             Debug.LogWarning("[CardView] Bind called with null card.");
             return;
         }
+
+        _boundCard = card;
+        CacheBasePosition();
 
         if (titleText != null)
             titleText.text = card.Title;
@@ -46,6 +94,9 @@ public class CardView : MonoBehaviour
             BindSpellCard(card);
         else
             BindUnitCard(card);
+
+        // Whenever a card is rebound/reused by the hand UI, reset it visually.
+        SetSpellTargetingActiveImmediate(false);
     }
 
     void BindUnitCard(Card.Card card)
@@ -66,6 +117,11 @@ public class CardView : MonoBehaviour
 
         if (rulesText != null)
             rulesText.gameObject.SetActive(false);
+
+        if (StatsPanel != null) StatsPanel.gameObject.SetActive(true);
+        if (HealthImage != null) HealthImage.gameObject.SetActive(true);
+        if (attackImage != null) attackImage.gameObject.SetActive(true);
+        if (moveImage != null) moveImage.gameObject.SetActive(true);
 
         if (healthStat != null) healthStat.gameObject.SetActive(true);
         if (attackStat != null) attackStat.gameObject.SetActive(true);
@@ -113,22 +169,24 @@ public class CardView : MonoBehaviour
         {
             healthStat.text = "";
             healthStat.gameObject.SetActive(false);
-            HealthImage.gameObject.SetActive(false);
         }
 
         if (attackStat != null)
         {
             attackStat.text = "";
             attackStat.gameObject.SetActive(false);
-            attackImage.gameObject.SetActive(false);
         }
 
         if (moveStat != null)
         {
             moveStat.text = "";
             moveStat.gameObject.SetActive(false);
-            moveImage.gameObject.SetActive(false);
         }
+
+        if (HealthImage != null) HealthImage.gameObject.SetActive(false);
+        if (attackImage != null) attackImage.gameObject.SetActive(false);
+        if (moveImage != null) moveImage.gameObject.SetActive(false);
+        if (StatsPanel != null) StatsPanel.gameObject.SetActive(false);
     }
 
     static int ReadInt(object obj, params string[] names)
@@ -167,5 +225,89 @@ public class CardView : MonoBehaviour
         }
 
         return false;
+    }
+
+    void HandleSpellTargetingStateChanged(Card.Card card, bool active)
+    {
+        if (_boundCard == null)
+            return;
+
+        if (card != _boundCard)
+            return;
+
+        SetSpellTargetingActive(active);
+    }
+
+    public void SetSpellTargetingActive(bool active)
+    {
+        if (_rect == null)
+            _rect = GetComponent<RectTransform>();
+
+        if (_rect == null)
+            return;
+
+        if (!_basePosInitialized)
+            CacheBasePosition();
+
+        // Do nothing if state is already correct
+        if (_isSpellTargetingActive == active)
+            return;
+
+        // Only capture the base position when lifting from the normal hand position
+        if (active && !_isSpellTargetingActive)
+            _baseAnchoredPos = _rect.anchoredPosition;
+
+        _isSpellTargetingActive = active;
+
+        Vector2 target = active
+            ? _baseAnchoredPos + new Vector2(0f, targetingLift)
+            : _baseAnchoredPos;
+
+        if (_moveRoutine != null)
+            StopCoroutine(_moveRoutine);
+
+        _moveRoutine = StartCoroutine(AnimateAnchoredPosition(target));
+    }
+
+    void SetSpellTargetingActiveImmediate(bool active)
+    {
+        if (_rect == null)
+            _rect = GetComponent<RectTransform>();
+
+        if (_rect == null)
+            return;
+
+        if (!_basePosInitialized)
+            CacheBasePosition();
+
+        if (_moveRoutine != null)
+        {
+            StopCoroutine(_moveRoutine);
+            _moveRoutine = null;
+        }
+
+        _isSpellTargetingActive = active;
+
+        _rect.anchoredPosition = active
+            ? _baseAnchoredPos + new Vector2(0f, targetingLift)
+            : _baseAnchoredPos;
+    }
+
+    IEnumerator AnimateAnchoredPosition(Vector2 target)
+    {
+        Vector2 start = _rect.anchoredPosition;
+        float t = 0f;
+
+        while (t < targetingMoveDuration)
+        {
+            t += Time.unscaledDeltaTime;
+            float u = Mathf.Clamp01(t / targetingMoveDuration);
+            float eased = targetingEase.Evaluate(u);
+            _rect.anchoredPosition = Vector2.LerpUnclamped(start, target, eased);
+            yield return null;
+        }
+
+        _rect.anchoredPosition = target;
+        _moveRoutine = null;
     }
 }

@@ -25,8 +25,8 @@ Transform:
   m_GameObject: {fileID: 4580341148723833683}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 10, z: 0}
-  m_LocalScale: {x: 0.15, y: 0.15, z: 1}
+  m_LocalPosition: {x: -3, y: 14, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 791983906885583184}
@@ -158,7 +158,7 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.25
+  m_Radius: 2
   m_Height: 10
   m_Direction: 1
   m_Center: {x: 0, y: 5, z: 0}
@@ -209,5 +209,9 @@ MonoBehaviour:
   iconPrefab: {fileID: 1019079167299063384, guid: e787a9f73dd261b47b8ea9facc564988, type: 3}
   chipPrefab: {fileID: 6001622697872831897, guid: 7d86de16bfb34b44eb2119de6d2923fa, type: 3}
   expandedMaxIcons: 2
-  iconSpacing: 0.35
-  localOffset: {x: 0, y: 0, z: 0}
+  iconSpacing: 0.25
+  localOffset: {x: -1, y: 2, z: 0}
+  worldScale: 0.1
+  iconSize: {x: 64, y: 64}
+  countSize: {x: 24, y: 24}
+  countFontSize: 14

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using Chess;
 
@@ -12,6 +13,8 @@ namespace Card
         public SpellCardDefinitionSO SpellDefinition { get; }
         public Team CasterTeam { get; }
         public object Target { get; }
+
+        readonly Dictionary<string, object> _state = new();
 
         public SpellContext(
             TurnManager turnManager,
@@ -48,6 +51,23 @@ namespace Card
             }
 
             coord = default;
+            return false;
+        }
+
+        public void SetState(string key, object value)
+        {
+            _state[key] = value;
+        }
+
+        public bool TryGetState<T>(string key, out T value)
+        {
+            if (_state.TryGetValue(key, out var raw) && raw is T typed)
+            {
+                value = typed;
+                return true;
+            }
+
+            value = default;
             return false;
         }
     }

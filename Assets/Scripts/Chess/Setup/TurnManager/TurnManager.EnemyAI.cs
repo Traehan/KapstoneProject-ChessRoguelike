@@ -58,7 +58,7 @@ namespace Chess
         {
             if (Phase != TurnPhase.PlayerTurn) return;
             _movedThisPlayerTurn.Add(mover);
-            mover.ClearFortify();
+            FortifyStatusUtility.RemoveFortify(mover, 1);
             NotifyAbilitiesPieceMoved(mover);
         }
 

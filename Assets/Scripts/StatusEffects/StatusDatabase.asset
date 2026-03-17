@@ -14,3 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Chess.StatusDatabase
   definitions:
   - {fileID: 11400000, guid: 9f3ccd02a80af784bb49eceb84298e1b, type: 2}
+  - {fileID: 11400000, guid: 6514eee4f55de4f42975f0964a3f6dd8, type: 2}
+  - {fileID: 11400000, guid: 972cf315cbbe8214f8833acf73d213cc, type: 2}

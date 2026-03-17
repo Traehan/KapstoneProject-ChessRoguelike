@@ -34,33 +34,39 @@ namespace Chess
             attacker.GetComponent<PieceRuntime>()?.CollectPreAttackModifiers(ctx);
             defender.GetComponent<PieceRuntime>()?.CollectPreAttackModifiers(ctx);
 
-            // include damageDelta
             int modifiedAtk = Mathf.Max(0, ctx.baseDamage + ctx.damageDelta);
 
-            // Apply Fortify unless bypassed
-            int atkToDef = ctx.bypassFortify
-                ? modifiedAtk
-                : Mathf.Max(0, modifiedAtk - defender.fortifyStacks);
+            // attacker hits defender first
+            int atkToDef = FortifyStatusUtility.AbsorbDamage(defender, modifiedAtk, ctx.bypassFortify);
 
-            int defToAtk = attackerIsPlayer ? 0 : Mathf.Max(0, defender.attack - attacker.fortifyStacks);
+            // no universal counter-hit anymore
+            int defToAtk = 0;
 
-            // --- Apply damage ---
             if (atkToDef > 0)
                 GameEvents.OnPieceDamaged?.Invoke(defender, atkToDef, attacker);
 
-            if (defToAtk > 0)
-                GameEvents.OnPieceDamaged?.Invoke(attacker, defToAtk, defender);
-
             defender.currentHP -= atkToDef;
-            attacker.currentHP -= defToAtk;
+            defenderDied = defender.currentHP <= 0;
+
+            // Retaliate only if defender survives, then spend 1 stack
+            int retaliateStacks = RetaliateStatusUtility.GetRetaliate(defender);
+            if (!defenderDied && retaliateStacks > 0)
+            {
+                int retaliationBase = GetAttackValue(defender);
+                defToAtk = FortifyStatusUtility.AbsorbDamage(attacker, retaliationBase, false);
+
+                if (defToAtk > 0)
+                    GameEvents.OnPieceDamaged?.Invoke(attacker, defToAtk, defender);
+
+                attacker.currentHP -= defToAtk;
+                RetaliateStatusUtility.RemoveRetaliate(defender, 1);
+            }
 
             attackerDied = attacker.currentHP <= 0;
-            defenderDied = defender.currentHP <= 0;
 
             attacker.GetComponent<PieceRuntime>()?.Notify_AttackResolved(ctx);
             defender.GetComponent<PieceRuntime>()?.Notify_AttackResolved(ctx);
 
-            // ✅ CRITICAL: fire attack resolved event so clan abilities (Bleed) can react
             GameEvents.OnAttackResolved?.Invoke(new AttackReport
             {
                 attacker = attacker,
@@ -72,7 +78,7 @@ namespace Chess
                 bypassedFortify = ctx.bypassFortify,
                 attackerTeam = attacker.Team,
                 isBossAttack = false,
-                reason = MoveReason.Forced // not used yet, safe default
+                reason = MoveReason.Forced
             });
         }
 
@@ -85,7 +91,7 @@ namespace Chess
             if (_ironMarchAura != null)
                 dmg += _ironMarchAura.GetAttackBonusIfEligible(_clan, attacker);
 
-            int final = Mathf.Max(0, dmg - defender.fortifyStacks);
+            int final = FortifyStatusUtility.AbsorbDamage(defender, dmg, false);
 
             if (final > 0)
                 GameEvents.OnPieceDamaged?.Invoke(defender, final, attacker);
@@ -93,14 +99,31 @@ namespace Chess
             defender.currentHP -= final;
             defenderDied = defender.currentHP <= 0;
 
-            // ✅ Also fire OnAttackResolved for boss attacks (optional but consistent)
+            int retaliationDamage = 0;
+            bool attackerDied = false;
+
+            int retaliateStacks = RetaliateStatusUtility.GetRetaliate(defender);
+            if (!defenderDied && retaliateStacks > 0)
+            {
+                int retaliationBase = GetAttackValue(defender);
+                retaliationDamage = FortifyStatusUtility.AbsorbDamage(attacker, retaliationBase, false);
+
+                if (retaliationDamage > 0)
+                    GameEvents.OnPieceDamaged?.Invoke(attacker, retaliationDamage, defender);
+
+                attacker.currentHP -= retaliationDamage;
+                attackerDied = attacker.currentHP <= 0;
+
+                RetaliateStatusUtility.RemoveRetaliate(defender, 1);
+            }
+
             GameEvents.OnAttackResolved?.Invoke(new AttackReport
             {
                 attacker = attacker,
                 defender = defender,
                 damageToDefender = final,
-                damageToAttacker = 0,
-                attackerDied = false,
+                damageToAttacker = retaliationDamage,
+                attackerDied = attackerDied,
                 defenderDied = defenderDied,
                 bypassedFortify = false,
                 attackerTeam = attacker.Team,

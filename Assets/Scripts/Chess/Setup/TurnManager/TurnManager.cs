@@ -10,89 +10,90 @@ namespace Chess
     public enum TurnPhase
     {
         Preparation,
-        SpellPhase,        // NEW: summon + spells using mana
-        PlayerTurn,     
+        SpellPhase,
+        PlayerTurn,
         EnemyTurn,
         Cleanup
     }
 
     public partial class TurnManager : MonoBehaviour
     {
-        // =========================
-        //  Singleton & Public State
-        // =========================
         public static TurnManager Instance { get; private set; }
-        
+
         CommandHistory _history = new CommandHistory();
 
         public Team PlayerTeam => playerTeam;
 
         public TurnPhase Phase { get; private set; } = TurnPhase.PlayerTurn;
+
         public int CurrentAP { get; private set; }
+        public int CurrentAPMax { get; private set; }
+
+        int _pendingNextBattlePhaseAPBonus;
 
         public bool IsPlayerTurn => Phase == TurnPhase.PlayerTurn;
         public bool CanPlayerAct => IsPlayerTurn && CurrentAP > 0;
 
         public HashSet<Piece> MovedThisPlayerTurnSnapshot => _movedThisPlayerTurn;
 
-        // Events
-        public System.Action<int, int> OnAPChanged;      // (current, max)
+        public System.Action<int, int> OnAPChanged;
         public System.Action<TurnPhase> OnPhaseChanged;
-        
+
         [Header("Mana (Spell Phase)")]
         [SerializeField] int manaPerSpellPhase = 3;
         [SerializeField] int maxMana = 5;
 
         public int CurrentMana { get; private set; }
+        public int CurrentManaMax { get; private set; }
         public int MaxMana => maxMana;
 
-        public System.Action<int, int> OnManaChanged; // (current, max)
+        int _pendingNextSpellPhaseManaBonus;
+
+        public System.Action<int, int> OnManaChanged;
 
         public bool IsSpellPhase => Phase == TurnPhase.SpellPhase;
 
-        public void RefillManaForSpellPhase()
-        {
-            // Interpretation: "starting 3 mana per phase" = you start each SpellPhase with 3 (no carryover).
-            CurrentMana = Mathf.Min(manaPerSpellPhase, maxMana);
-            OnManaChanged?.Invoke(CurrentMana, maxMana);
-            
-        }
+        
 
-        public bool TrySpendMana(int amount)
-        {
-            if (!IsSpellPhase) return false;
-            if (amount <= 0) return true;
-            if (CurrentMana < amount) return false;
-
-            CurrentMana -= amount;
-            OnManaChanged?.Invoke(CurrentMana, maxMana);
-            return true;
-        }
-        
-        
-        
         public bool ExecuteCommand(IGameCommand cmd) => _history.Execute(cmd);
-        
+
         public event System.Action OnPlayerWon;
-        
-        public void RefundAP(int amount)
+
+        void RaiseAPChanged()
         {
-            CurrentAP = Mathf.Min(CurrentAP + amount, apPerTurn);
-            OnAPChanged?.Invoke(CurrentAP, apPerTurn);
-            GameEvents.OnAPChanged?.Invoke(CurrentAP, apPerTurn);
+            OnAPChanged?.Invoke(CurrentAP, CurrentAPMax);
+            GameEvents.OnAPChanged?.Invoke(CurrentAP, CurrentAPMax);
         }
-        
-        public void RefundMana(int amount)
+
+        public void GrantNextBattlePhaseAP(int amount)
         {
             if (amount <= 0) return;
-            CurrentMana = Mathf.Min(CurrentMana + amount, MaxMana);
-            OnManaChanged?.Invoke(CurrentMana, MaxMana);
+            _pendingNextBattlePhaseAPBonus += amount;
+        }
+
+        public void RemovePendingNextBattlePhaseAP(int amount)
+        {
+            if (amount <= 0) return;
+            _pendingNextBattlePhaseAPBonus = Mathf.Max(0, _pendingNextBattlePhaseAPBonus - amount);
+        }
+
+        public void RefundAP(int amount)
+        {
+            if (amount <= 0) return;
+            CurrentAP = Mathf.Min(CurrentAP + amount, CurrentAPMax);
+            RaiseAPChanged();
+        }
+
+        public bool TrySpendAP(int amount = 1)
+        {
+            if (!IsPlayerTurn || CurrentAP < amount) return false;
+            CurrentAP -= amount;
+            RaiseAPChanged();
+            return true;
         }
 
         public bool WasMarkedMovedThisTurn(Piece p) => _movedThisPlayerTurn.Contains(p);
-
         public void MarkMovedThisTurn(Piece p) { if (p != null) _movedThisPlayerTurn.Add(p); }
-
         public void UnmarkMovedThisTurn(Piece p) { if (p != null) _movedThisPlayerTurn.Remove(p); }
 
         public bool GetQueenMovedThisTurn() => _queenMovedThisTurn;
@@ -100,10 +101,6 @@ namespace Chess
 
         public bool IsQueenLeader(Piece p) => p != null && queenLeader != null && p == queenLeader;
 
-
-        // =========================
-        //  Inspector
-        // =========================
         [Header("Refs")]
         [SerializeField] private ChessBoard board;
         [SerializeField] private Team playerTeam = Team.White;
@@ -116,23 +113,19 @@ namespace Chess
 
         [Header("Turn Config")]
         [Min(0)] public int apPerTurn = 3;
-        
+
         [Header("Card System")]
         [SerializeField] private DeckManager deckManager;
 
-
-        // Enemy intents
         readonly List<Vector2Int> _enemyIntents = new();
         readonly List<Vector2Int> _intentBuf = new();
         readonly List<Vector2Int> _bossIntents = new();
         [SerializeField] Color enemyIntentColor = new Color(1f, 0f, 0f, 0.85f);
         [SerializeField] Color bossIntentColor = new Color(0.7f, 0.3f, 1f, 0.9f);
 
-        // Lives
         [SerializeField] int playerLives = 3;
         [SerializeField] TextMeshProUGUI livesText;
 
-        // Clan
         [Header("Clan System")]
         [SerializeField] ClanDefinition selectedClan;
         [SerializeField] Queen queenLeader;
@@ -141,11 +134,8 @@ namespace Chess
         AbilitySO[] _abilities;
         IronMarch_QueenAura _ironMarchAura;
 
-        // Turn bookkeeping
         readonly HashSet<Piece> _movedThisPlayerTurn = new();
         bool _queenMovedThisTurn;
-
-        
 
         public void EndPlayerTurnButton()
         {
@@ -161,35 +151,19 @@ namespace Chess
             StartCoroutine(EnemyTurnRoutine());
         }
 
-        public bool TrySpendAP(int amount = 1)
-        {
-            if (!IsPlayerTurn || CurrentAP < amount) return false;
-            CurrentAP -= amount;
-            OnAPChanged?.Invoke(CurrentAP, apPerTurn);
-            GameEvents.OnAPChanged?.Invoke(CurrentAP, apPerTurn);
-            return true;
-        }
-
-        /// Player-issued move (called by BoardInput). Handles AP and combat. 
         public bool TryPlayerAct_Move(Piece piece, Vector2Int dest)
         {
             if (!ValidatePlayerMove(piece, dest)) return false;
 
             var from = piece.Coord;
 
-            // Empty tile -> MoveCommand
             if (!board.TryGetPiece(dest, out var target))
                 return _history.Execute(new MoveCommand(this, board, piece, from, dest, apCost: 1));
 
-            // Ally -> blocked
             if (target.Team == piece.Team) return false;
 
-            // Enemy -> AttackCommand (player does NOT relocate)
             return _history.Execute(new AttackCommand(this, board, piece, target, from, dest, apCost: 1));
         }
-
-
-
 
         public void RepaintEnemyIntentsOverlay()
         {
@@ -207,12 +181,12 @@ namespace Chess
             if (board == null) return;
 
             board.ClearHighlights();
-            ComputeEnemyIntents(); // in EnemyIntents partial
+            ComputeEnemyIntents();
             RepaintEnemyIntentsOverlay();
 
             EnsureEncounterRunnerBound();
             if (encounterRunner != null && encounterRunner.IsVictoryReady(board))
-                PlayerWon(); // in VictoryLives partial
+                PlayerWon();
         }
 
         public void RegisterLivesText(TextMeshProUGUI txt)
@@ -221,19 +195,11 @@ namespace Chess
             UpdateLivesUI();
         }
 
-        // Kept for BoardInput calls; delegates to unified ability hint painter
         public void RepaintIronMarchHints()
         {
             PaintAbilityHints();
         }
 
-        // NOTE:
-        // Restart-turn logic lives in TurnManager.RestartRound.cs.
-        // Make sure BeginPlayerTurn() calls CaptureTurnStartSnapshot() once each player turn.
-
-        // =========================
-        //  UNITY
-        // =========================
         void Awake()
         {
             if (Instance != null && Instance != this)
@@ -241,7 +207,10 @@ namespace Chess
                 Destroy(gameObject);
                 return;
             }
+
             Instance = this;
+            CurrentAPMax = apPerTurn;
+            CurrentManaMax = Mathf.Min(manaPerSpellPhase, maxMana);
         }
 
         void Start()
@@ -254,6 +223,54 @@ namespace Chess
             EnsureQueenLeaderBound();
             BuildClanRuntime();
             BeginPreparation();
+        }
+        
+        void RaiseManaChanged()
+        {
+            OnManaChanged?.Invoke(CurrentMana, CurrentManaMax);
+            GameEvents.OnManaChanged?.Invoke(CurrentMana, CurrentManaMax);
+        }
+
+        public void RefillManaForSpellPhase()
+        {
+            int pending = Mathf.Max(0, _pendingNextSpellPhaseManaBonus);
+
+            // Same style as AP: this phase gets a bigger mana budget if a bonus was queued.
+            CurrentManaMax = Mathf.Min(manaPerSpellPhase + pending, maxMana + pending);
+            CurrentMana = CurrentManaMax;
+
+            _pendingNextSpellPhaseManaBonus = 0;
+            RaiseManaChanged();
+        }
+
+        public bool TrySpendMana(int amount)
+        {
+            if (!IsSpellPhase) return false;
+            if (amount <= 0) return true;
+            if (CurrentMana < amount) return false;
+
+            CurrentMana -= amount;
+            RaiseManaChanged();
+            return true;
+        }
+
+        public void GrantNextSpellPhaseMana(int amount)
+        {
+            if (amount <= 0) return;
+            _pendingNextSpellPhaseManaBonus += amount;
+        }
+
+        public void RemovePendingNextSpellPhaseMana(int amount)
+        {
+            if (amount <= 0) return;
+            _pendingNextSpellPhaseManaBonus = Mathf.Max(0, _pendingNextSpellPhaseManaBonus - amount);
+        }
+
+        public void RefundMana(int amount)
+        {
+            if (amount <= 0) return;
+            CurrentMana = Mathf.Min(CurrentMana + amount, CurrentManaMax);
+            RaiseManaChanged();
         }
     }
 }

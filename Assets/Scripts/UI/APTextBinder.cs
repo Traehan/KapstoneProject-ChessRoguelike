@@ -29,7 +29,7 @@ namespace Chess
         {
             if (tm == null) { TryBind(); return; }
 
-            if (tm.CurrentAP != lastAP || tm.apPerTurn != lastMax)
+            if (tm.CurrentAP != lastAP || tm.CurrentAPMax != lastMax)
                 Refresh();
         }
 
@@ -41,8 +41,9 @@ namespace Chess
         void Refresh()
         {
             if (!label) return;
+
             lastAP = tm ? tm.CurrentAP : 0;
-            lastMax = tm ? tm.apPerTurn : 0;
+            lastMax = tm ? tm.CurrentAPMax : 0;
 
             label.text = string.Format(format, Mathf.Max(0, lastAP), Mathf.Max(0, lastMax));
             label.color = (lastAP > 0) ? normalColor : zeroAPColor;

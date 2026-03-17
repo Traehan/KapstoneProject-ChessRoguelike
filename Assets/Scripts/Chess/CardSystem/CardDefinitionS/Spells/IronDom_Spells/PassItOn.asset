@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a098aae463101ff4aaf09c21b4c87494, type: 3}
+  m_Name: PassItOn
+  m_EditorClassIdentifier: Assembly-CSharp::Card.SpellCardDefinitionSO
+  cardId: 
+  displayName: Pass it On
+  rulesText: Transfer all <color=#2A4B8D><i>Fortify</color></i> from one piece to
+    another ally
+  art: {fileID: 21300000, guid: 9c48896e74e0aef45aa78578d48b9f24, type: 3}
+  manaCost: 1
+  cardType: 1
+  targetingMode: 11
+  effects:
+  - {fileID: 11400000, guid: 2d1ecb65e345b4a449d3537eff55aa47, type: 2}
+  discardOnCast: 1
+  exhaustOnCast: 0
+  designNotes: 

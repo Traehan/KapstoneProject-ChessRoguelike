@@ -18,8 +18,12 @@ namespace Chess
 
         [Header("Layout")]
         [SerializeField] int expandedMaxIcons = 2;
-        [SerializeField] float iconSpacing = 0.35f;
+        [SerializeField] float iconSpacing = 0.15f;
         [SerializeField] Vector3 localOffset = Vector3.zero;
+        [SerializeField] float worldScale = 0.075f;
+        [SerializeField] Vector2 iconSize = new Vector2(64f, 64f);
+        [SerializeField] Vector2 countSize = new Vector2(24f, 24f);
+        [SerializeField] float countFontSize = 14f;
 
         StatusController _status;
 
@@ -48,6 +52,50 @@ namespace Chess
         }
 
         void HandleStatusesChanged(StatusController sc) => Refresh();
+        
+        void ApplyWorldScale(GameObject go)
+        {
+            if (go == null || anchor == null) return;
+
+            Vector3 a = anchor.lossyScale;
+            float invX = Mathf.Approximately(a.x, 0f) ? 1f : 1f / a.x;
+            float invY = Mathf.Approximately(a.y, 0f) ? 1f : 1f / a.y;
+            float invZ = Mathf.Approximately(a.z, 0f) ? 1f : 1f / a.z;
+
+            go.transform.localScale = new Vector3(invX, invY, invZ) * worldScale;
+        }
+        
+        void NormalizeIconVisuals(GameObject go)
+        {
+            if (go == null) return;
+
+            var img = go.transform.Find("StatusPip_Image");
+            if (img != null)
+            {
+                var rt = img.GetComponent<RectTransform>();
+                if (rt != null)
+                    rt.sizeDelta = iconSize;
+
+                var image = img.GetComponent<UnityEngine.UI.Image>();
+                if (image != null)
+                    image.preserveAspect = true;
+            }
+
+            var count = go.transform.Find("StatusCount");
+            if (count != null)
+            {
+                var rt = count.GetComponent<RectTransform>();
+                if (rt != null)
+                    rt.sizeDelta = countSize;
+
+                var tmp = count.GetComponent<TMPro.TMP_Text>();
+                if (tmp != null)
+                {
+                    tmp.fontSize = countFontSize;
+                    tmp.alignment = TMPro.TextAlignmentOptions.Center;
+                }
+            }
+        }
 
         public void Refresh()
         {
@@ -69,6 +117,10 @@ namespace Chess
                 int cmp = pb.CompareTo(pa);
                 return (cmp != 0) ? cmp : a.id.CompareTo(b.id);
             });
+            
+            Debug.Log($"[StatusWidget] {name} count = {all.Count}"); //just to check and make sure this works
+            for (int i = 0; i < all.Count; i++)
+                Debug.Log($"[StatusWidget] {name} has {all[i].id} x{all[i].stacks}");
 
             if (all.Count <= expandedMaxIcons)
                 ShowExpanded(all);
@@ -112,6 +164,8 @@ namespace Chess
                 go.transform.SetParent(anchor, false);
                 go.transform.localPosition = localOffset + new Vector3(startX + i * iconSpacing, 0f, 0f);
                 go.transform.localRotation = Quaternion.identity;
+                ApplyWorldScale(go);
+                NormalizeIconVisuals(go);
 
                 // --- Icon: support Image (UI) OR SpriteRenderer (world)
                 var sr = go.GetComponentInChildren<SpriteRenderer>(true);
@@ -146,6 +200,8 @@ namespace Chess
             _chipInstance.transform.SetParent(anchor, false);
             _chipInstance.transform.localPosition = localOffset;
             _chipInstance.transform.localRotation = Quaternion.identity;
+            ApplyWorldScale(_chipInstance);
+            NormalizeIconVisuals(_chipInstance);
 
             if (_chipText != null) _chipText.text = $"+{count}";
         }

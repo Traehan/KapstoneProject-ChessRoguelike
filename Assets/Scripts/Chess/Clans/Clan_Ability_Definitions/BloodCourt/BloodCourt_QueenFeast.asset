@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: BloodCourt_QueenFeast
   m_EditorClassIdentifier: Assembly-CSharp::Chess.BloodCourt_QueenFeast
   description: When an Ally Piece dies. Queen gets +2 health and attack!
-  gainMaxHp: 1
-  gainCurrentHp: 1
-  gainAttack: 1
+  gainMaxHp: 2
+  gainCurrentHp: 2
+  gainAttack: 2

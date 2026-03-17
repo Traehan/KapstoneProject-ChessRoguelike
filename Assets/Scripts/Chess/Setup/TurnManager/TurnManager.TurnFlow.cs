@@ -24,19 +24,20 @@ namespace Chess
 
             if (GameSession.I != null && deckManager != null)
                 deckManager.InitializeBattleFromCardDefinitions(GameSession.I.CurrentRunDeck);
-
+            
+            EnsureQueenLeaderBound();
             BeginSpellPhase(); 
         }
         
         void BeginSpellPhase()
         {
+            EnsureQueenLeaderBound();
             SetPhase(TurnPhase.SpellPhase);
 
             // Mana reset for this phase
             RefillManaForSpellPhase();
-            OnManaChanged?.Invoke(CurrentMana, MaxMana);
 
-            // Show hand + draw to full (your existing pattern)
+            // Show hand + draw to full
             deckManager?.DrawUpTo(4);
 
             var hand = FindObjectOfType<HandPanel>();
@@ -63,14 +64,16 @@ namespace Chess
             SetPhase(TurnPhase.PlayerTurn);
             _history.Clear();
 
-            CurrentAP = apPerTurn;
-            
-            GameEvents.OnAPChanged?.Invoke(CurrentAP, apPerTurn);
+            CurrentAPMax = apPerTurn + Mathf.Max(0, _pendingNextBattlePhaseAPBonus);
+            CurrentAP = CurrentAPMax;
+            _pendingNextBattlePhaseAPBonus = 0;
+
+            OnAPChanged?.Invoke(CurrentAP, CurrentAPMax);
+            GameEvents.OnAPChanged?.Invoke(CurrentAP, CurrentAPMax);
 
             _movedThisPlayerTurn.Clear();
             _queenMovedThisTurn = false;
-
-            EnsureQueenLeaderBound();
+            
             RecomputeEnemyIntentsAndPaint();
 
             NotifyAbilitiesBeginPlayerTurn();
@@ -78,7 +81,6 @@ namespace Chess
 
             PaintAbilityHints();
 
-            // IMPORTANT: this enables the restart-turn button to restore the turn start
             CaptureTurnStartSnapshot();
         }
 

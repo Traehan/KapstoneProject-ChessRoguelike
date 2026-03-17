@@ -1,4 +1,3 @@
-// Assets/Scripts/Chess/Abilities/ArmorConversionAbility.cs
 using UnityEngine;
 
 namespace Chess
@@ -10,27 +9,24 @@ namespace Chess
     {
         [Header("Armor Conversion Settings")]
         [Tooltip("How much attack bonus per Fortify stack.")]
-        public int bonusPerFortify = 2;
+        public int bonusPerFortify = 3;
 
-        // UI display: show bonus ATK all the time based on current fortify stacks
         public int GetDisplayedAttackBonus(PieceCtx ctx)
         {
             var piece = ctx.piece;
             if (piece == null) return 0;
 
-            int stacks = Mathf.Max(0, piece.fortifyStacks);
-            return stacks * bonusPerFortify;
+            int stacks = FortifyStatusUtility.GetFortify(piece);
+            return Mathf.Max(0, stacks) * bonusPerFortify;
         }
 
-        // Combat: apply same bonus when THIS piece attacks (does not consume stacks)
         public override void OnAttackPreCalc(PieceCtx ctx, AttackCtx atk)
         {
             var piece = ctx.piece;
             if (piece == null) return;
-
             if (atk.attacker != piece) return;
 
-            int stacks = Mathf.Max(0, piece.fortifyStacks);
+            int stacks = FortifyStatusUtility.GetFortify(piece);
             if (stacks <= 0) return;
 
             atk.damageDelta += stacks * bonusPerFortify;

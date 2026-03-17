@@ -22,6 +22,7 @@ namespace Chess
         bool _movedToDiscard;
         bool _spentMana;
         bool _resolved;
+        bool _exhausted;
 
         public CastSpellCardCommand(
             TurnManager tm,
@@ -76,8 +77,15 @@ namespace Chess
             if (_target != null)
                 GameEvents.OnSpellTargetSelected?.Invoke(_card, _target);
 
-            if (_deck.RemoveFromHand(_card))
-                _removedFromHand = true;
+            if (!_deck.RemoveFromHand(_card))
+            {
+                RollbackMana();
+                GameEvents.OnSpellCastCancelled?.Invoke(_card);
+                return false;
+            }
+
+            _removedFromHand = true;
+            GameEvents.OnCardRemovedFromHand?.Invoke(_card);
 
             _deck.MoveToPlayedThisBattle(_card);
             _movedToPlayed = true;
@@ -112,26 +120,22 @@ namespace Chess
 
             if (_spellDef.exhaustOnCast)
             {
-                _deck.Exhaust(_card);
+                _exhausted = true;
+                GameEvents.OnCardExhausted?.Invoke(_card);
             }
             else if (_spellDef.discardOnCast)
             {
-                _deck.MoveToDiscard(_card);
+                if (!_deck.Discard.Contains(_card))
+                    _deck.Discard.Add(_card);
+
                 _movedToDiscard = true;
+                GameEvents.OnCardDiscarded?.Invoke(_card);
             }
 
-            var report = new SpellCardPlayReport
-            {
-                card = _card,
-                targetingMode = _spellDef.targetingMode,
-                target = _target,
-                casterTeam = _casterTeam,
-                manaSpent = _card.ManaCost,
-                resolved = true
-            };
+            var report = BuildReport();
 
             GameEvents.OnCardPlayed?.Invoke(_card);
-            GameEvents.OnSpellCardPlayed?.Invoke(_card, report);
+            GameEvents.RaiseSpellCardPlayed(_card, report);
             GameEvents.OnSpellResolved?.Invoke(_card, report);
 
             _resolved = true;
@@ -151,19 +155,69 @@ namespace Chess
             }
 
             if (_movedToDiscard)
-                _deck.RemoveFromDiscard(_card);
+            {
+                _deck.Discard.Remove(_card);
+                _movedToDiscard = false;
+            }
 
             if (_movedToPlayed)
+            {
                 _deck.RemoveFromPlayed(_card);
+                _movedToPlayed = false;
+            }
 
             if (_removedFromHand)
+            {
                 _deck.ReturnToHand(_card);
+                GameEvents.OnCardReturnedToHand?.Invoke(_card);
+                _removedFromHand = false;
+            }
 
             if (_spentMana)
+            {
                 _tm.RefundMana(_card.ManaCost);
+                _spentMana = false;
+            }
 
             _resolvedEffects.Clear();
+            _exhausted = false;
             _resolved = false;
+        }
+
+        SpellCardPlayReport BuildReport()
+        {
+            var report = new SpellCardPlayReport
+            {
+                card = _card,
+                ownerTeam = _casterTeam,
+                manaSpent = _card.ManaCost,
+                resolved = true,
+                targetPiece = ExtractTargetPiece(_target),
+                targetCoord = ExtractTargetCoord(_target)
+            };
+
+            return report;
+        }
+
+        Piece ExtractTargetPiece(object target)
+        {
+            if (target is Piece piece)
+                return piece;
+
+            return null;
+        }
+
+        Vector2Int ExtractTargetCoord(object target)
+        {
+            if (target is Vector2Int coord)
+                return coord;
+
+            if (target is Piece piece)
+                return piece.Coord;
+
+            // For wrapped multi-step targets like FortifyShiftTarget / TransferFortifyTarget /
+            // PhalanxRotateTarget, leave default unless the effect itself needs more detail.
+            return default;
         }
 
         void RollbackResolvedEffects()
@@ -180,6 +234,12 @@ namespace Chess
 
         void RollbackCardMovement()
         {
+            if (_movedToDiscard)
+            {
+                _deck.Discard.Remove(_card);
+                _movedToDiscard = false;
+            }
+
             if (_movedToPlayed)
             {
                 _deck.RemoveFromPlayed(_card);
@@ -189,6 +249,7 @@ namespace Chess
             if (_removedFromHand)
             {
                 _deck.ReturnToHand(_card);
+                GameEvents.OnCardReturnedToHand?.Invoke(_card);
                 _removedFromHand = false;
             }
         }

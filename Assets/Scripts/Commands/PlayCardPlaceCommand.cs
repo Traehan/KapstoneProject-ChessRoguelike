@@ -66,7 +66,15 @@ namespace Chess
                 return false;
             }
 
-            _deck.RemoveFromHand(_card);
+            if (!_deck.RemoveFromHand(_card))
+            {
+                _board.TryRemovePieceAt(_coord);
+                _tm.RefundMana(_card.ManaCost);
+                return false;
+            }
+
+            GameEvents.OnCardRemovedFromHand?.Invoke(_card);
+
             _deck.MoveToPlayedThisBattle(_card);
 
             var report = new UnitCardPlayReport
@@ -76,11 +84,12 @@ namespace Chess
                 spawnedPiece = _placedInstance,
                 coord = _coord,
                 ownerTeam = _placedInstance.Team,
-                manaSpent = _card.ManaCost
+                manaSpent = _card.ManaCost,
+                resolved = true
             };
 
             GameEvents.OnCardPlayed?.Invoke(_card);
-            GameEvents.OnUnitCardPlayed?.Invoke(_card, report);
+            GameEvents.RaiseUnitCardPlayed(_card, report);
 
             return true;
         }
@@ -103,6 +112,7 @@ namespace Chess
             _tm.RefundMana(_card.ManaCost);
             _deck.RemoveFromPlayed(_card);
             _deck.ReturnToHand(_card);
+            GameEvents.OnCardReturnedToHand?.Invoke(_card);
         }
     }
 }

@@ -1,4 +1,3 @@
-// Assets/Scripts/Chess/Abilities/GuardianStandAbility.cs
 using UnityEngine;
 
 namespace Chess
@@ -10,31 +9,26 @@ namespace Chess
     {
         [Header("Guardian Stand Settings")]
         [Tooltip("Fortify gained when this unit is attacked while in formation.")]
-        public int fortifyGain = 1;
+        public int fortifyGain = 2;
 
         [Tooltip("Maximum Fortify stacks this ability will grant.")]
-        public int maxFortifyFromAbility = 3;
+        public int maxFortifyFromAbility = 100;
 
         public override void OnAttackResolved(PieceCtx ctx, AttackCtx atk)
         {
             var board = ctx.board;
-            var self  = ctx.piece;
+            var self = ctx.piece;
 
             if (board == null || self == null) return;
-
-            // Only trigger when THIS unit is the defender
             if (atk.defender != self) return;
-
-            // Require at least one adjacent ally (formation)
             if (!HasAdjacentAlly(board, self)) return;
 
-            int current = self.fortifyStacks;
-            int target  = Mathf.Min(current + fortifyGain, maxFortifyFromAbility);
+            int current = FortifyStatusUtility.GetFortify(self);
+            int target = Mathf.Min(current + fortifyGain, maxFortifyFromAbility);
             if (target <= current) return;
 
-            self.fortifyStacks = target;
+            FortifyStatusUtility.SetFortify(self, target);
             GameEvents.OnPieceStatsChanged?.Invoke(self);
-
         }
 
         bool HasAdjacentAlly(ChessBoard board, Piece self)

@@ -1,6 +1,6 @@
-// Assets/Scripts/Chess/Abilities/PieceAbilitySO.cs
 using System.Collections.Generic;
 using UnityEngine;
+using Card;
 
 namespace Chess
 {
@@ -8,7 +8,6 @@ namespace Chess
     /// Base class for per-piece, instance-scoped abilities (innate or upgrades with behavior).
     /// Mirror of clan AbilitySO, but scoped to a single Piece instance.
     /// </summary>
-    
     public abstract class PieceAbilitySO : ScriptableObject
     {
         [Header("Meta")]
@@ -24,7 +23,9 @@ namespace Chess
 
             public PieceCtx(Piece piece, ChessBoard board, TurnManager tm)
             {
-                this.piece = piece; this.board = board; this.tm = tm;
+                this.piece = piece;
+                this.board = board;
+                this.tm = tm;
             }
         }
 
@@ -39,8 +40,11 @@ namespace Chess
 
             public AttackCtx(Piece a, Piece d, int baseDamage)
             {
-                attacker = a; defender = d; this.baseDamage = baseDamage;
-                damageDelta = 0; bypassFortify = false;
+                attacker = a;
+                defender = d;
+                this.baseDamage = baseDamage;
+                damageDelta = 0;
+                bypassFortify = false;
             }
         }
 
@@ -50,6 +54,10 @@ namespace Chess
         public virtual void OnEndPlayerTurn(PieceCtx ctx) { }
         public virtual void OnPieceMoved(PieceCtx ctx, Vector2Int from, Vector2Int to) { }
         public virtual void OnUndo(PieceCtx ctx) { }
+
+        /// <summary>Card-play hooks for innate unit passives like Incant / Rally.</summary>
+        public virtual void OnSpellCardPlayed(PieceCtx ctx, Card.Card card, SpellCardPlayReport report) { }
+        public virtual void OnUnitCardPlayed(PieceCtx ctx, Card.Card card, UnitCardPlayReport report) { }
 
         /// <summary>Chance to modify damage / flags before ResolveCombat applies reductions.</summary>
         public virtual void OnAttackPreCalc(PieceCtx ctx, AttackCtx atk) { }

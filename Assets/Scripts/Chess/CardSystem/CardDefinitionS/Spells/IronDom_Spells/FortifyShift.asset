@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: FortifyShift
   m_EditorClassIdentifier: Assembly-CSharp::Card.SpellCardDefinitionSO
   cardId: 
-  displayName: FortifyShift
-  rulesText: Push unit 1 tile, ignores fortify
+  displayName: Command
+  rulesText: Move unit 1 tile, ignores <color=#2A4B8D><i>fortify</color></i> loss
   art: {fileID: 21300000, guid: 5e168f610b3f96049af07c55fd7f8f6e, type: 3}
   manaCost: 1
   cardType: 1
-  targetingMode: 2
+  targetingMode: 10
   effects:
   - {fileID: 11400000, guid: 23eff3659fe454a4eb1d895310bda765, type: 2}
   discardOnCast: 1

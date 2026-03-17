@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa54956c0a6032c469e212f75fba6aa3, type: 3}
+  m_Name: ID_WarChief
+  m_EditorClassIdentifier: Assembly-CSharp::Card.UnitCardDefinitionSO
+  cardId: Knight
+  displayName: Warchief
+  rulesText: 'Rally: +5 Fortify and +1 Retaliate on that unit'
+  art: {fileID: 21300000, guid: b62570b87ce7cb340b1b5d96474ca267, type: 3}
+  manaCost: 1
+  cardType: 0
+  targetingMode: 1
+  summonPieceDefinition: {fileID: 11400000, guid: 77f081a20e26cff4da93b17e85b6edb8, type: 2}

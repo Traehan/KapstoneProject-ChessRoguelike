@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a098aae463101ff4aaf09c21b4c87494, type: 3}
+  m_Name: Adrenaline
+  m_EditorClassIdentifier: Assembly-CSharp::Card.SpellCardDefinitionSO
+  cardId: 
+  displayName: Adrenaline
+  rulesText: 'Inflict 3 damage on ally: +1 AP'
+  art: {fileID: 21300000, guid: 2d7c30d1782c54745bbcd43f657299f2, type: 3}
+  manaCost: 1
+  cardType: 1
+  targetingMode: 2
+  effects:
+  - {fileID: 11400000, guid: 5b60b757e269ce548b89550cef419d95, type: 2}
+  - {fileID: 11400000, guid: 830bba2f68977ba43903be02f118dfb0, type: 2}
+  discardOnCast: 1
+  exhaustOnCast: 0
+  designNotes: 

@@ -18,16 +18,11 @@ public class GameSession : MonoBehaviour
     public EncounterDefinition selectedEncounter;
     public List<PieceDefinition> army = new();
 
-    [Header("Queen Icon (optional but recommended)")]
-    public Sprite queenIconFallback;
-    public GameObject queenIconPrefabOverride;
-
-    [Header("Legacy Combat Deck (kept only for compatibility / migration)")]
-    public PieceDefinition pawnTemplate;
-    public List<PieceDefinition> runDeckNonLeaders = new();
-
     [Header("Card-Based Combat Deck (persistent for run)")]
     public List<CardDefinitionSO> CurrentRunDeck { get; private set; } = new();
+
+    [Header("Spell Pool (Rewards given for RunDeck)")]
+    public List<CardDefinitionSO> PotentialSpellPool;
 
     public bool hasGrantedStartingTroop = false;
 
@@ -108,8 +103,9 @@ public class GameSession : MonoBehaviour
         startingTroopPool = (clan != null) ? clan.StartingTroopPool : null;
 
         army.Clear();
-        runDeckNonLeaders.Clear(); // kept empty now unless you explicitly still want legacy deck support
+        // runDeckNonLeaders.Clear(); // kept empty now unless you explicitly still want legacy deck support
         CurrentRunDeck.Clear();
+        PotentialSpellPool.Clear();
 
         _upgradeCounts.Clear();
         pendingUpgrades.Clear();
@@ -148,6 +144,15 @@ public class GameSession : MonoBehaviour
         else
         {
             Debug.LogWarning("[GameSession] Clan has no startingBattleDeck assigned.");
+        }
+        
+        if (selectedClan != null && selectedClan.SpellPool != null && selectedClan.SpellPool.Length > 0)
+        {
+            PotentialSpellPool.AddRange(selectedClan.SpellPool);
+        }
+        else
+        {
+            Debug.LogWarning("[GameSession] Clan has no SpellPool assigned.");
         }
 
         Debug.Log($"[GameSession] Clan: {selectedClan?.clanName}");

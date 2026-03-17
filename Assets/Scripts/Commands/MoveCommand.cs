@@ -39,7 +39,7 @@ namespace Chess
 
             // snapshot
             _hpBefore = _piece.currentHP;
-            _fortifyBefore = _piece.fortifyStacks;
+            _fortifyBefore = FortifyStatusUtility.GetFortify(_piece);
             _pawnHasMovedBefore = (_piece is Pawn pw) && pw.hasMoved;
 
             _wasMarkedMovedBefore = _tm.WasMarkedMovedThisTurn(_piece);
@@ -54,7 +54,8 @@ namespace Chess
 
             // gameplay bookkeeping that must be undoable
             _tm.MarkMovedThisTurn(_piece);
-            _piece.ClearFortify();
+            int currFortify = FortifyStatusUtility.GetFortify(_piece);
+            FortifyStatusUtility.RemoveFortify(_piece, Mathf.RoundToInt(currFortify/2));
             if (_tm.IsQueenLeader(_piece))
                 _tm.SetQueenMovedThisTurn(true);
 
@@ -73,7 +74,7 @@ namespace Chess
 
             // restore stats/flags
             _piece.currentHP = _hpBefore;
-            _piece.fortifyStacks = _fortifyBefore;
+            FortifyStatusUtility.SetFortify(_piece, _fortifyBefore);
             if (_piece is Pawn pw) pw.hasMoved = _pawnHasMovedBefore;
 
             // restore bookkeeping

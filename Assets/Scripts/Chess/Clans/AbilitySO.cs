@@ -14,6 +14,7 @@ namespace Chess
         public virtual void OnPieceMoved(ClanRuntime ctx, Piece piece) {}
         public virtual void OnAttackResolved(ClanRuntime ctx, Piece attacker, Piece defender,
             int dmgToDef, int dmgToAtk) {}
+        public virtual void OnPieceCaptured(ClanRuntime ctx, Piece victim, Piece by, Vector2Int at) {}
         public virtual void OnUndo(ClanRuntime ctx, object undoPayload) {}
 
         // Optional board hints (e.g., Queen aura). Return tiles to tint + color.

@@ -15,4 +15,4 @@ MonoBehaviour:
   displayName: Guardian Stand
   description: When attacked with at least 1 nearby ally, will gain +1 fortify!
   fortifyGain: 1
-  maxFortifyFromAbility: 3
+  maxFortifyFromAbility: 100

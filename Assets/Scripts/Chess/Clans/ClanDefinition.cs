@@ -23,7 +23,9 @@ namespace Chess
         [Header("Starting Battle Deck")]
         [Tooltip("These are the actual cards added to the player's starting battle deck for this clan.")]
         public CardDefinitionSO[] startingBattleDeck;
-        
-        
+
+        public CardDefinitionSO[] SpellPool;
+
+
     }
 }
