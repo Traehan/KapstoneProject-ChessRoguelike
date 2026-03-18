@@ -13,6 +13,8 @@ namespace Chess
         public GameObject iconPrefabOverride; // already used by PrepPanel
         public int count = 1;
 
+        public string Description;
+
         [Header("Spawn")]
         public Piece piecePrefab;             // already used by PlacementManager
 

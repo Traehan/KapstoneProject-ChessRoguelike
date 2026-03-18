@@ -36,8 +36,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ac99ee6dff496a047a52d4804c208082, type: 2}
   - {fileID: 11400000, guid: 57bd1e35ab0ec6e41aa96b02c25f079a, type: 2}
   - {fileID: 11400000, guid: 57bd1e35ab0ec6e41aa96b02c25f079a, type: 2}
-  - {fileID: 11400000, guid: 57bd1e35ab0ec6e41aa96b02c25f079a, type: 2}
   - {fileID: 11400000, guid: 4ddb69c3ef903974d90d0b2ae329e97a, type: 2}
+  - {fileID: 11400000, guid: 4ddb69c3ef903974d90d0b2ae329e97a, type: 2}
+  - {fileID: 11400000, guid: a8d86336ff805834cadcae653dbf506f, type: 2}
+  - {fileID: 11400000, guid: 657ca018d759f8441a569ac59e6fb623, type: 2}
   SpellPool:
   - {fileID: 11400000, guid: 657ca018d759f8441a569ac59e6fb623, type: 2}
   - {fileID: 11400000, guid: 57bd1e35ab0ec6e41aa96b02c25f079a, type: 2}

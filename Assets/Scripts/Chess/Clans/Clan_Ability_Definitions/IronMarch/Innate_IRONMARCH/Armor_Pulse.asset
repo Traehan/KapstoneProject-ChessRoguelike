@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Armor_Pulse
   m_EditorClassIdentifier: Assembly-CSharp::Chess.ArmorPulseAbility
   displayName: Armor Pulse
-  description: 'On end turn: +1 fortify to surrounding allies!'
-  fortifyPerAlly: 1
+  description: 'On end turn: +3 fortify to surrounding allies!'
+  fortifyPerAlly: 3
   maxFortify: 100
   auraColor: {r: 0.4, g: 0.8, b: 1, a: 0.25}

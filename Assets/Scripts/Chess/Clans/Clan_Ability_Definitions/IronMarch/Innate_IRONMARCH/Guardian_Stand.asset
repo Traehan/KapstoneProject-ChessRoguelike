@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Guardian_Stand
   m_EditorClassIdentifier: Assembly-CSharp::Chess.GuardianStandAbility
   displayName: Guardian Stand
-  description: When attacked with at least 1 nearby ally, will gain +1 fortify!
-  fortifyGain: 1
+  description: Gains +2 Fortify When Hit
+  fortifyGain: 2
   maxFortifyFromAbility: 100

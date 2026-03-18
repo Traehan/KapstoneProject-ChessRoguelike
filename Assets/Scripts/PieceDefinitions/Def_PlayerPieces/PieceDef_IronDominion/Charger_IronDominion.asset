@@ -16,6 +16,8 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: 4083b256525c3c84a83ae22f8f6b7308, type: 3}
   iconPrefabOverride: {fileID: 7903322909935275479, guid: 53c56c58bc999e9438f6dd961a60ddcf, type: 3}
   count: 1
+  Description: If Charger has 5+ <color=#2A4B8D><i>Fortify</color></i>:\n+5 Attack
+    each hit
   piecePrefab: {fileID: 3756708735162278666, guid: 495020cc26406904cb8edba08431ca00, type: 3}
   maxHP: 5
   attack: 4

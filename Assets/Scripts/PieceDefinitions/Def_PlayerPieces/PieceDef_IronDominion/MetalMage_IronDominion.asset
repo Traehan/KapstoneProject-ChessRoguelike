@@ -16,6 +16,7 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: 3464488cf0470be468f5328d8688221c, type: 3}
   iconPrefabOverride: {fileID: 7903322909935275479, guid: 9225f1b2901121149b31b02c5d19fdee, type: 3}
   count: 1
+  Description: 'End of Turn: +3 <color=#2A4B8D><i>Fortify</color></i> to Surr. Allies'
   piecePrefab: {fileID: 4659720498933230980, guid: b4a5cf43119104c45bf10ab6259ca149, type: 3}
   maxHP: 5
   attack: 5

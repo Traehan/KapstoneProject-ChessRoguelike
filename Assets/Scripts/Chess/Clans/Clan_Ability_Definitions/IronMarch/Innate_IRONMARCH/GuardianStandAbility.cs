@@ -21,7 +21,7 @@ namespace Chess
 
             if (board == null || self == null) return;
             if (atk.defender != self) return;
-            if (!HasAdjacentAlly(board, self)) return;
+            // if (!HasAdjacentAlly(board, self)) return;
 
             int current = FortifyStatusUtility.GetFortify(self);
             int target = Mathf.Min(current + fortifyGain, maxFortifyFromAbility);

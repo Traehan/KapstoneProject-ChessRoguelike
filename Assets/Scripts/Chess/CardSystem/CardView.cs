@@ -22,6 +22,7 @@ public class CardView : MonoBehaviour
     public Image HealthImage;
     public Image attackImage;
     public Image moveImage;
+    public TMP_Text Description;
 
     [Header("Spell UI")]
     public TMP_Text rulesText;
@@ -107,6 +108,11 @@ public class CardView : MonoBehaviour
         {
             artImage.sprite = card.Art;
             artImage.enabled = (artImage.sprite != null);
+        }
+        
+        if (Description != null)
+        {
+            Description.text = unitPiece.Description;
         }
 
         if (SpellIconImage != null)
