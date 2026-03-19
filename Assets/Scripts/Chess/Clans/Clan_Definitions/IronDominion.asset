@@ -30,20 +30,12 @@ MonoBehaviour:
   - {fileID: 11400000, guid: b4529fb9ecab0f642a3eb0b3a75d3fb4, type: 2}
   - {fileID: 11400000, guid: f2d8868517e7ed7488470ba520d47433, type: 2}
   startingBattleDeck:
+  - {fileID: 11400000, guid: cc5ce95b7e7044143bc068a021dd0593, type: 2}
+  - {fileID: 11400000, guid: a38c8bcfb32e5c34d8ed0bbb3c77c06a, type: 2}
+  - {fileID: 11400000, guid: 5d61137208dec784899d9ab6aacdfa10, type: 2}
   - {fileID: 11400000, guid: 033b6958d52d9b24ab0e7fad4e3cb26f, type: 2}
   - {fileID: 11400000, guid: 033b6958d52d9b24ab0e7fad4e3cb26f, type: 2}
   - {fileID: 11400000, guid: 033b6958d52d9b24ab0e7fad4e3cb26f, type: 2}
-  - {fileID: 11400000, guid: 033b6958d52d9b24ab0e7fad4e3cb26f, type: 2}
-  - {fileID: 11400000, guid: 033b6958d52d9b24ab0e7fad4e3cb26f, type: 2}
-  - {fileID: 11400000, guid: 033b6958d52d9b24ab0e7fad4e3cb26f, type: 2}
-  - {fileID: 11400000, guid: 033b6958d52d9b24ab0e7fad4e3cb26f, type: 2}
-  - {fileID: 11400000, guid: 033b6958d52d9b24ab0e7fad4e3cb26f, type: 2}
-  - {fileID: 11400000, guid: 28caf602d991e644db861115b487aa39, type: 2}
-  - {fileID: 11400000, guid: 28caf602d991e644db861115b487aa39, type: 2}
-  - {fileID: 11400000, guid: 4521b98382d571246b05f294453f311a, type: 2}
-  - {fileID: 11400000, guid: 4521b98382d571246b05f294453f311a, type: 2}
-  - {fileID: 11400000, guid: 18bc56d99283db7479e79b7fc1f69384, type: 2}
-  - {fileID: 11400000, guid: 18bc56d99283db7479e79b7fc1f69384, type: 2}
   SpellPool:
   - {fileID: 11400000, guid: 18bc56d99283db7479e79b7fc1f69384, type: 2}
   - {fileID: 11400000, guid: bb5a778f884c0b740b1ec863224ce24f, type: 2}

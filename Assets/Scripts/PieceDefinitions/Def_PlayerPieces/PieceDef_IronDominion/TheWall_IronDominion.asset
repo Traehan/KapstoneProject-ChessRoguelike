@@ -18,7 +18,7 @@ MonoBehaviour:
   count: 1
   Description: 'When Hit: +2 <color=#2A4B8D><i>Fortify</color></i> \n +2 Attack per
     <color=#2A4B8D><i>Fortify</color></i>'
-  piecePrefab: {fileID: 5563619098926887270, guid: 4d7496579a315b54fa1fb92746b63573, type: 3}
+  piecePrefab: {fileID: 666507313814069276, guid: 36e066e7553254898840fee221f727d9, type: 3}
   maxHP: 15
   attack: 1
   forwardOnly: 0

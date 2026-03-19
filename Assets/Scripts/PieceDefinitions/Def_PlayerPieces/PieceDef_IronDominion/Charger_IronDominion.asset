@@ -18,7 +18,7 @@ MonoBehaviour:
   count: 1
   Description: If Charger has 5+ <color=#2A4B8D><i>Fortify</color></i>:\n+5 Attack
     each hit
-  piecePrefab: {fileID: 3756708735162278666, guid: 495020cc26406904cb8edba08431ca00, type: 3}
+  piecePrefab: {fileID: 2971793298761893225, guid: dc2b5c87d75be403f8a06e76d7284f97, type: 3}
   maxHP: 5
   attack: 4
   forwardOnly: 0

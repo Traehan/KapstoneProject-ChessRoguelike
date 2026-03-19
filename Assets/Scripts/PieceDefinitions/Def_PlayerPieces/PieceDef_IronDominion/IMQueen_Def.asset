@@ -17,7 +17,7 @@ MonoBehaviour:
   iconPrefabOverride: {fileID: 0}
   count: 1
   Description: +5 Attack to Surr. Units
-  piecePrefab: {fileID: 6979421579680749516, guid: 7596a633edc3d86428dbdaba5d22f998, type: 3}
+  piecePrefab: {fileID: 8200194802326209691, guid: b76b1573c045045d1b7935a411984a62, type: 3}
   maxHP: 15
   attack: 5
   forwardOnly: 0
