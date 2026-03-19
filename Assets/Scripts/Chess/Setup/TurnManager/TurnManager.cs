@@ -19,86 +19,36 @@ namespace Chess
     public partial class TurnManager : MonoBehaviour
     {
         public static TurnManager Instance { get; private set; }
-
         CommandHistory _history = new CommandHistory();
-
         public Team PlayerTeam => playerTeam;
-
         public TurnPhase Phase { get; private set; } = TurnPhase.PlayerTurn;
-
+        //AP INFO
         public int CurrentAP { get; private set; }
         public int CurrentAPMax { get; private set; }
-
         int _pendingNextBattlePhaseAPBonus;
-
         public bool IsPlayerTurn => Phase == TurnPhase.PlayerTurn;
         public bool CanPlayerAct => IsPlayerTurn && CurrentAP > 0;
-
         public HashSet<Piece> MovedThisPlayerTurnSnapshot => _movedThisPlayerTurn;
-
         public System.Action<int, int> OnAPChanged;
         public System.Action<TurnPhase> OnPhaseChanged;
-
+        
+        //MANA INFO
         [Header("Mana (Spell Phase)")]
         [SerializeField] int manaPerSpellPhase = 3;
         [SerializeField] int maxMana = 5;
-
         public int CurrentMana { get; private set; }
         public int CurrentManaMax { get; private set; }
         public int MaxMana => maxMana;
-
         int _pendingNextSpellPhaseManaBonus;
-
         public System.Action<int, int> OnManaChanged;
-
         public bool IsSpellPhase => Phase == TurnPhase.SpellPhase;
-
-        
-
         public bool ExecuteCommand(IGameCommand cmd) => _history.Execute(cmd);
-
         public event System.Action OnPlayerWon;
-
-        void RaiseAPChanged()
-        {
-            OnAPChanged?.Invoke(CurrentAP, CurrentAPMax);
-            GameEvents.OnAPChanged?.Invoke(CurrentAP, CurrentAPMax);
-        }
-
-        public void GrantNextBattlePhaseAP(int amount)
-        {
-            if (amount <= 0) return;
-            _pendingNextBattlePhaseAPBonus += amount;
-        }
-
-        public void RemovePendingNextBattlePhaseAP(int amount)
-        {
-            if (amount <= 0) return;
-            _pendingNextBattlePhaseAPBonus = Mathf.Max(0, _pendingNextBattlePhaseAPBonus - amount);
-        }
-
-        public void RefundAP(int amount)
-        {
-            if (amount <= 0) return;
-            CurrentAP = Mathf.Min(CurrentAP + amount, CurrentAPMax);
-            RaiseAPChanged();
-        }
-
-        public bool TrySpendAP(int amount = 1)
-        {
-            if (!IsPlayerTurn || CurrentAP < amount) return false;
-            CurrentAP -= amount;
-            RaiseAPChanged();
-            return true;
-        }
-
         public bool WasMarkedMovedThisTurn(Piece p) => _movedThisPlayerTurn.Contains(p);
         public void MarkMovedThisTurn(Piece p) { if (p != null) _movedThisPlayerTurn.Add(p); }
         public void UnmarkMovedThisTurn(Piece p) { if (p != null) _movedThisPlayerTurn.Remove(p); }
-
         public bool GetQueenMovedThisTurn() => _queenMovedThisTurn;
         public void SetQueenMovedThisTurn(bool v) => _queenMovedThisTurn = v;
-
         public bool IsQueenLeader(Piece p) => p != null && queenLeader != null && p == queenLeader;
 
         [Header("Refs")]
@@ -136,6 +86,39 @@ namespace Chess
 
         readonly HashSet<Piece> _movedThisPlayerTurn = new();
         bool _queenMovedThisTurn;
+        
+        void RaiseAPChanged()
+        {
+            OnAPChanged?.Invoke(CurrentAP, CurrentAPMax);
+            GameEvents.OnAPChanged?.Invoke(CurrentAP, CurrentAPMax);
+        }
+
+        public void GrantNextBattlePhaseAP(int amount)
+        {
+            if (amount <= 0) return;
+            _pendingNextBattlePhaseAPBonus += amount;
+        }
+
+        public void RemovePendingNextBattlePhaseAP(int amount)
+        {
+            if (amount <= 0) return;
+            _pendingNextBattlePhaseAPBonus = Mathf.Max(0, _pendingNextBattlePhaseAPBonus - amount);
+        }
+
+        public void RefundAP(int amount)
+        {
+            if (amount <= 0) return;
+            CurrentAP = Mathf.Min(CurrentAP + amount, CurrentAPMax);
+            RaiseAPChanged();
+        }
+
+        public bool TrySpendAP(int amount = 1)
+        {
+            if (!IsPlayerTurn || CurrentAP < amount) return false;
+            CurrentAP -= amount;
+            RaiseAPChanged();
+            return true;
+        }
 
         public void EndPlayerTurnButton()
         {
