@@ -83,6 +83,21 @@ namespace Chess
                     a?.OnPieceCaptured(_clan, victim, by, at);
             }
 
+            // notify all player piece runtimes so piece passives can react to nearby deaths
+            if (board != null)
+            {
+                foreach (var piece in board.GetAllPieces())
+                {
+                    if (piece == null) continue;
+                    if (piece.Team != playerTeam) continue;
+
+                    var runtime = piece.GetComponent<PieceRuntime>();
+                    if (runtime == null) continue;
+
+                    runtime.Notify_PieceCaptured(victim, by, at);
+                }
+            }
+
             EnsureEncounterRunnerBound();
             if (encounterRunner != null && encounterRunner.IsVictoryReady(board))
                 PlayerWon();

@@ -14,5 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Chess.EncounterDefinition
   waves:
   - {fileID: 11400000, guid: 4fcd45eb901ede3438538126d1c6c0e8, type: 2}
-  - {fileID: 11400000, guid: 29a3d975d6d447a47a2c22df92fd2d6a, type: 2}
   clearExistingBlackPieces: 1

@@ -167,6 +167,13 @@ namespace Chess
             foreach (var a in innate) a?.OnUnitCardPlayed(ctx, card, report);
             foreach (var a in keywordAbilities) a?.OnUnitCardPlayed(ctx, card, report);
         }
+        
+        public void Notify_PieceCaptured(Piece victim, Piece by, Vector2Int at)
+        {
+            var ctx = new PieceAbilitySO.PieceCtx(Owner, Board, TM);
+            foreach (var a in innate) a?.OnPieceCaptured(ctx, victim, by, at);
+            foreach (var a in keywordAbilities) a?.OnPieceCaptured(ctx, victim, by, at);
+        }
 
         public int GetDisplayedAttack()
         {

@@ -17,7 +17,7 @@ MonoBehaviour:
   iconPrefabOverride: {fileID: 6290326963026979814, guid: 6108990944c8b7540897dbd9ac91c8cf, type: 3}
   count: 1
   Description: 'Ally Death: +2 HP and Attack'
-  piecePrefab: {fileID: 5587423889380339668, guid: 6108990944c8b7540897dbd9ac91c8cf, type: 3}
+  piecePrefab: {fileID: 8841303457588576684, guid: db2ae55886a2c4130b85a7099452cb18, type: 3}
   maxHP: 5
   attack: 2
   forwardOnly: 0

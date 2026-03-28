@@ -40,6 +40,7 @@ namespace Chess
         public int CurrentManaMax { get; private set; }
         public int MaxMana => maxMana;
         int _pendingNextSpellPhaseManaBonus;
+        int _pendingNextSpellPhaseDraws;
         public System.Action<int, int> OnManaChanged;
         public bool IsSpellPhase => Phase == TurnPhase.SpellPhase;
         public bool ExecuteCommand(IGameCommand cmd) => _history.Execute(cmd);
@@ -241,6 +242,19 @@ namespace Chess
         {
             if (amount <= 0) return;
             _pendingNextSpellPhaseManaBonus += amount;
+        }
+        
+        public void QueueNextSpellPhaseDraw(int amount)
+        {
+            if (amount <= 0) return;
+            _pendingNextSpellPhaseDraws += amount;
+        }
+
+        public int ConsumeQueuedNextSpellPhaseDraws()
+        {
+            int amount = Mathf.Max(0, _pendingNextSpellPhaseDraws);
+            _pendingNextSpellPhaseDraws = 0;
+            return amount;
         }
 
         public void RemovePendingNextSpellPhaseMana(int amount)

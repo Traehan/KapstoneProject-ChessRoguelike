@@ -37,8 +37,13 @@ namespace Chess
             // Mana reset for this phase
             RefillManaForSpellPhase();
 
-            // Show hand + draw to full
+            // First draw to normal hand size
             deckManager?.DrawUpTo(4);
+
+            // Then apply any queued bonus draws from abilities
+            int queuedDraws = ConsumeQueuedNextSpellPhaseDraws();
+            if (queuedDraws > 0 && deckManager != null)
+                deckManager.Draw(queuedDraws);
 
             var hand = FindObjectOfType<HandPanel>();
             if (hand != null)

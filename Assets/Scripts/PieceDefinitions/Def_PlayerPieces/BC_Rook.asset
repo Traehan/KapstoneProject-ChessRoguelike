@@ -10,13 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ded2e13f6ebd3434dad991b06601023a, type: 3}
-  m_Name: Rook_Def
+  m_Name: BC_Rook
   m_EditorClassIdentifier: Assembly-CSharp::PieceDefinition
   displayName: Rook
-  icon: {fileID: 21300000, guid: 92f45a2a976d5e3499f57816f2473caa, type: 3}
-  iconPrefabOverride: {fileID: 7903322909935275479, guid: 7772734b9065a65489dc409a6a90cc05, type: 3}
+  icon: {fileID: 21300000, guid: 6d32ad3ed449bab4ba150ee54fca6bdc, type: 3}
+  iconPrefabOverride: {fileID: 0}
   count: 1
-  piecePrefab: {fileID: 3756708735162278666, guid: ab141072bc50c234f847e6370e88c742, type: 3}
+  Description: 'If Surr. Ally dies: draw +1'
+  piecePrefab: {fileID: -1850925762643572075, guid: bd7db60997e2041c8bb36b91f36a2c16, type: 3}
   maxHP: 10
   attack: 5
   forwardOnly: 0

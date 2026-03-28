@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: BC_Rook
   m_EditorClassIdentifier: Assembly-CSharp::Card.UnitCardDefinitionSO
   cardId: 
-  displayName: 
+  displayName: Rook
   rulesText: 
-  art: {fileID: 0}
+  art: {fileID: 21300000, guid: 6d32ad3ed449bab4ba150ee54fca6bdc, type: 3}
   manaCost: 1
   cardType: 0
   targetingMode: 1
-  summonPieceDefinition: {fileID: 0}
+  summonPieceDefinition: {fileID: 11400000, guid: 8898d83dfd7480a4b9237ff27c4d5b83, type: 2}

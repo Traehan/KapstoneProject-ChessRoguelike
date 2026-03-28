@@ -64,6 +64,7 @@ namespace Chess
 
         /// <summary>Called after HP is applied in ResolveCombat.</summary>
         public virtual void OnAttackResolved(PieceCtx ctx, AttackCtx atk) { }
+        public virtual void OnPieceCaptured(PieceCtx ctx, Piece victim, Piece by, Vector2Int at) { }
 
         /// <summary>
         /// Optional: contribute hint tiles (auras, zones). Return true if you added any.
