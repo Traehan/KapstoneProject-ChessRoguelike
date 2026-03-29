@@ -30,30 +30,85 @@ namespace Chess
             return _stacks.TryGetValue(id, out var s) ? s : 0;
         }
 
-        public void AddStacks(StatusId id, int amount)
+        public void AddStacks(StatusId id, int amount, Piece source = null)
         {
             if (amount <= 0) return;
 
-            _stacks.TryGetValue(id, out var cur);
-            _stacks[id] = Mathf.Max(0, cur + amount);
+            int previous = GetStacks(id);
+            int next = Mathf.Max(0, previous + amount);
+            _stacks[id] = next;
 
             FireChanged();
+
+            GameEvents.OnStatusApplied?.Invoke(new StatusChangeReport
+            {
+                piece = _piece,
+                statusId = id,
+                amountChanged = amount,
+                previousStacks = previous,
+                newStacks = next,
+                source = source
+            });
         }
 
-        public void SetStacks(StatusId id, int value)
+        public void SetStacks(StatusId id, int value, Piece source = null)
         {
             value = Mathf.Max(0, value);
+
+            int previous = GetStacks(id);
+            if (previous == value)
+                return;
 
             if (value == 0) _stacks.Remove(id);
             else _stacks[id] = value;
 
             FireChanged();
+
+            int delta = value - previous;
+
+            if (delta > 0)
+            {
+                GameEvents.OnStatusApplied?.Invoke(new StatusChangeReport
+                {
+                    piece = _piece,
+                    statusId = id,
+                    amountChanged = delta,
+                    previousStacks = previous,
+                    newStacks = value,
+                    source = source
+                });
+            }
+            else
+            {
+                GameEvents.OnStatusRemoved?.Invoke(new StatusChangeReport
+                {
+                    piece = _piece,
+                    statusId = id,
+                    amountChanged = -delta,
+                    previousStacks = previous,
+                    newStacks = value,
+                    source = source
+                });
+            }
         }
 
-        public void Clear(StatusId id)
+        public void Clear(StatusId id, Piece source = null)
         {
-            if (_stacks.Remove(id))
-                FireChanged();
+            int previous = GetStacks(id);
+            if (previous <= 0) return;
+
+            _stacks.Remove(id);
+            FireChanged();
+
+            GameEvents.OnStatusRemoved?.Invoke(new StatusChangeReport
+            {
+                piece = _piece,
+                statusId = id,
+                amountChanged = previous,
+                previousStacks = previous,
+                newStacks = 0,
+                source = source
+            });
         }
 
         public List<StatusEntry> GetAll()
@@ -64,13 +119,8 @@ namespace Chess
             return list;
         }
 
-        // ----------------------------
-        // Undo support
-        // ----------------------------
-
         public List<StatusEntry> CaptureSnapshot()
         {
-            // Copy current stacks into a standalone list
             return GetAll();
         }
 

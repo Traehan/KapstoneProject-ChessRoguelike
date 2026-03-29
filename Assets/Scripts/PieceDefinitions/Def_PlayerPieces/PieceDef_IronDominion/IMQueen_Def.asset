@@ -16,6 +16,7 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: 297a671057ddef34489e6c89014aeec0, type: 3}
   iconPrefabOverride: {fileID: 0}
   count: 1
+  soundProfile: {fileID: 11400000, guid: 15e26d6053c88bf4598407ed568c3698, type: 2}
   Description: +5 Attack to Surr. Units
   piecePrefab: {fileID: 8200194802326209691, guid: b76b1573c045045d1b7935a411984a62, type: 3}
   maxHP: 15

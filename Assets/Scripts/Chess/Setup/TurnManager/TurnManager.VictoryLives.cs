@@ -14,7 +14,6 @@ namespace Chess
         {
             if (board == null || enemy == null) return;
 
-            // Only lose a life if the board successfully captured it (prevents double-life loss)
             bool captured = board.CapturePiece(enemy);
             if (!captured) return;
 
@@ -22,9 +21,11 @@ namespace Chess
             UpdateLivesUI();
 
             if (playerLives <= 0)
+            {
+                GameEvents.OnEncounterLost?.Invoke();
                 FindObjectOfType<GameOverUI>()?.ShowGameOver();
+            }
         }
-
 
         int PlayerHomeRankY()
         {
@@ -44,6 +45,7 @@ namespace Chess
         void PlayerWon()
         {
             OnPlayerWon?.Invoke();
+            GameEvents.OnEncounterWon?.Invoke();
             ShowWinPanel();
             SetPhase(TurnPhase.Cleanup);
         }

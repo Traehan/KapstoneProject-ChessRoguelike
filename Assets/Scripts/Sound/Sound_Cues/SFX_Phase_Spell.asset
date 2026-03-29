@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: SFX_Phase_Spell
   m_EditorClassIdentifier: Assembly-CSharp::Chess.SoundCueSO
   clips: []
-  volumeMin: 1
+  volumeMin: 0.8
   volumeMax: 1
-  pitchMin: 1
-  pitchMax: 1
+  pitchMin: 0.95
+  pitchMax: 1.05
   spatial: 1
   spatialBlend: 1
   minDistance: 1

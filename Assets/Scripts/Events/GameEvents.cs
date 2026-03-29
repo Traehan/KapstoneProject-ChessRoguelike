@@ -29,6 +29,10 @@ namespace Chess
         public static System.Action<Piece, int, Piece> OnPieceDamaged; // target, amount, source
         public static System.Action<Piece, int, Piece> OnPieceHealed;  // target, amount, source
 
+        // Status
+        public static System.Action<StatusChangeReport> OnStatusApplied;
+        public static System.Action<StatusChangeReport> OnStatusRemoved;
+
         // Resources
         public static System.Action<int, int> OnAPChanged;   // current, max
         public static System.Action<int, int> OnManaChanged; // current, max
@@ -52,6 +56,13 @@ namespace Chess
         public static System.Action<Card.Card, object> OnSpellTargetSelected;
         public static System.Action<Card.Card> OnSpellCastCancelled;
         public static System.Action<Card.Card, SpellCardPlayReport> OnSpellResolved;
+
+        // Encounter flow
+        public static System.Action OnEncounterWon;
+        public static System.Action OnEncounterLost;
+
+        // Music requests
+        public static System.Action<SoundEventId> OnMusicRequested;
 
         public static void RaiseSpellCardPlayed(Card.Card card, SpellCardPlayReport report)
             => OnSpellCardPlayed?.Invoke(card, report);
@@ -106,5 +117,15 @@ namespace Chess
         public Piece spawnedPiece;
         public PieceDefinition summonedDefinition;
         public Vector2Int coord;
+    }
+
+    public struct StatusChangeReport
+    {
+        public Piece piece;
+        public StatusId statusId;
+        public int amountChanged;
+        public int previousStacks;
+        public int newStacks;
+        public Piece source;
     }
 }

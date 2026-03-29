@@ -6,6 +6,10 @@ namespace Chess
     [DisallowMultipleComponent]
     public class GameSoundRouter : MonoBehaviour
     {
+        [Header("Music")]
+        [SerializeField] SoundCueSO menuMusicCue;
+        [SerializeField] SoundCueSO battleMusicCue;
+
         void OnEnable()
         {
             GameEvents.OnPieceMoved += HandlePieceMoved;
@@ -17,6 +21,11 @@ namespace Chess
             GameEvents.OnUnitCardPlayed += HandleUnitCardPlayed;
             GameEvents.OnCardDrawn += HandleCardDrawn;
             GameEvents.OnPhaseChanged += HandlePhaseChanged;
+
+            GameEvents.OnStatusApplied += HandleStatusApplied;
+            GameEvents.OnEncounterWon += HandleEncounterWon;
+            GameEvents.OnEncounterLost += HandleEncounterLost;
+            GameEvents.OnMusicRequested += HandleMusicRequested;
         }
 
         void OnDisable()
@@ -30,6 +39,11 @@ namespace Chess
             GameEvents.OnUnitCardPlayed -= HandleUnitCardPlayed;
             GameEvents.OnCardDrawn -= HandleCardDrawn;
             GameEvents.OnPhaseChanged -= HandlePhaseChanged;
+
+            GameEvents.OnStatusApplied -= HandleStatusApplied;
+            GameEvents.OnEncounterWon -= HandleEncounterWon;
+            GameEvents.OnEncounterLost -= HandleEncounterLost;
+            GameEvents.OnMusicRequested -= HandleMusicRequested;
         }
 
         void HandlePieceMoved(Piece piece, Vector2Int from, Vector2Int to, MoveReason reason)
@@ -133,12 +147,68 @@ namespace Chess
                     break;
                 case TurnPhase.SpellPhase:
                     SoundManager.Instance.PlayGlobal(SoundEventId.PhaseSpell);
+                    if (battleMusicCue != null)
+                        SoundManager.Instance.PlayMusic(battleMusicCue);
                     break;
                 case TurnPhase.PlayerTurn:
                     SoundManager.Instance.PlayGlobal(SoundEventId.PhasePlayerTurn);
                     break;
                 case TurnPhase.EnemyTurn:
                     SoundManager.Instance.PlayGlobal(SoundEventId.PhaseEnemyTurn);
+                    break;
+            }
+        }
+
+        void HandleStatusApplied(StatusChangeReport report)
+        {
+            if (report.piece == null || SoundManager.Instance == null)
+                return;
+
+            var profile = ResolvePieceProfile(report.piece);
+
+            switch (report.statusId)
+            {
+                case StatusId.Fortify:
+                    SoundManager.Instance.PlayAt(SoundEventId.FortifyGain, report.piece.transform.position, profile);
+                    break;
+
+                case StatusId.Bleed:
+                    SoundManager.Instance.PlayAt(SoundEventId.BleedApplied, report.piece.transform.position, profile);
+                    break;
+            }
+        }
+
+        void HandleEncounterWon()
+        {
+            if (SoundManager.Instance == null)
+                return;
+
+            SoundManager.Instance.PlayGlobal(SoundEventId.EncounterWin);
+        }
+
+        void HandleEncounterLost()
+        {
+            if (SoundManager.Instance == null)
+                return;
+
+            SoundManager.Instance.PlayGlobal(SoundEventId.EncounterLose);
+        }
+
+        void HandleMusicRequested(SoundEventId eventId)
+        {
+            if (SoundManager.Instance == null)
+                return;
+
+            switch (eventId)
+            {
+                case SoundEventId.MusicMenu:
+                    if (menuMusicCue != null)
+                        SoundManager.Instance.PlayMusic(menuMusicCue);
+                    break;
+
+                case SoundEventId.MusicBattle:
+                    if (battleMusicCue != null)
+                        SoundManager.Instance.PlayMusic(battleMusicCue);
                     break;
             }
         }

@@ -37,7 +37,7 @@ namespace Chess
             int modifiedAtk = Mathf.Max(0, ctx.baseDamage + ctx.damageDelta);
 
             // attacker hits defender first
-            int atkToDef = FortifyStatusUtility.AbsorbDamage(defender, modifiedAtk, ctx.bypassFortify);
+            int atkToDef = FortifyStatusUtility.AbsorbDamage(defender, modifiedAtk, ctx.bypassFortify, attacker);
 
             // no universal counter-hit anymore
             int defToAtk = 0;
@@ -53,7 +53,7 @@ namespace Chess
             if (!defenderDied && retaliateStacks > 0)
             {
                 int retaliationBase = GetAttackValue(defender);
-                defToAtk = FortifyStatusUtility.AbsorbDamage(attacker, retaliationBase, false);
+                defToAtk = FortifyStatusUtility.AbsorbDamage(attacker, retaliationBase, false, defender);
 
                 if (defToAtk > 0)
                     GameEvents.OnPieceDamaged?.Invoke(attacker, defToAtk, defender);
@@ -91,7 +91,7 @@ namespace Chess
             if (_ironMarchAura != null)
                 dmg += _ironMarchAura.GetAttackBonusIfEligible(_clan, attacker);
 
-            int final = FortifyStatusUtility.AbsorbDamage(defender, dmg, false);
+            int final = FortifyStatusUtility.AbsorbDamage(defender, dmg, false, attacker);
 
             if (final > 0)
                 GameEvents.OnPieceDamaged?.Invoke(defender, final, attacker);
@@ -106,7 +106,7 @@ namespace Chess
             if (!defenderDied && retaliateStacks > 0)
             {
                 int retaliationBase = GetAttackValue(defender);
-                retaliationDamage = FortifyStatusUtility.AbsorbDamage(attacker, retaliationBase, false);
+                retaliationDamage = FortifyStatusUtility.AbsorbDamage(attacker, retaliationBase, false, defender);
 
                 if (retaliationDamage > 0)
                     GameEvents.OnPieceDamaged?.Invoke(attacker, retaliationDamage, defender);

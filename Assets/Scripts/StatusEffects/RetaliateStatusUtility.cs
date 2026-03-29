@@ -23,34 +23,34 @@ namespace Chess
             return GetRetaliate(piece) > 0;
         }
 
-        public static void AddRetaliate(Piece piece, int amount)
+        public static void AddRetaliate(Piece piece, int amount, Piece source = null)
         {
             if (piece == null || amount <= 0) return;
             var sc = GetOrAddStatusController(piece);
-            sc.AddStacks(StatusId.Retaliate, amount);
+            sc.AddStacks(StatusId.Retaliate, amount, source);
         }
 
-        public static void SetRetaliate(Piece piece, int stacks)
+        public static void SetRetaliate(Piece piece, int stacks, Piece source = null)
         {
             if (piece == null) return;
             var sc = GetOrAddStatusController(piece);
-            sc.SetStacks(StatusId.Retaliate, Mathf.Max(0, stacks));
+            sc.SetStacks(StatusId.Retaliate, Mathf.Max(0, stacks), source);
         }
 
-        public static void RemoveRetaliate(Piece piece, int amount)
+        public static void RemoveRetaliate(Piece piece, int amount, Piece source = null)
         {
             if (piece == null || amount <= 0) return;
 
             int current = GetRetaliate(piece);
-            SetRetaliate(piece, Mathf.Max(0, current - amount));
+            SetRetaliate(piece, Mathf.Max(0, current - amount), source);
         }
 
-        public static void ClearRetaliate(Piece piece)
+        public static void ClearRetaliate(Piece piece, Piece source = null)
         {
             if (piece == null) return;
             var sc = piece.GetComponent<StatusController>();
             if (sc == null) return;
-            sc.Clear(StatusId.Retaliate);
+            sc.Clear(StatusId.Retaliate, source);
         }
     }
 }
