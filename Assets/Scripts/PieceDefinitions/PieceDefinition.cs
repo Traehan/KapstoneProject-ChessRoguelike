@@ -12,6 +12,8 @@ namespace Chess
         public Sprite icon;
         public GameObject iconPrefabOverride; // already used by PrepPanel
         public int count = 1;
+        [Header("Audio")]
+        public SoundProfileSO soundProfile;
 
         public string Description;
 

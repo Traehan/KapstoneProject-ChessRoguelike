@@ -10,6 +10,8 @@ namespace Card
         [TextArea] public string rulesText;
         public Sprite art;
         public int manaCost = 1;
+        [Header("Audio")]
+        public Chess.SoundProfileSO soundProfile;
 
         [Header("Card Identity")]
         public CardType cardType = CardType.Unit;

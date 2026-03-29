@@ -138,6 +138,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8653719598885068355, guid: b5aa7b4cc28974ef6bc2e202a757f754, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5828379955681600151}
+    - targetCorrespondingSourceObject: {fileID: -8653719598885068355, guid: b5aa7b4cc28974ef6bc2e202a757f754, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6266519741631626196}
   m_SourcePrefab: {fileID: 4843985084834002234, guid: b5aa7b4cc28974ef6bc2e202a757f754, type: 3}
 --- !u!1 &3039627752570215642 stripped
 GameObject:
@@ -286,6 +289,72 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 963de47befe14574080e5675e02813e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Chess.StatusController
+--- !u!114 &6266519741631626196
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3039627752570215642}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16708bb2c7d61e94a94da0a4db285957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Chess.PieceMotionController
+  moveSpeedTilesPerSecond: 7
+  moveEase:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  attackLungeDistance: 5
+  lungeDuration: 0.4
+  collidePause: 0.2
+  returnDuration: 0.1
+  killAdvanceDuration: 0.2
+  attackEase:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!4 &4244348541479584953 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -7552582706839291426, guid: b5aa7b4cc28974ef6bc2e202a757f754, type: 3}

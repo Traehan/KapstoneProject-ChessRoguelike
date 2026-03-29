@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: -7788345429536753289}
   - component: {fileID: 739071957493209266}
   - component: {fileID: 6131551665369395703}
+  - component: {fileID: 1014592785943584897}
   m_Layer: 0
   m_Name: Boss_Enemy
   m_TagString: Untagged
@@ -192,6 +193,72 @@ MonoBehaviour:
   iconSize: {x: 64, y: 64}
   countSize: {x: 24, y: 24}
   countFontSize: 14
+--- !u!114 &1014592785943584897
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5210646609092542360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16708bb2c7d61e94a94da0a4db285957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Chess.PieceMotionController
+  moveSpeedTilesPerSecond: 7
+  moveEase:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  attackLungeDistance: 5
+  lungeDuration: 1
+  collidePause: 0.2
+  returnDuration: 0.1
+  killAdvanceDuration: 0.2
+  attackEase:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &5976788900260224209
 GameObject:
   m_ObjectHideFlags: 0
