@@ -28,9 +28,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: d3ce1abcc8bd471439947cf5ef924296, type: 2}
   - {fileID: 11400000, guid: b4529fb9ecab0f642a3eb0b3a75d3fb4, type: 2}
   startingBattleDeck:
-  - {fileID: 11400000, guid: cc5ce95b7e7044143bc068a021dd0593, type: 2}
-  - {fileID: 11400000, guid: a38c8bcfb32e5c34d8ed0bbb3c77c06a, type: 2}
-  - {fileID: 11400000, guid: 5d61137208dec784899d9ab6aacdfa10, type: 2}
   - {fileID: 11400000, guid: 033b6958d52d9b24ab0e7fad4e3cb26f, type: 2}
   - {fileID: 11400000, guid: 033b6958d52d9b24ab0e7fad4e3cb26f, type: 2}
   - {fileID: 11400000, guid: 033b6958d52d9b24ab0e7fad4e3cb26f, type: 2}

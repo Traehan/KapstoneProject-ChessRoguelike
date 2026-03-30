@@ -22,6 +22,7 @@ public class PieceInfoPanel : MonoBehaviour
     public Image pieceImage;
     public TextMeshProUGUI pieceNameText;
     public TextMeshProUGUI statsText;
+    public TextMeshProUGUI AbilityDescription;
 
     [Header("Upgrades")]
     [Tooltip("Parent transform where upgrade entries will be instantiated.")]
@@ -91,6 +92,12 @@ public class PieceInfoPanel : MonoBehaviour
                 pieceNameText.text = def.displayName;
             else
                 pieceNameText.text = owner.name;
+        }
+        
+        if (AbilityDescription != null)
+        {
+            if (def != null && !string.IsNullOrEmpty(def.displayName))
+                AbilityDescription.text = def.Description;
         }
         
         // Stats: read from the Piece, which is what combat updates

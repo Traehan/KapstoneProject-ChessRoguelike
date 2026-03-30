@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9c999f13582ef5c44a5fea464760dc1b, type: 3}
-  m_Name: SFX_Piece_Summon
+  m_Name: SFX_Encounter_Win
   m_EditorClassIdentifier: Assembly-CSharp::Chess.SoundCueSO
   clips:
-  - {fileID: 8300000, guid: 4114b76c50916c24589da9fb4882c8d0, type: 3}
-  volumeMin: 0.7
-  volumeMax: 0.8
-  pitchMin: 0.95
-  pitchMax: 1.05
+  - {fileID: 8300000, guid: f02ba75848d4d2a42ab083a5bb91b545, type: 3}
+  volumeMin: 1
+  volumeMax: 1
+  pitchMin: 1
+  pitchMax: 1
   spatial: 0
   spatialBlend: 1
   minDistance: 1

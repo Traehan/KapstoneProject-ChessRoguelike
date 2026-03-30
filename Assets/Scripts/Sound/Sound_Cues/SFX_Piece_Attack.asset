@@ -12,12 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c999f13582ef5c44a5fea464760dc1b, type: 3}
   m_Name: SFX_Piece_Attack
   m_EditorClassIdentifier: Assembly-CSharp::Chess.SoundCueSO
-  clips: []
+  clips:
+  - {fileID: 8300000, guid: 6d24244328d52664fa77ab75ecc762b7, type: 3}
   volumeMin: 0.8
   volumeMax: 1
   pitchMin: 0.95
   pitchMax: 1.05
-  spatial: 1
+  spatial: 0
   spatialBlend: 1
   minDistance: 1
   maxDistance: 15

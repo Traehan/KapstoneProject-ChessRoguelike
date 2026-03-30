@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SFX_IMQueen_Move
   m_EditorClassIdentifier: Assembly-CSharp::Chess.SoundCueSO
   clips:
-  - {fileID: 8300000, guid: 4114b76c50916c24589da9fb4882c8d0, type: 3}
+  - {fileID: 8300000, guid: 84ffd3f799973814da11387ca30ff2c0, type: 3}
   volumeMin: 0.6
   volumeMax: 1
   pitchMin: 0.75

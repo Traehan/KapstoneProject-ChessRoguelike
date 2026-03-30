@@ -61,6 +61,17 @@ public class CardView : MonoBehaviour
         if (SpellTargetingController.Instance != null)
             SpellTargetingController.Instance.OnSpellTargetingStateChanged -= HandleSpellTargetingStateChanged;
     }
+    
+    public void BindDefinition(Card.CardDefinitionSO definition) //used for deckview feature
+    {
+        if (definition == null)
+        {
+            Debug.LogWarning("[CardView] BindDefinition called with null definition.");
+            return;
+        }
+
+        Bind(new Card.Card(definition));
+    }
 
     void CacheBasePosition()
     {
