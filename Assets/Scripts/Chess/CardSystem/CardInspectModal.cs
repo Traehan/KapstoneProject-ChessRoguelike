@@ -19,6 +19,8 @@ public class CardInspectModal : MonoBehaviour
     [Header("Keyword UI")]
     [SerializeField] DeckKeywordTooltipController keywordTooltipController;
 
+    public bool IsOpen => rootPanel != null && rootPanel.activeSelf;
+
     void Awake()
     {
         if (Instance != null && Instance != this)
@@ -35,11 +37,25 @@ public class CardInspectModal : MonoBehaviour
 
     void Update()
     {
-        if (rootPanel != null && rootPanel.activeSelf && Input.GetKeyDown(KeyCode.Escape))
+        if (!IsOpen)
+            return;
+
+        // Press Escape to close inspect
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
             Close();
+            return;
+        }
+
+        // Right click again anywhere to close inspect
+        if (Input.GetMouseButtonDown(1))
+        {
+            Close();
+            return;
+        }
     }
 
-    public void Show(Card.Card card, StatusDatabase statusDatabase)
+    public void Show(Card.Card card, StatusDatabase database)
     {
         if (card == null)
         {
@@ -57,7 +73,7 @@ public class CardInspectModal : MonoBehaviour
             inspectTitleText.text = card.Title;
 
         if (keywordTooltipController != null)
-            keywordTooltipController.Rebuild(card, statusDatabase);
+            keywordTooltipController.Rebuild(card, database);
     }
 
     public void Close()

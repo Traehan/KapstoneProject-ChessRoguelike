@@ -15,6 +15,6 @@ MonoBehaviour:
   id: 2
   icon: {fileID: 21300000, guid: dd9ee2ec33a6ba3449555a6681b3c90b, type: 3}
   displayName: Retaliate
-  description: If attacked, hits attacker back = attack damage
+  description: When attacked, hits the attacker back
   showStacks: 1
   priority: 3

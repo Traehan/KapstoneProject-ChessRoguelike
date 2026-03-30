@@ -14,11 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Card.UnitCardDefinitionSO
   cardId: IDPawn
   displayName: Dominion Pawn
-  rulesText: 'end of turn:
-
-    +1 Fortify'
+  rulesText: 
   art: {fileID: 21300000, guid: 1b5f0a1df5e87934d830a0f5595277da, type: 3}
   manaCost: 1
+  soundProfile: {fileID: 0}
   cardType: 0
   targetingMode: 1
   summonPieceDefinition: {fileID: 11400000, guid: 595f3e6689409d140aee48be998daa39, type: 2}
