@@ -149,11 +149,7 @@ PrefabInstance:
       addedObject: {fileID: 6608765505235144934}
     - targetCorrespondingSourceObject: {fileID: -8653719598885068355, guid: 0b83b02aa7f1e46e7b68583693b7de76, type: 3}
       insertIndex: -1
-<<<<<<< Updated upstream
       addedObject: {fileID: 3715410417076183530}
-=======
-      addedObject: {fileID: 3321464108640674234}
->>>>>>> Stashed changes
   m_SourcePrefab: {fileID: 4843985084834002234, guid: 0b83b02aa7f1e46e7b68583693b7de76, type: 3}
 --- !u!4 &3275931498346493880 stripped
 Transform:
@@ -290,11 +286,7 @@ MonoBehaviour:
   currentHP: 1
   attack: 1
   fortifyStacks: 0
-<<<<<<< Updated upstream
 --- !u!114 &3715410417076183530
-=======
---- !u!114 &3321464108640674234
->>>>>>> Stashed changes
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
