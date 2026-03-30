@@ -12,10 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ded2e13f6ebd3434dad991b06601023a, type: 3}
   m_Name: BC_Bishop
   m_EditorClassIdentifier: Assembly-CSharp::PieceDefinition
-  displayName: Bishop
+  displayName: Jester
   icon: {fileID: 21300000, guid: bde8520d5dcc4b04a9c97acb561aafbb, type: 3}
   iconPrefabOverride: {fileID: 0}
   count: 1
+  soundProfile: {fileID: 0}
   Description: 'Incant: Apply 2 <color=#800000>Bleed</color> to enemies in front
     of Jester'
   piecePrefab: {fileID: 6608765505235144934, guid: f88cddb4faeea4a6182663a8518668e4, type: 3}

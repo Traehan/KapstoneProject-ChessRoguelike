@@ -18,7 +18,9 @@ public class DeckKeywordTooltipController : MonoBehaviour
     {
         { "bleed", StatusId.Bleed },
         { "fortify", StatusId.Fortify },
-        { "retaliate", StatusId.Retaliate }
+        { "retaliate", StatusId.Retaliate },
+        {"incant", StatusId.Incant },
+        {"rally", StatusId.Rally }
     };
 
     public void Rebuild(Card.Card card, StatusDatabase database)

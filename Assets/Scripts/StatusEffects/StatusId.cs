@@ -5,6 +5,8 @@ namespace Chess
         Bleed,
         Fortify,
         Retaliate,
+        Incant,
+        Rally,
         //stun
         // Future potential status effects for more gameplay features
     }
