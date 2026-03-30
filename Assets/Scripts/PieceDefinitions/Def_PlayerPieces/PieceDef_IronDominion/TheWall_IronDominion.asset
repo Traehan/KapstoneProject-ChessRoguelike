@@ -16,6 +16,7 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: e87ddda6ec335234ca6f3ff297d0444d, type: 3}
   iconPrefabOverride: {fileID: 7903322909935275479, guid: 6d65c70e6e11ac849ad157caa9472dce, type: 3}
   count: 1
+  soundProfile: {fileID: 11400000, guid: b1cd121a6f7b34221b2d05d85ae6da1e, type: 2}
   Description: 'When Hit: +2 <color=#2A4B8D><i>Fortify</color></i> \n +2 Attack per
     <color=#2A4B8D><i>Fortify</color></i>'
   piecePrefab: {fileID: 666507313814069276, guid: 36e066e7553254898840fee221f727d9, type: 3}

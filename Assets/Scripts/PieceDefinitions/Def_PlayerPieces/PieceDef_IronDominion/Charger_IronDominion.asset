@@ -16,6 +16,7 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: 4083b256525c3c84a83ae22f8f6b7308, type: 3}
   iconPrefabOverride: {fileID: 7903322909935275479, guid: 53c56c58bc999e9438f6dd961a60ddcf, type: 3}
   count: 1
+  soundProfile: {fileID: 11400000, guid: 352901a79f40146c88a75363ac8ea15f, type: 2}
   Description: If Charger has 5+ <color=#2A4B8D><i>Fortify</color></i>:\n+5 Attack
     each hit
   piecePrefab: {fileID: 2971793298761893225, guid: dc2b5c87d75be403f8a06e76d7284f97, type: 3}

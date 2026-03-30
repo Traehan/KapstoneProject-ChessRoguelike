@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 591bf3eb3f5c3674f840846e259b8eb3, type: 3}
+  m_Name: Rook_IronDominion_Profile
+  m_EditorClassIdentifier: Assembly-CSharp::Chess.SoundProfileSO
+  entries:
+  - eventId: 13
+    cue: {fileID: 11400000, guid: b23a6e3ed69aa4132bdef62be8d48cd3, type: 2}
+  - eventId: 14
+    cue: {fileID: 11400000, guid: 49a81eaac9d0c4463aa801e2e005d4c5, type: 2}
+  - eventId: 15
+    cue: {fileID: 11400000, guid: 905d8247ee4f24179ab0991523d5c7b5, type: 2}
+  - eventId: 16
+    cue: {fileID: 11400000, guid: bec65a453ef2a4288969e4929b10d5a7, type: 2}
