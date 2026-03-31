@@ -16,6 +16,7 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: 6d32ad3ed449bab4ba150ee54fca6bdc, type: 3}
   iconPrefabOverride: {fileID: 0}
   count: 1
+  soundProfile: {fileID: 11400000, guid: 50b22130b555f4c8cbda9020f31af29b, type: 2}
   Description: 'If Surr. Ally dies: draw +1'
   piecePrefab: {fileID: -1850925762643572075, guid: bd7db60997e2041c8bb36b91f36a2c16, type: 3}
   maxHP: 10

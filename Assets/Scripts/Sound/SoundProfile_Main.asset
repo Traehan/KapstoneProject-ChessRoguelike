@@ -25,3 +25,5 @@ MonoBehaviour:
     cue: {fileID: 11400000, guid: 19c97bfc71f256140b7f29f2903587b9, type: 2}
   - eventId: 11
     cue: {fileID: 11400000, guid: 412e9365555c393439f397f37b5ddef2, type: 2}
+  - eventId: 7
+    cue: {fileID: 11400000, guid: 8a06a8e565e3845ebb41b38bcb07725c, type: 2}

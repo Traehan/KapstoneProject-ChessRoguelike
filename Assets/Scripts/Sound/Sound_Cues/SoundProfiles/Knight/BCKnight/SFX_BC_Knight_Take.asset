@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c999f13582ef5c44a5fea464760dc1b, type: 3}
+  m_Name: SFX_BC_Knight_Take
+  m_EditorClassIdentifier: Assembly-CSharp::Chess.SoundCueSO
+  clips:
+  - {fileID: 8300000, guid: 309c44a49364d43f398a2b4cc7fe2f93, type: 3}
+  volumeMin: 1
+  volumeMax: 1
+  pitchMin: 1
+  pitchMax: 1
+  spatial: 1
+  spatialBlend: 1
+  minDistance: 1
+  maxDistance: 15
+  outputGroup: {fileID: 0}

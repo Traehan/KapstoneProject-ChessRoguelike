@@ -16,6 +16,7 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: e2d688ee697aea74e8d260d164c1a542, type: 3}
   iconPrefabOverride: {fileID: 0}
   count: 1
+  soundProfile: {fileID: 11400000, guid: 9258d8e0ba1c448c1abf4f8cb0cff970, type: 2}
   Description: 'When this unit kills an enemy with <color=#800000>Bleed</color>:
     +5 Attack and +1 AP'
   piecePrefab: {fileID: -784468493334396227, guid: 0fa7d4aed57aa43d9a299bceda32213b, type: 3}

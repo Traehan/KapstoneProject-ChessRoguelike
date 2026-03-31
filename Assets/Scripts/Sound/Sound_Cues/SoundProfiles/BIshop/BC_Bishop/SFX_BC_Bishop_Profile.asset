@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 591bf3eb3f5c3674f840846e259b8eb3, type: 3}
-  m_Name: Bishop_IronDominion_Profile
+  m_Name: SFX_BC_Bishop_Profile
   m_EditorClassIdentifier: Assembly-CSharp::Chess.SoundProfileSO
   entries:
-  - eventId: 17
-    cue: {fileID: 11400000, guid: 932fbc725e88f46c08e7b03ab7548481, type: 2}
-  - eventId: 14
-    cue: {fileID: 11400000, guid: fa9ed3881f92349a9b35269df6d59289, type: 2}
   - eventId: 15
-    cue: {fileID: 11400000, guid: 636fca8f7e84840b19183f74e9f1776c, type: 2}
+    cue: {fileID: 11400000, guid: 8890dc794d6464d49b614eb1151383c1, type: 2}
   - eventId: 16
-    cue: {fileID: 11400000, guid: accaf8ecb555c486ca3613bd06893117, type: 2}
+    cue: {fileID: 11400000, guid: 202c74fbe568b4bcb9a79e41d91e88d2, type: 2}
+  - eventId: 17
+    cue: {fileID: 11400000, guid: 3d878d24d8d1c43d8b785b97554a8992, type: 2}
+  - eventId: 14
+    cue: {fileID: 11400000, guid: 7f3c4b8c50e854cbabf47322f895f9f4, type: 2}

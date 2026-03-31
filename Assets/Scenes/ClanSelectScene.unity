@@ -1152,6 +1152,7 @@ GameObject:
   - component: {fileID: 867730933}
   - component: {fileID: 867730932}
   - component: {fileID: 867730931}
+  - component: {fileID: 867730934}
   m_Layer: 5
   m_Name: StartRun_Button
   m_TagString: Untagged
@@ -1273,6 +1274,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 867730929}
   m_CullTransparentMesh: 1
+--- !u!114 &867730934
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 867730929}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e43db0cf27af5724a97dfa12c2129e2f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Chess.UIButtonSound
+  soundId: 7
 --- !u!1 &918498461
 GameObject:
   m_ObjectHideFlags: 0
