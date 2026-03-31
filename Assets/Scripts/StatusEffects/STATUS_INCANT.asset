@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 11f6754eac53a92488128f4144629e1c, type: 3}
-  m_Name: STATUS_RETALIATE
+  m_Name: STATUS_INCANT
   m_EditorClassIdentifier: Assembly-CSharp::Chess.StatusDefinition
-  id: 2
-  icon: {fileID: 21300000, guid: dd9ee2ec33a6ba3449555a6681b3c90b, type: 3}
-  displayName: Retaliate
-  description: When attacked, hits the attacker back
-  showStacks: 1
-  priority: 3
+  id: 3
+  icon: {fileID: 0}
+  displayName: Incant
+  description: Activates when a spell card is played
+  showStacks: 0
+  priority: 100

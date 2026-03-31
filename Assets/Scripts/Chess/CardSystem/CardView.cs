@@ -123,7 +123,8 @@ public class CardView : MonoBehaviour
         
         if (Description != null)
         {
-            Description.text = unitPiece.Description;
+            Description.gameObject.SetActive(true);
+            Description.text = unitPiece != null ? unitPiece.Description : "";
         }
 
         if (SpellIconImage != null)
@@ -180,6 +181,13 @@ public class CardView : MonoBehaviour
         {
             rulesText.gameObject.SetActive(true);
             rulesText.text = card.RulesText;
+        }
+
+        // ADD THIS
+        if (Description != null)
+        {
+            Description.text = "";
+            Description.gameObject.SetActive(false);
         }
 
         if (healthStat != null)

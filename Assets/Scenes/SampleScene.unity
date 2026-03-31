@@ -1683,7 +1683,7 @@ MonoBehaviour:
   postEnemyTurnPause: 0.15
   apPerTurn: 3
   deckManager: {fileID: 506964578}
-  enemyIntentColor: {r: 1, g: 0, b: 0, a: 0.85}
+  enemyIntentColor: {r: 1, g: 0, b: 0, a: 0.5803922}
   bossIntentColor: {r: 0.7, g: 0.3, b: 1, a: 0.9}
   playerLives: 3
   livesText: {fileID: 0}

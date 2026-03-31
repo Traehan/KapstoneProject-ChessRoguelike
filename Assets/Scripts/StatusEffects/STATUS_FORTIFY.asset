@@ -15,6 +15,6 @@ MonoBehaviour:
   id: 1
   icon: {fileID: 21300000, guid: 586933272add94648983d14af7131705, type: 3}
   displayName: Fortify
-  description: Absorbs 1 damage per stack, loses 1 stack on movement
+  description: Blocks 1 damage per stack, lose half of stack on movement
   showStacks: 1
   priority: 10
