@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections.Generic;
 using Chess;
 
 [System.Serializable]
@@ -8,22 +7,26 @@ public class MapNode
     public int row;
     public int column;
     public MapNodeType nodeType;
+
     public bool isVisited;
-    public bool isLocked;
     public bool isCurrentlyAvailable;
-    
-    public List<MapNode> connectedNodes = new List<MapNode>();
-    
+
+    public bool isStartTile;
+    public bool isBossTile;
+
     public EncounterDefinition encounter;
-    
+
     public MapNode(int row, int column, MapNodeType nodeType)
     {
         this.row = row;
         this.column = column;
         this.nodeType = nodeType;
-        this.isVisited = false;
-        this.isLocked = false;
-        this.isCurrentlyAvailable = row == 0;
+
+        isVisited = false;
+        isCurrentlyAvailable = false;
+
+        isStartTile = false;
+        isBossTile = (nodeType == MapNodeType.Boss);
     }
 
     public void Visit()
@@ -32,22 +35,31 @@ public class MapNode
         isCurrentlyAvailable = false;
     }
 
-    public void Lock()
+    public void SetAvailable(bool value)
     {
-        isLocked = true;
+        if (isVisited && value)
+        {
+            isCurrentlyAvailable = false;
+            return;
+        }
+
+        isCurrentlyAvailable = value;
+    }
+
+    public void SetAsStartTile()
+    {
+        isStartTile = true;
         isCurrentlyAvailable = false;
     }
 
-    public void Unlock()
+    public void SetAsBossTile()
     {
-        isLocked = false;
+        isBossTile = true;
+        nodeType = MapNodeType.Boss;
     }
 
-    public void MakeAvailable()
+    public bool MatchesCoord(int targetRow, int targetColumn)
     {
-        if (!isVisited && !isLocked)
-        {
-            isCurrentlyAvailable = true;
-        }
+        return row == targetRow && column == targetColumn;
     }
 }

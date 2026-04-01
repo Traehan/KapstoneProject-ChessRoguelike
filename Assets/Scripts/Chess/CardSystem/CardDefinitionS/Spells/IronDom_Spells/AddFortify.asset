@@ -14,9 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Card.SpellCardDefinitionSO
   cardId: Reinforce
   displayName: Fortify Up
-  rulesText: 'Grant a unit +2 <color=#2A4B8D><i>Fortify</color></i>
-
-    Bleed Retaliate'
+  rulesText: Grant a unit +2 <color=#2A4B8D><i>Fortify</color></i>
   art: {fileID: 21300000, guid: 586933272add94648983d14af7131705, type: 3}
   manaCost: 1
   soundProfile: {fileID: 0}

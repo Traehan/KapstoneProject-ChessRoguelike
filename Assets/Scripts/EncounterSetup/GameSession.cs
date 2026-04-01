@@ -28,12 +28,23 @@ public class GameSession : MonoBehaviour
 
     PieceDefinition _queenDefRuntime;
 
-    readonly Dictionary<PieceDefinition, int> _upgradeCounts = new(); //TO DO: utilize the card generic prefab for upgrades for easier instantiation when spawned on the board
+    readonly Dictionary<PieceDefinition, int> _upgradeCounts = new();
     readonly Dictionary<PieceDefinition, List<PieceUpgradeSO>> pendingUpgrades = new();
 
-    [Header("Run / Boss State")] 
+    [Header("Run / Boss State")]
     public bool isBossBattle;
     public bool bossDefeated;
+
+    [Header("Chess Map Run State")]
+    public int mapCurrentRow;
+    public int mapCurrentColumn;
+    public MapMovementType selectedMapMovementType = MapMovementType.Rook;
+
+    [Header("Map Movement Counts")]
+    public int rookMapMoveCount;
+    public int bishopMapMoveCount;
+    public int knightMapMoveCount;
+    public int queenMapMoveCount;
 
     void Awake()
     {
@@ -51,9 +62,7 @@ public class GameSession : MonoBehaviour
     {
         selectedClan = clan;
         startingTroopPool = (clan != null) ? clan.StartingTroopPool : null;
-        
-        
-        //Clears all previous GameSession Info If player chooses to reset
+
         army.Clear();
         CurrentRunDeck.Clear();
         PotentialSpellPool.Clear();
@@ -68,14 +77,14 @@ public class GameSession : MonoBehaviour
         bossDefeated = false;
         selectedEncounter = null;
 
-        //Reset the map for a fresh new layout. TO DO: Change map logic when we introduce different node types (remove 2 cards node, duplicate card node, upgrade shop node, etc.)
+        ResetMapMovementState();
+
         MapState.ClearState();
-        // Currency manager is optimized for now, don't see a need to change anything with it just yet in terms of buying upgrades
-        CurrencyManager.ClearSavedCurrency(); 
+
+        CurrencyManager.ClearSavedCurrency();
         if (CurrencyManager.Instance != null)
             CurrencyManager.Instance.ResetCurrency();
 
-        // Build leaders for prep, will ALWAYS add the clans queen at beginning of each run
         if (selectedClan != null && selectedClan.queenDefinition != null)
         {
             var queenRuntime = CreateRuntimePiece(selectedClan.queenDefinition);
@@ -89,7 +98,6 @@ public class GameSession : MonoBehaviour
 
         var troop = GrantRandomStartingTroop();
 
-        // Build card-based combat deck from clan definition with spellcardSOs given clanSO's default battledeck
         if (selectedClan != null && selectedClan.startingBattleDeck != null && selectedClan.startingBattleDeck.Length > 0)
         {
             CurrentRunDeck.AddRange(selectedClan.startingBattleDeck);
@@ -98,8 +106,7 @@ public class GameSession : MonoBehaviour
         {
             Debug.LogWarning("[GameSession] Clan has no startingBattleDeck assigned.");
         }
-        
-        //Adds ClanSO's list of all spells they can use, for the reward panel after each encounter win
+
         if (selectedClan != null && selectedClan.SpellPool != null && selectedClan.SpellPool.Length > 0)
         {
             PotentialSpellPool.AddRange(selectedClan.SpellPool);
@@ -108,17 +115,102 @@ public class GameSession : MonoBehaviour
         {
             Debug.LogWarning("[GameSession] Clan has no SpellPool assigned.");
         }
-        
-        
-        //Just to check, can remove later
+
         Debug.Log($"[GameSession] Clan: {selectedClan?.clanName}");
         Debug.Log($"[GameSession] Queen leader: {_queenDefRuntime?.displayName}");
         Debug.Log($"[GameSession] Troop leader: {troop?.displayName}");
         Debug.Log($"[GameSession] Leaders (army) count: {army.Count}");
         Debug.Log($"[GameSession] CurrentRunDeck count: {CurrentRunDeck.Count}");
+        Debug.Log($"[GameSession] Map start position: ({mapCurrentRow}, {mapCurrentColumn})");
+        Debug.Log($"[GameSession] Move counts: R={rookMapMoveCount}, B={bishopMapMoveCount}, K={knightMapMoveCount}, Q={queenMapMoveCount}");
     }
 
-    public PieceDefinition GrantRandomStartingTroop() // for pop up panel beginning of each run
+    void ResetMapMovementState()
+    {
+        mapCurrentRow = 0;
+        mapCurrentColumn = 2;
+
+        selectedMapMovementType = MapMovementType.Rook;
+
+        // Starter values for testing / first pass.
+        // Change these later for real balance.
+        rookMapMoveCount = 99;
+        bishopMapMoveCount = 99;
+        knightMapMoveCount = 99;
+        queenMapMoveCount = 0;
+    }
+
+    public int GetMapMovementCount(MapMovementType movementType)
+    {
+        switch (movementType)
+        {
+            case MapMovementType.Rook:
+                return rookMapMoveCount;
+            case MapMovementType.Bishop:
+                return bishopMapMoveCount;
+            case MapMovementType.Knight:
+                return knightMapMoveCount;
+            case MapMovementType.Queen:
+                return queenMapMoveCount;
+            default:
+                return 0;
+        }
+    }
+
+    public bool CanUseMapMovementType(MapMovementType movementType)
+    {
+        return GetMapMovementCount(movementType) > 0;
+    }
+
+    public void AddMapMovementCount(MapMovementType movementType, int amount)
+    {
+        if (amount <= 0) return;
+
+        switch (movementType)
+        {
+            case MapMovementType.Rook:
+                rookMapMoveCount += amount;
+                break;
+            case MapMovementType.Bishop:
+                bishopMapMoveCount += amount;
+                break;
+            case MapMovementType.Knight:
+                knightMapMoveCount += amount;
+                break;
+            case MapMovementType.Queen:
+                queenMapMoveCount += amount;
+                break;
+        }
+    }
+
+    public bool TryConsumeMapMovement(MapMovementType movementType, int amount = 1)
+    {
+        if (amount <= 0) return true;
+
+        int current = GetMapMovementCount(movementType);
+        if (current < amount)
+            return false;
+
+        switch (movementType)
+        {
+            case MapMovementType.Rook:
+                rookMapMoveCount -= amount;
+                break;
+            case MapMovementType.Bishop:
+                bishopMapMoveCount -= amount;
+                break;
+            case MapMovementType.Knight:
+                knightMapMoveCount -= amount;
+                break;
+            case MapMovementType.Queen:
+                queenMapMoveCount -= amount;
+                break;
+        }
+
+        return true;
+    }
+
+    public PieceDefinition GrantRandomStartingTroop()
     {
         if (hasGrantedStartingTroop || startingTroopPool == null || startingTroopPool.Length == 0)
             return null;
@@ -134,8 +226,8 @@ public class GameSession : MonoBehaviour
 
         return null;
     }
-    
-    public EncounterDefinition PickRandomEncounter() //used for Map node logic
+
+    public EncounterDefinition PickRandomEncounter()
     {
         if (encounterCatalog == null || encounterCatalog.encounters == null || encounterCatalog.encounters.Count == 0)
             return null;
@@ -143,7 +235,7 @@ public class GameSession : MonoBehaviour
         int i = Random.Range(0, encounterCatalog.encounters.Count);
         return encounterCatalog.encounters[i];
     }
-    
+
     public void QueueUpgrade(PieceDefinition def, PieceUpgradeSO upg)
     {
         if (def == null || upg == null) return;

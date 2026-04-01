@@ -10,30 +10,35 @@ public class MapNodeVisual : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     public Image backgroundImage;
     public TextMeshProUGUI nodeTypeText;
     public Image iconImage;
-    
+
     [Header("Visual States")]
     public Color availableColor = Color.white;
     public Color visitedColor = Color.gray;
-    public Color lockedColor = new Color(0.3f, 0.3f, 0.3f, 0.5f);
+    public Color unavailableColor = new Color(0.3f, 0.3f, 0.3f, 0.5f);
     public Color hoverColor = Color.yellow;
-    
+    public Color currentPositionColor = new Color(1f, 0.9f, 0.4f, 1f);
+
     [Header("Node Type Colors")]
+    public Color startColor = new Color(1f, 0.95f, 0.6f);
     public Color encounterColor = new Color(1f, 0.3f, 0.3f);
     public Color shopColor = new Color(0.3f, 1f, 0.3f);
     public Color randomEventColor = new Color(0.3f, 0.3f, 1f);
-    public Color bossColor = new Color(1f, 0.8f, 0.2f); // NEW
-    
+    public Color bossColor = new Color(1f, 0.8f, 0.2f);
+
     [Header("Sprites")]
+    public Sprite startSprite;
     public Sprite encounterSprite;
     public Sprite shopSprite;
     public Sprite eventSprite;
     public Sprite bossSprite;
-    
-    private Button button;
-    private MapNode nodeData;
-    private MapGenerator mapGenerator;
-    private Color currentColor;
-    private bool isHovering;
+    public Sprite removalSprite;
+    public Sprite duplicationSprite;
+
+    Button button;
+    MapNode nodeData;
+    MapGenerator mapGenerator;
+    Color currentColor;
+    bool isHovering;
 
     void Awake()
     {
@@ -52,28 +57,48 @@ public class MapNodeVisual : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     {
         if (nodeData == null) return;
 
-        if (nodeTypeText != null)
-        {
-            nodeTypeText.text = GetNodeTypeDisplayName();
-        }
+        bool isHidden = nodeData.nodeType == MapNodeType.Hidden;
+
+        if (backgroundImage != null)
+            backgroundImage.enabled = !isHidden;
 
         if (iconImage != null)
         {
-            iconImage.sprite = GetNodeTypeSprite();
-            iconImage.color = GetNodeTypeColor();
+            iconImage.enabled = !isHidden;
+            if (!isHidden)
+            {
+                iconImage.sprite = GetNodeTypeSprite();
+                iconImage.color = GetNodeTypeColor();
+            }
         }
+
+        if (nodeTypeText != null)
+        {
+            nodeTypeText.enabled = !isHidden;
+            if (!isHidden)
+                nodeTypeText.text = GetNodeTypeDisplayName();
+        }
+
+        if (isHidden)
+        {
+            if (button != null)
+                button.interactable = false;
+            return;
+        }
+
+        bool isCurrentPlayerTile = mapGenerator != null && mapGenerator.IsPlayerOnNode(nodeData);
 
         Color targetColor;
         bool interactable;
 
-        if (nodeData.isVisited)
+        if (isCurrentPlayerTile)
         {
-            targetColor = visitedColor;
+            targetColor = currentPositionColor;
             interactable = false;
         }
-        else if (nodeData.isLocked)
+        else if (nodeData.isVisited)
         {
-            targetColor = lockedColor;
+            targetColor = visitedColor;
             interactable = false;
         }
         else if (nodeData.isCurrentlyAvailable)
@@ -83,58 +108,78 @@ public class MapNodeVisual : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         }
         else
         {
-            targetColor = lockedColor;
+            targetColor = unavailableColor;
             interactable = false;
         }
 
         currentColor = targetColor;
-        
-        if (backgroundImage != null)
-        {
-            backgroundImage.color = isHovering && interactable ? hoverColor : currentColor;
-        }
 
-        button.interactable = interactable;
+        if (backgroundImage != null)
+            backgroundImage.color = isHovering && interactable ? hoverColor : currentColor;
+
+        if (button != null)
+            button.interactable = interactable;
     }
 
-    private string GetNodeTypeDisplayName()
+    string GetNodeTypeDisplayName()
     {
+        if (nodeData == null) return "Node";
+
         switch (nodeData.nodeType)
         {
+            case MapNodeType.Start:
+                return "START";
             case MapNodeType.Encounter:
                 return "Battle";
             case MapNodeType.Shop:
                 return "Shop";
             case MapNodeType.RandomEvent:
                 return "Event";
-            case MapNodeType.Boss:                     
+            case MapNodeType.Boss:
                 return "BOSS";
+            case MapNodeType.RemoveTwoCards:
+                return "Purge 2";
+            case MapNodeType.DuplicateCard:
+                return "Duplicate";
+            case MapNodeType.Hidden:
             default:
-                return "Node";
+                return "";
         }
     }
 
-    private Sprite GetNodeTypeSprite()
+    Sprite GetNodeTypeSprite()
     {
+        if (nodeData == null) return null;
+
         switch (nodeData.nodeType)
         {
+            case MapNodeType.Start:
+                return startSprite != null ? startSprite : encounterSprite;
             case MapNodeType.Encounter:
                 return encounterSprite;
             case MapNodeType.Shop:
                 return shopSprite;
             case MapNodeType.RandomEvent:
                 return eventSprite;
-            case MapNodeType.Boss:                     // NEW
+            case MapNodeType.Boss:
                 return bossSprite;
+            case MapNodeType.RemoveTwoCards:
+                return removalSprite;
+            case MapNodeType.DuplicateCard:
+                return duplicationSprite;
             default:
                 return null;
         }
     }
 
-    private Color GetNodeTypeColor()
+    Color GetNodeTypeColor()
     {
+        if (nodeData == null) return Color.white;
+
         switch (nodeData.nodeType)
         {
+            case MapNodeType.Start:
+                return startColor;
             case MapNodeType.Encounter:
                 return encounterColor;
             case MapNodeType.Shop:
@@ -143,6 +188,10 @@ public class MapNodeVisual : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
                 return randomEventColor;
             case MapNodeType.Boss:
                 return bossColor;
+            case MapNodeType.RemoveTwoCards:
+                return randomEventColor;
+            case MapNodeType.DuplicateCard:
+                return randomEventColor;
             default:
                 return Color.white;
         }
@@ -150,10 +199,10 @@ public class MapNodeVisual : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     void OnNodeClicked()
     {
-        if (mapGenerator != null && nodeData != null && nodeData.isCurrentlyAvailable)
-        {
-            mapGenerator.OnNodeSelected(nodeData);
-        }
+        if (mapGenerator == null || nodeData == null) return;
+        if (!nodeData.isCurrentlyAvailable) return;
+
+        mapGenerator.OnNodeSelected(nodeData);
     }
 
     public void OnPointerEnter(PointerEventData eventData)
