@@ -285,10 +285,10 @@ MonoBehaviour:
   randomEventColor: {r: 1, g: 1, b: 1, a: 1}
   bossColor: {r: 1, g: 0, b: 0.05414009, a: 0.64705884}
   startSprite: {fileID: 21300000, guid: 955eba17ea4808d48a6327fa74181cc7, type: 3}
-  encounterSprite: {fileID: 21300000, guid: d0ccaaffa32f28d4d9dd0ac1c61dffb1, type: 3}
-  shopSprite: {fileID: 21300000, guid: 909eca9905b52404d94fbe8c5a542fb7, type: 3}
-  eventSprite: {fileID: 21300000, guid: 5e168f610b3f96049af07c55fd7f8f6e, type: 3}
-  bossSprite: {fileID: 21300000, guid: 5dc1597a85203884aa9a17808221c83f, type: 3}
+  encounterSprite: {fileID: 21300000, guid: aaa22019bda0e824aaa677ab12720f2a, type: 3}
+  shopSprite: {fileID: 21300000, guid: b3a13f0b5e401d346aa76e10a18dbb23, type: 3}
+  eventSprite: {fileID: 21300000, guid: 58040af0388d98e45835f036c17e10c1, type: 3}
+  bossSprite: {fileID: 21300000, guid: 316f17ef021a10c42a5291e3314af3a3, type: 3}
   removalSprite: {fileID: 21300000, guid: cc4a3c1cf53f3f54f866dc14b869f85a, type: 3}
   duplicationSprite: {fileID: 0}
 --- !u!1 &8230552826956867739
