@@ -19,6 +19,10 @@ public class DeckViewController : MonoBehaviour
     [SerializeField] TMP_Text instructionText;
     [SerializeField] Transform gridParent;
     [SerializeField] GameObject cardItemPrefab;
+    
+    Action<PieceDefinition> _onArmyPieceConfirmed;
+    Action _onArmySelectionCancelled;
+    readonly List<PieceDefinition> _currentArmySelectionSource = new();
 
     [Header("Event Controls")]
     [SerializeField] Button confirmButton;
@@ -90,6 +94,35 @@ public class DeckViewController : MonoBehaviour
         if (rootPanel != null)
             rootPanel.SetActive(true);
     }
+    
+    public void OpenArmyUpgradeSelectionMode(
+        List<PieceDefinition> selectablePieces,
+        string title,
+        string instruction,
+        Action<PieceDefinition> onConfirm,
+        Action onCancel = null)
+    {
+        _currentMode = DeckEditMode.SelectOneArmyPieceForUpgrade;
+        _onEventFinished = null;
+        _onArmyPieceConfirmed = onConfirm;
+        _onArmySelectionCancelled = onCancel;
+        _selectedItems.Clear();
+
+        _currentArmySelectionSource.Clear();
+        if (selectablePieces != null)
+            _currentArmySelectionSource.AddRange(selectablePieces);
+
+        RebuildArmyOnlyView(title, selectableForEvent: true);
+
+        if (instructionText != null)
+            instructionText.text = instruction;
+
+        SetEventButtonsVisible(true);
+        RefreshConfirmInteractable();
+
+        if (rootPanel != null)
+            rootPanel.SetActive(true);
+    }
 
     public void OpenDuplicateOneMode(Action onFinished = null)
     {
@@ -117,6 +150,9 @@ public class DeckViewController : MonoBehaviour
         _selectedItems.Clear();
         _currentMode = DeckEditMode.None;
         _onEventFinished = null;
+        _onArmyPieceConfirmed = null;
+        _onArmySelectionCancelled = null;
+        _currentArmySelectionSource.Clear();
 
         if (rootPanel != null)
             rootPanel.SetActive(false);
@@ -143,6 +179,10 @@ public class DeckViewController : MonoBehaviour
             ToggleSelection(clickedItem, maxSelections: 2);
         }
         else if (_currentMode == DeckEditMode.DuplicateOne)
+        {
+            ToggleSelection(clickedItem, maxSelections: 1);
+        }
+        else if (_currentMode == DeckEditMode.SelectOneArmyPieceForUpgrade)
         {
             ToggleSelection(clickedItem, maxSelections: 1);
         }
@@ -205,6 +245,19 @@ public class DeckViewController : MonoBehaviour
                 gs.CurrentRunDeck.Add(definitionToDuplicate);
             }
         }
+        else if (_currentMode == DeckEditMode.SelectOneArmyPieceForUpgrade)
+        {
+            if (_selectedItems.Count != 1)
+                return;
+
+            var picked = _selectedItems[0];
+            PieceDefinition selectedPiece = picked != null ? picked.PieceDefinition : null;
+
+            var confirm = _onArmyPieceConfirmed;
+            Close();
+            confirm?.Invoke(selectedPiece);
+            return;
+        }
 
         Action finish = _onEventFinished;
         Close();
@@ -213,7 +266,9 @@ public class DeckViewController : MonoBehaviour
 
     void CancelCurrentEvent()
     {
+        var onCancel = _onArmySelectionCancelled;
         Close();
+        onCancel?.Invoke();
     }
 
     void RefreshConfirmInteractable()
@@ -227,6 +282,9 @@ public class DeckViewController : MonoBehaviour
                 confirmButton.interactable = (_selectedItems.Count == 2);
                 break;
             case DeckEditMode.DuplicateOne:
+                confirmButton.interactable = (_selectedItems.Count == 1);
+                break;
+            case DeckEditMode.SelectOneArmyPieceForUpgrade:
                 confirmButton.interactable = (_selectedItems.Count == 1);
                 break;
             default:
@@ -303,6 +361,42 @@ public class DeckViewController : MonoBehaviour
 
         if (countText != null)
             countText.text = $"{totalCount} Cards";
+    }
+    
+    void RebuildArmyOnlyView(string title, bool selectableForEvent)
+    {
+        ClearGrid();
+
+        if (headerText != null)
+            headerText.text = title;
+
+        if (gridParent == null || cardItemPrefab == null)
+        {
+            Debug.LogWarning("[DeckViewController] Missing gridParent or cardItemPrefab.");
+            return;
+        }
+
+        int totalCount = 0;
+
+        for (int i = 0; i < _currentArmySelectionSource.Count; i++)
+        {
+            var pieceDef = _currentArmySelectionSource[i];
+            if (pieceDef == null)
+                continue;
+
+            var go = Instantiate(cardItemPrefab, gridParent);
+            _spawned.Add(go);
+
+            var item = go.GetComponent<DeckViewCardItem>();
+            if (item == null)
+                item = go.AddComponent<DeckViewCardItem>();
+
+            item.Bind(pieceDef, armyIndex: i, selectableForEvent: selectableForEvent);
+            totalCount++;
+        }
+
+        if (countText != null)
+            countText.text = $"{totalCount} Units";
     }
 
     void RebuildRunDeckOnlyView(string title, bool selectableForEvent)

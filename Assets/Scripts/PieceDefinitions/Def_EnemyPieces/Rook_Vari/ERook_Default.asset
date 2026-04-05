@@ -13,10 +13,12 @@ MonoBehaviour:
   m_Name: ERook_Default
   m_EditorClassIdentifier: Assembly-CSharp::Chess.PieceDefinition
   displayName: Minotaur
-  icon: {fileID: 21300000, guid: f26fa44b95990ec4da6030646c38254b, type: 3}
+  icon: {fileID: 21300000, guid: 71a9f62cf983a024ebc83c86befdbf39, type: 3}
   iconPrefabOverride: {fileID: 0}
   count: 1
-  piecePrefab: {fileID: 7077751289521428780, guid: 39a5cef46416fa344a74c3c7b6b2256c, type: 3}
+  soundProfile: {fileID: 0}
+  Description: 
+  piecePrefab: {fileID: -7458136411974777670, guid: 6ec2023781b6c43cdaaa591b5431e935, type: 3}
   maxHP: 5
   attack: 5
   forwardOnly: 1

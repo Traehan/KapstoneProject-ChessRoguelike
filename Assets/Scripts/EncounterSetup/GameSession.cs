@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Chess;
 using Card;
@@ -10,8 +11,11 @@ public class GameSession : MonoBehaviour
     [Header("Encounter Sources")]
     public EncounterCatalog encounterCatalog;
 
-    [Header("Starting Troop Pool (map popup)")]
+    [Header("Starting Troop Pool (map popup + recruit node)")]
     public PieceDefinition[] startingTroopPool;
+
+    [Header("Unit Card Lookup (maps troop pieces to unit cards)")]
+    public UnitCardDefinitionSO[] unitCardDefinitions;
 
     [Header("Run State (runtime)")]
     public ClanDefinition selectedClan;
@@ -25,6 +29,7 @@ public class GameSession : MonoBehaviour
     public List<CardDefinitionSO> PotentialSpellPool;
 
     public bool hasGrantedStartingTroop = false;
+    public bool hasShownStartingTroopPopup = false;
 
     PieceDefinition _queenDefRuntime;
 
@@ -72,13 +77,13 @@ public class GameSession : MonoBehaviour
 
         _queenDefRuntime = null;
         hasGrantedStartingTroop = false;
+        hasShownStartingTroopPopup = false;
 
         isBossBattle = false;
         bossDefeated = false;
         selectedEncounter = null;
 
         ResetMapMovementState();
-
         MapState.ClearState();
 
         CurrencyManager.ClearSavedCurrency();
@@ -132,8 +137,6 @@ public class GameSession : MonoBehaviour
 
         selectedMapMovementType = MapMovementType.Rook;
 
-        // Starter values for testing / first pass.
-        // Change these later for real balance.
         rookMapMoveCount = 99;
         bishopMapMoveCount = 99;
         knightMapMoveCount = 99;
@@ -225,6 +228,88 @@ public class GameSession : MonoBehaviour
         }
 
         return null;
+    }
+
+    public List<UnitCardDefinitionSO> GetRecruitOptionsFromStartingTroopPool(int count)
+    {
+        var results = new List<UnitCardDefinitionSO>();
+
+        if (startingTroopPool == null || startingTroopPool.Length == 0 || count <= 0)
+            return results;
+
+        List<PieceDefinition> pool = startingTroopPool
+            .Where(x => x != null)
+            .Distinct()
+            .ToList();
+
+        for (int i = 0; i < pool.Count; i++)
+        {
+            int rand = Random.Range(i, pool.Count);
+            (pool[i], pool[rand]) = (pool[rand], pool[i]);
+        }
+
+        int take = Mathf.Min(count, pool.Count);
+
+        for (int i = 0; i < take; i++)
+        {
+            UnitCardDefinitionSO unitCard = FindUnitCardForPiece(pool[i]);
+            if (unitCard != null)
+                results.Add(unitCard);
+        }
+
+        return results;
+    }
+
+    public UnitCardDefinitionSO FindUnitCardForPiece(PieceDefinition pieceDef)
+    {
+        if (pieceDef == null || unitCardDefinitions == null)
+            return null;
+
+        for (int i = 0; i < unitCardDefinitions.Length; i++)
+        {
+            var unitCard = unitCardDefinitions[i];
+            if (unitCard == null) continue;
+
+            if (unitCard.summonPieceDefinition == pieceDef)
+                return unitCard;
+        }
+
+        Debug.LogWarning($"[GameSession] No UnitCardDefinitionSO found for piece: {pieceDef.name}");
+        return null;
+    }
+
+    public void AddCardToRunDeck(CardDefinitionSO cardDef)
+    {
+        if (cardDef == null)
+            return;
+
+        CurrentRunDeck.Add(cardDef);
+        Debug.Log($"[GameSession] Added card to CurrentRunDeck: {cardDef.GetDisplayName()}");
+    }
+
+    public bool RecruitUnit(UnitCardDefinitionSO unitCard)
+    {
+        if (unitCard == null)
+            return false;
+
+        var summonPiece = unitCard.summonPieceDefinition;
+        if (summonPiece == null)
+        {
+            Debug.LogWarning("[GameSession] RecruitUnit failed: unit card has no summonPieceDefinition.");
+            return false;
+        }
+
+        var runtimePiece = CreateRuntimePiece(summonPiece);
+        if (runtimePiece == null)
+        {
+            Debug.LogWarning("[GameSession] RecruitUnit failed: could not create runtime piece.");
+            return false;
+        }
+
+        army.Add(runtimePiece);
+
+        Debug.Log($"[GameSession] Recruited army unit only: {runtimePiece.displayName}. Army count now {army.Count}.");
+        return true;
     }
 
     public EncounterDefinition PickRandomEncounter()

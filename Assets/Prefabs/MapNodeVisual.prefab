@@ -274,23 +274,23 @@ MonoBehaviour:
   backgroundImage: {fileID: 4671489631010927452}
   nodeTypeText: {fileID: 7235923228631746114}
   iconImage: {fileID: 6023159283310390683}
-  availableColor: {r: 1, g: 1, b: 1, a: 1}
+  availableColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   visitedColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   unavailableColor: {r: 0.3, g: 0.3, b: 0.3, a: 0.5}
-  hoverColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  currentPositionColor: {r: 1, g: 0.9, b: 0.4, a: 1}
-  startColor: {r: 1, g: 1, b: 1, a: 0.7294118}
+  hoverColor: {r: 0.5450981, g: 0, b: 0, a: 1}
+  currentPositionColor: {r: 0, g: 0, b: 0, a: 1}
+  startColor: {r: 1, g: 1, b: 1, a: 1}
   encounterColor: {r: 1, g: 1, b: 1, a: 1}
   shopColor: {r: 1, g: 1, b: 1, a: 1}
   randomEventColor: {r: 1, g: 1, b: 1, a: 1}
-  bossColor: {r: 1, g: 0, b: 0.05414009, a: 0.64705884}
-  startSprite: {fileID: 21300000, guid: 955eba17ea4808d48a6327fa74181cc7, type: 3}
+  bossColor: {r: 0.69182384, g: 0.4024761, b: 0.4186795, a: 1}
+  startSprite: {fileID: 21300000, guid: 4893c9b5a06949a4dbdf4f4a3e8e0c5b, type: 3}
   encounterSprite: {fileID: 21300000, guid: aaa22019bda0e824aaa677ab12720f2a, type: 3}
   shopSprite: {fileID: 21300000, guid: b3a13f0b5e401d346aa76e10a18dbb23, type: 3}
   eventSprite: {fileID: 21300000, guid: 58040af0388d98e45835f036c17e10c1, type: 3}
   bossSprite: {fileID: 21300000, guid: 316f17ef021a10c42a5291e3314af3a3, type: 3}
-  removalSprite: {fileID: 21300000, guid: cc4a3c1cf53f3f54f866dc14b869f85a, type: 3}
-  duplicationSprite: {fileID: 0}
+  removalSprite: {fileID: 21300000, guid: a2b73ef5897ae6d49bb44729bad9e1a1, type: 3}
+  duplicationSprite: {fileID: 21300000, guid: dec42b588f94afa4f808b9a752d1156e, type: 3}
 --- !u!1 &8230552826956867739
 GameObject:
   m_ObjectHideFlags: 0

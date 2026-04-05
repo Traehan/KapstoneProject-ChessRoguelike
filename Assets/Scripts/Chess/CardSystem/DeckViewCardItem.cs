@@ -14,8 +14,11 @@ public class DeckViewCardItem : MonoBehaviour, IPointerClickHandler
     PieceDefinition _pieceDefinition;
     Card.Card _runtimeDisplayCard;
     CardView _cardView;
+    
+    
 
     int _runDeckIndex = -1;
+    int _armyIndex = -1;
     bool _isSelectableForEvent = false;
     bool _isSelected = false;
 
@@ -24,6 +27,8 @@ public class DeckViewCardItem : MonoBehaviour, IPointerClickHandler
     public Card.Card RuntimeDisplayCard => _runtimeDisplayCard;
     public int RunDeckIndex => _runDeckIndex;
     public bool IsSelected => _isSelected;
+    
+    public int ArmyIndex => _armyIndex;
 
     public void Bind(CardDefinitionSO definition, int runDeckIndex = -1, bool selectableForEvent = false)
     {
@@ -44,12 +49,13 @@ public class DeckViewCardItem : MonoBehaviour, IPointerClickHandler
         BindToView();
     }
 
-    public void Bind(PieceDefinition pieceDefinition)
+    public void Bind(PieceDefinition pieceDefinition, int armyIndex = -1, bool selectableForEvent = false)
     {
         _pieceDefinition = pieceDefinition;
         _definition = null;
         _runDeckIndex = -1;
-        _isSelectableForEvent = false;
+        _armyIndex = armyIndex;
+        _isSelectableForEvent = selectableForEvent;
         _isSelected = false;
         RefreshSelectionVisual();
 

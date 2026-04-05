@@ -6,7 +6,7 @@ public enum MapNodeType
     Start,
     Encounter,
     Shop,
-    RandomEvent,
+    Recruit,
     RemoveTwoCards,
     DuplicateCard,
     Boss
@@ -21,8 +21,8 @@ public class MapNodeTypeWeights
     [Tooltip("Weight for Shop nodes")]
     public int shopWeight = 15;
 
-    [Tooltip("Weight for Random Event nodes")]
-    public int randomEventWeight = 10;
+    [Tooltip("Weight for Recruit nodes")]
+    public int recruitWeight = 10;
 
     [Tooltip("Weight for Remove 2 Cards nodes")]
     public int removeTwoCardsWeight = 10;
@@ -35,7 +35,7 @@ public class MapNodeTypeWeights
         int totalWeight =
             encounterWeight +
             shopWeight +
-            randomEventWeight +
+            recruitWeight +
             removeTwoCardsWeight +
             duplicateCardWeight;
 
@@ -49,10 +49,10 @@ public class MapNodeTypeWeights
             return MapNodeType.Shop;
 
         randomValue -= shopWeight;
-        if (randomValue < randomEventWeight)
-            return MapNodeType.RandomEvent;
+        if (randomValue < recruitWeight)
+            return MapNodeType.Recruit;
 
-        randomValue -= randomEventWeight;
+        randomValue -= recruitWeight;
         if (randomValue < removeTwoCardsWeight)
             return MapNodeType.RemoveTwoCards;
 

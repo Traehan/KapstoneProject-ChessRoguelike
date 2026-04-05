@@ -133,8 +133,8 @@ public class MapNodeVisual : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
                 return "Battle";
             case MapNodeType.Shop:
                 return "Shop";
-            case MapNodeType.RandomEvent:
-                return "Event";
+            case MapNodeType.Recruit:
+                return "Recruit";
             case MapNodeType.Boss:
                 return "BOSS";
             case MapNodeType.RemoveTwoCards:
@@ -159,8 +159,8 @@ public class MapNodeVisual : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
                 return encounterSprite;
             case MapNodeType.Shop:
                 return shopSprite;
-            case MapNodeType.RandomEvent:
-                return eventSprite;
+            case MapNodeType.Recruit:
+                return eventSprite; // reuse your old event sprite for now
             case MapNodeType.Boss:
                 return bossSprite;
             case MapNodeType.RemoveTwoCards:
@@ -184,8 +184,8 @@ public class MapNodeVisual : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
                 return encounterColor;
             case MapNodeType.Shop:
                 return shopColor;
-            case MapNodeType.RandomEvent:
-                return randomEventColor;
+            case MapNodeType.Recruit:
+                return randomEventColor; // can rename later if you want
             case MapNodeType.Boss:
                 return bossColor;
             case MapNodeType.RemoveTwoCards:

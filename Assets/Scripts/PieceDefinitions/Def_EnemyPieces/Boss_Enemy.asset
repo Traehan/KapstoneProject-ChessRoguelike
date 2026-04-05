@@ -12,12 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ded2e13f6ebd3434dad991b06601023a, type: 3}
   m_Name: Boss_Enemy
   m_EditorClassIdentifier: Assembly-CSharp::Chess.PieceDefinition
-  displayName: The Tower
-  icon: {fileID: 0}
+  displayName: Calamity King
+  icon: {fileID: 21300000, guid: 9903b6eaa1425dc4a80657571cacd9af, type: 3}
   iconPrefabOverride: {fileID: 0}
   count: 1
+  soundProfile: {fileID: 0}
+  Description: 
   piecePrefab: {fileID: 7077751289521428780, guid: 50e7ac4801f171e438a201112ec94f81, type: 3}
-  maxHP: 20
+  maxHP: 50
   attack: 5
   forwardOnly: 0
   passThroughFriendlies: 0

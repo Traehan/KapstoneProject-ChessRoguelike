@@ -18,4 +18,4 @@ MonoBehaviour:
   addMaxHP: 0
   addAttack: 0
   keywordAbility: {fileID: 0}
-  shopPrice: 50
+  shopPrice: 75

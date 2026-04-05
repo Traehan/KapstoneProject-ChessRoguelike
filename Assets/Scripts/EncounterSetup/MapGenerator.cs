@@ -36,6 +36,8 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] Button restartRunButton;
     [SerializeField] Button quitGameButton;
     [SerializeField] string clanSelectSceneName = "ClanSelectScene";
+    [Header("Node Panels")]
+    [SerializeField] RecruitNodePanel recruitNodePanel;
 
     readonly List<List<MapNode>> mapRows = new();
     readonly Dictionary<MapNode, MapNodeVisual> nodeVisuals = new();
@@ -228,14 +230,14 @@ public class MapGenerator : MonoBehaviour
             int roll = Random.Range(0, 100);
             if (roll < 80) return MapNodeType.Encounter;
             if (roll < 90) return MapNodeType.Shop;
-            return MapNodeType.RandomEvent;
+            return MapNodeType.Recruit;
         }
 
         int evenRoll = Random.Range(0, 100);
 
         if (evenRoll < 30) return MapNodeType.Encounter;
         if (evenRoll < 50) return MapNodeType.Shop;
-        if (evenRoll < 65) return MapNodeType.RandomEvent;
+        if (evenRoll < 65) return MapNodeType.Recruit;
         if (evenRoll < 82) return MapNodeType.RemoveTwoCards;
         return MapNodeType.DuplicateCard;
     }
@@ -531,9 +533,15 @@ public class MapGenerator : MonoBehaviour
                 targetScene = shopSceneName;
                 break;
 
-            case MapNodeType.RandomEvent:
-                targetScene = eventSceneName;
-                break;
+            case MapNodeType.Recruit:
+                if (recruitNodePanel == null)
+                {
+                    Debug.LogWarning("[MapGenerator] No RecruitNodePanel assigned for Recruit node.");
+                    yield break;
+                }
+
+                recruitNodePanel.Open();
+                yield break;
 
             case MapNodeType.Boss:
                 targetScene = battleSceneName;
