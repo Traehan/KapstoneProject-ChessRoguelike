@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: SFX_Knight_Attack_Iron 1
   m_EditorClassIdentifier: Assembly-CSharp::Chess.SoundCueSO
   clips:
-  - {fileID: 8300000, guid: 1e52b6eaf34f1454491f9bba6ce8a80f, type: 3}
+  - {fileID: 8300000, guid: 831bbd49cebaf4d9092a21a3d7468d1a, type: 3}
   volumeMin: 1
   volumeMax: 1
   pitchMin: 1
   pitchMax: 1
-  spatial: 1
+  spatial: 0
   spatialBlend: 1
   minDistance: 1
   maxDistance: 15

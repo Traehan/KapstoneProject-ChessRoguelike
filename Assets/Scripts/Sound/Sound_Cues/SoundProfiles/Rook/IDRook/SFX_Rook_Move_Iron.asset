@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: SFX_Rook_Move_Iron
   m_EditorClassIdentifier: Assembly-CSharp::Chess.SoundCueSO
   clips:
-  - {fileID: 8300000, guid: 3e408cfbf804a421791ef4f2ea2dd19a, type: 3}
-  volumeMin: 1
-  volumeMax: 1
+  - {fileID: 8300000, guid: 5f9f04b71cc2f416db12e5a4815acf15, type: 3}
+  volumeMin: 0.608
+  volumeMax: 0.992
   pitchMin: 1
   pitchMax: 1
-  spatial: 1
+  spatial: 0
   spatialBlend: 1
   minDistance: 1
   maxDistance: 15

@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: SFX_Knight_Death_Iron
   m_EditorClassIdentifier: Assembly-CSharp::Chess.SoundCueSO
   clips:
-  - {fileID: 8300000, guid: 493dba3363e56465289f7b779b1e67e3, type: 3}
+  - {fileID: 8300000, guid: b28425bd599ce4989b47afecb8ed06f3, type: 3}
   volumeMin: 1
   volumeMax: 1
   pitchMin: 1
   pitchMax: 1
-  spatial: 1
+  spatial: 0
   spatialBlend: 1
   minDistance: 1
   maxDistance: 15

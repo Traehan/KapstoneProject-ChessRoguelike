@@ -16,9 +16,9 @@ MonoBehaviour:
   - {fileID: 8300000, guid: a7df8e6c2e2434f7a92ee6d347d1dbaf, type: 3}
   volumeMin: 1
   volumeMax: 1
-  pitchMin: 1
+  pitchMin: 1.06
   pitchMax: 1
-  spatial: 1
+  spatial: 0
   spatialBlend: 1
   minDistance: 1
   maxDistance: 15

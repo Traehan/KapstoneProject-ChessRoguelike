@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: SFX_BC_Pawn_Move
   m_EditorClassIdentifier: Assembly-CSharp::Chess.SoundCueSO
   clips:
-  - {fileID: 8300000, guid: 6156a40277dd74cc0b2a5b6ba7cfe796, type: 3}
+  - {fileID: 8300000, guid: 870a4d1d342414ef1ae89fe3e39cc211, type: 3}
   volumeMin: 1
   volumeMax: 1
   pitchMin: 1
   pitchMax: 1
-  spatial: 1
+  spatial: 0
   spatialBlend: 1
   minDistance: 1
   maxDistance: 15
