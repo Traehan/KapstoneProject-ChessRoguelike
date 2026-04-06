@@ -3,6 +3,7 @@ using UnityEngine;
 public class DeckViewOpenButton : MonoBehaviour
 {
     [SerializeField] string panelTitle = "Deck";
+    public GameObject MovementPanel;
 
     public void OpenDeckView()
     {
@@ -13,6 +14,7 @@ public class DeckViewOpenButton : MonoBehaviour
         }
 
         DeckViewController.Instance.OpenRunDeckView(panelTitle);
+        MovementPanel.SetActive(false);
     }
 
     public void ToggleDeckView()
@@ -35,5 +37,6 @@ public class DeckViewOpenButton : MonoBehaviour
         }
 
         DeckViewController.Instance.Close();
+        MovementPanel.SetActive(true);
     }
 }

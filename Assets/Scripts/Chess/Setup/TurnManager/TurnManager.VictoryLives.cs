@@ -7,7 +7,7 @@ namespace Chess
         void UpdateLivesUI()
         {
             if (livesText != null)
-                livesText.text = $"Lives: {playerLives}";
+                livesText.text = $": {playerLives}";
         }
 
         void LoseLifeAndDespawn(Piece enemy)

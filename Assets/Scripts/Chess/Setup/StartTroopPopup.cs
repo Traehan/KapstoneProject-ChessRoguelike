@@ -1,29 +1,42 @@
-// Assets/Scripts/Map/StartTroopPopup.cs
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Card;
 using Chess;
 
 public class StartTroopPopup : MonoBehaviour
 {
-    [Header("UI")]
-    public GameObject panel;      // root panel
-    public Image pieceImage;      // optional – shows icon if provided
-    public TextMeshProUGUI title; // e.g., "Starting Troop Granted!"
-    public TextMeshProUGUI desc;  // e.g., "You received: Rook"
-    public Button closeButton;    // top-right X
+    [Header("UI Root")]
+    [SerializeField] GameObject panel;
+    [SerializeField] Button closeButton;
+
+    [Header("Optional Text")]
+    [SerializeField] TMP_Text title;
+    [SerializeField] TMP_Text instructionText;
+
+    [Header("Card Display")]
+    [SerializeField] CardView troopCardView;
+
+    Card.Card _runtimeDisplayCard;
+    PieceDefinition _grantedTroop;
 
     void Start()
     {
-        panel.SetActive(false);
-        closeButton.onClick.AddListener(Hide);
+        if (panel != null)
+            panel.SetActive(false);
+
+        if (closeButton != null)
+        {
+            closeButton.onClick.RemoveListener(Hide);
+            closeButton.onClick.AddListener(Hide);
+        }
 
         TryShowGrant();
     }
 
     void Update()
     {
-        if (panel.activeSelf && Input.GetKeyDown(KeyCode.Escape))
+        if (panel != null && panel.activeSelf && Input.GetKeyDown(KeyCode.Escape))
             Hide();
     }
 
@@ -33,31 +46,68 @@ public class StartTroopPopup : MonoBehaviour
         if (GameSession.I.selectedClan == null) return;
         if (GameSession.I.selectedClan.queenDefinition == null) return;
 
-        PieceDefinition troop = null;
+        // Already shown once this run? Never show it again.
+        if (GameSession.I.hasShownStartingTroopPopup)
+        {
+            Hide();
+            return;
+        }
 
-        var queenDef = GameSession.I.selectedClan.queenDefinition;
+        _grantedTroop = FindGrantedStartingTroop();
+        if (_grantedTroop == null)
+        {
+            Hide();
+            return;
+        }
+
+        _runtimeDisplayCard = new Card.Card(_grantedTroop, manaCost: 1);
+
+        if (title != null)
+            title.text = "Starting Troop Granted";
+
+        if (instructionText != null)
+            instructionText.text = "Your clan begins this run with this troop.";
+
+        if (troopCardView != null)
+            troopCardView.Bind(_runtimeDisplayCard);
+
+        if (panel != null)
+            panel.SetActive(true);
+
+        GameSession.I.hasShownStartingTroopPopup = true;
+    }
+
+    PieceDefinition FindGrantedStartingTroop()
+    {
+        var session = GameSession.I;
+        if (session == null)
+            return null;
+
+        var queenDef = session.selectedClan != null ? session.selectedClan.queenDefinition : null;
         var queenPrefab = queenDef != null ? queenDef.piecePrefab : null;
 
-        foreach (var def in GameSession.I.CurrentArmy)
-        {
-            if (def == null) continue;
+        var army = session.CurrentArmy;
+        if (army == null)
+            return null;
 
-            // Skip queen by prefab identity (works even if runtime cloned)
+        for (int i = 0; i < army.Count; i++)
+        {
+            var def = army[i];
+            if (def == null)
+                continue;
+
             if (queenPrefab != null && def.piecePrefab == queenPrefab)
                 continue;
 
-            troop = def;
-            break;
+            return def;
         }
 
-        if (troop == null) return;
-
-        if (title) title.text = "Starting Troop Granted";
-        if (desc) desc.text = $"You received: {troop.displayName}";
-        if (pieceImage) pieceImage.sprite = troop.icon;
-
-        panel.SetActive(true);
+        return null;
     }
 
-    void Hide() => panel.SetActive(false);
+    public void Hide()
+    {
+        if (panel != null)
+            panel.SetActive(false);
+    }
 }

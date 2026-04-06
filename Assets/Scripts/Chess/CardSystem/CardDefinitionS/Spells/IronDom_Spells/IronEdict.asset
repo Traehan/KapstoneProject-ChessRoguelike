@@ -14,9 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Card.SpellCardDefinitionSO
   cardId: 
   displayName: Iron Edict
-  rulesText: Target ally and surrounding allies gain +1 <color=#FF0000><i>Fortify</color></i>
+  rulesText: Target ally and surrounding allies gain +1 <color=#2A4B8D><i>Fortify</color></i>
   art: {fileID: 21300000, guid: c507282f1c81af04f85bf8ff37fa0fc8, type: 3}
   manaCost: 2
+  soundProfile: {fileID: 0}
   cardType: 1
   targetingMode: 2
   effects:

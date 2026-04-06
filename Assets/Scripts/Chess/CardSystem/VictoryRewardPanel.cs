@@ -112,6 +112,12 @@ public class VictoryRewardPanel : MonoBehaviour
 
         Card.Card runtimeCard = new Card.Card(def);
         cardView.Bind(runtimeCard);
+
+        var inspectItem = cardView.GetComponent<VictoryRewardCardItem>();
+        if (inspectItem == null)
+            inspectItem = cardView.gameObject.AddComponent<VictoryRewardCardItem>();
+
+        inspectItem.Bind(runtimeCard, this, index);
     }
 
     void SetSlotActive(GameObject slot, bool active)

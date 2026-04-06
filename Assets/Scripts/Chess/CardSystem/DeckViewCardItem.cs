@@ -8,20 +8,36 @@ public class DeckViewCardItem : MonoBehaviour, IPointerClickHandler
 {
     [Header("Inspect")]
     [SerializeField] StatusDatabase statusDatabase;
+    [SerializeField] GameObject selectedOutline;
 
     CardDefinitionSO _definition;
     PieceDefinition _pieceDefinition;
     Card.Card _runtimeDisplayCard;
     CardView _cardView;
+    
+    
+
+    int _runDeckIndex = -1;
+    int _armyIndex = -1;
+    bool _isSelectableForEvent = false;
+    bool _isSelected = false;
 
     public CardDefinitionSO Definition => _definition;
     public PieceDefinition PieceDefinition => _pieceDefinition;
     public Card.Card RuntimeDisplayCard => _runtimeDisplayCard;
+    public int RunDeckIndex => _runDeckIndex;
+    public bool IsSelected => _isSelected;
+    
+    public int ArmyIndex => _armyIndex;
 
-    public void Bind(CardDefinitionSO definition)
+    public void Bind(CardDefinitionSO definition, int runDeckIndex = -1, bool selectableForEvent = false)
     {
         _definition = definition;
         _pieceDefinition = null;
+        _runDeckIndex = runDeckIndex;
+        _isSelectableForEvent = selectableForEvent;
+        _isSelected = false;
+        RefreshSelectionVisual();
 
         if (_definition == null)
         {
@@ -33,10 +49,15 @@ public class DeckViewCardItem : MonoBehaviour, IPointerClickHandler
         BindToView();
     }
 
-    public void Bind(PieceDefinition pieceDefinition)
+    public void Bind(PieceDefinition pieceDefinition, int armyIndex = -1, bool selectableForEvent = false)
     {
         _pieceDefinition = pieceDefinition;
         _definition = null;
+        _runDeckIndex = -1;
+        _armyIndex = armyIndex;
+        _isSelectableForEvent = selectableForEvent;
+        _isSelected = false;
+        RefreshSelectionVisual();
 
         if (_pieceDefinition == null)
         {
@@ -65,20 +86,44 @@ public class DeckViewCardItem : MonoBehaviour, IPointerClickHandler
         _cardView.Bind(_runtimeDisplayCard);
     }
 
+    public void SetSelected(bool value)
+    {
+        _isSelected = value;
+        RefreshSelectionVisual();
+    }
+
+    void RefreshSelectionVisual()
+    {
+        if (selectedOutline != null)
+            selectedOutline.SetActive(_isSelected);
+    }
+
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (eventData.button != PointerEventData.InputButton.Right)
-            return;
-
         if (_runtimeDisplayCard == null)
             return;
 
-        if (CardInspectModal.Instance == null)
+        if (eventData.button == PointerEventData.InputButton.Right)
         {
-            Debug.LogWarning("[DeckViewCardItem] No CardInspectModal in scene.");
+            if (CardInspectModal.Instance == null)
+            {
+                Debug.LogWarning("[DeckViewCardItem] No CardInspectModal in scene.");
+                return;
+            }
+
+            CardInspectModal.Instance.Show(_runtimeDisplayCard, statusDatabase);
             return;
         }
 
-        CardInspectModal.Instance.Show(_runtimeDisplayCard, statusDatabase);
+        if (eventData.button == PointerEventData.InputButton.Left)
+        {
+            if (!_isSelectableForEvent)
+                return;
+
+            if (DeckViewController.Instance == null)
+                return;
+
+            DeckViewController.Instance.OnDeckEventCardClicked(this);
+        }
     }
 }
