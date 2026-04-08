@@ -15,8 +15,9 @@ MonoBehaviour:
   cardId: 
   displayName: Adrenaline
   rulesText: 'Inflict 3 damage on ally: +1 AP'
-  art: {fileID: 21300000, guid: 2d7c30d1782c54745bbcd43f657299f2, type: 3}
+  art: {fileID: 21300000, guid: 0a21cb58d8d796f4fa145db4a6b0f243, type: 3}
   manaCost: 1
+  soundProfile: {fileID: 0}
   cardType: 1
   targetingMode: 2
   effects:

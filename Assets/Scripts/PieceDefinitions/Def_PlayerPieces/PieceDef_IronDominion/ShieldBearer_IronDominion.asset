@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: ShieldBearer_IronDominion
   m_EditorClassIdentifier: Assembly-CSharp::Chess.PieceDefinition
   displayName: Shield Bearer
-  icon: {fileID: 21300000, guid: 4083b256525c3c84a83ae22f8f6b7308, type: 3}
+  icon: {fileID: 21300000, guid: 6b8829f0997aca2419f67d41eb1ea87f, type: 3}
   iconPrefabOverride: {fileID: 0}
   count: 1
   soundProfile: {fileID: 0}
   Description: 'Incant: +2 <color=#2A4B8D><i>Fortify</color></i>'
-  piecePrefab: {fileID: 2971793298761893225, guid: d6227056eec2d964492b45fe9a3cd4a2, type: 3}
+  piecePrefab: {fileID: 6800806147491389230, guid: 084d0b40d44424ffda3b7db18b8f28b9, type: 3}
   maxHP: 5
   attack: 5
   forwardOnly: 0

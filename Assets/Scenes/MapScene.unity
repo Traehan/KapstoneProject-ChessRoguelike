@@ -1370,10 +1370,10 @@ MonoBehaviour:
   countText: {fileID: 2120316014}
   selectedHighlight: {fileID: 2962511}
   button: {fileID: 2018848552}
-  rookSprite: {fileID: 21300000, guid: 5040206c59ace0f4a86e405267810750, type: 3}
-  bishopSprite: {fileID: 21300000, guid: 8c11d11c34741854f89b8e769a195be0, type: 3}
-  knightSprite: {fileID: 21300000, guid: e722a972aa620584c820c75ea2905931, type: 3}
-  queenSprite: {fileID: 21300000, guid: bab0393b557d88a4fae5de7ac5d53b0f, type: 3}
+  rookSprite: {fileID: 21300000, guid: bed8c155f0df5f14a98ed7fe7ced58b6, type: 3}
+  bishopSprite: {fileID: 21300000, guid: b0ba5e9438b266541ac523281ccb4f46, type: 3}
+  knightSprite: {fileID: 21300000, guid: a851a2f0ce9f32e4eb7f2101ada5bed9, type: 3}
+  queenSprite: {fileID: 21300000, guid: 08e88d6be5fe3a84fa84181249d3bc58, type: 3}
   enabledColor: {r: 1, g: 1, b: 1, a: 1}
   disabledColor: {r: 1, g: 1, b: 1, a: 0.35}
 --- !u!114 &297004565
@@ -1999,10 +1999,10 @@ MonoBehaviour:
   countText: {fileID: 1007660949}
   selectedHighlight: {fileID: 66054049}
   button: {fileID: 487233073}
-  rookSprite: {fileID: 21300000, guid: 5040206c59ace0f4a86e405267810750, type: 3}
-  bishopSprite: {fileID: 21300000, guid: 8c11d11c34741854f89b8e769a195be0, type: 3}
-  knightSprite: {fileID: 21300000, guid: e722a972aa620584c820c75ea2905931, type: 3}
-  queenSprite: {fileID: 21300000, guid: bab0393b557d88a4fae5de7ac5d53b0f, type: 3}
+  rookSprite: {fileID: 21300000, guid: bed8c155f0df5f14a98ed7fe7ced58b6, type: 3}
+  bishopSprite: {fileID: 21300000, guid: b0ba5e9438b266541ac523281ccb4f46, type: 3}
+  knightSprite: {fileID: 21300000, guid: a851a2f0ce9f32e4eb7f2101ada5bed9, type: 3}
+  queenSprite: {fileID: 21300000, guid: 08e88d6be5fe3a84fa84181249d3bc58, type: 3}
   enabledColor: {r: 1, g: 1, b: 1, a: 1}
   disabledColor: {r: 1, g: 1, b: 1, a: 0.35}
 --- !u!114 &487233073
@@ -2266,7 +2266,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2577269123529887362, guid: 9b2d4865c628049d9a2dc20513ddd19c, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 200
+      value: 125
       objectReference: {fileID: 0}
     - target: {fileID: 2577269123529887362, guid: 9b2d4865c628049d9a2dc20513ddd19c, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -2343,6 +2343,10 @@ PrefabInstance:
     - target: {fileID: 5445252489178040530, guid: 9b2d4865c628049d9a2dc20513ddd19c, type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5445252489178040530, guid: 9b2d4865c628049d9a2dc20513ddd19c, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5445252489178040530, guid: 9b2d4865c628049d9a2dc20513ddd19c, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2510,7 +2514,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8541451916001065290, guid: 9b2d4865c628049d9a2dc20513ddd19c, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -15
+      value: -40
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4335,7 +4339,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 8c11d11c34741854f89b8e769a195be0, type: 3}
+  m_Sprite: {fileID: 21300000, guid: b0ba5e9438b266541ac523281ccb4f46, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -5376,7 +5380,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: bab0393b557d88a4fae5de7ac5d53b0f, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 08e88d6be5fe3a84fa84181249d3bc58, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -7729,7 +7733,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: e722a972aa620584c820c75ea2905931, type: 3}
+  m_Sprite: {fileID: 21300000, guid: a851a2f0ce9f32e4eb7f2101ada5bed9, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -9003,7 +9007,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5040206c59ace0f4a86e405267810750, type: 3}
+  m_Sprite: {fileID: 21300000, guid: bed8c155f0df5f14a98ed7fe7ced58b6, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -9981,10 +9985,10 @@ MonoBehaviour:
   countText: {fileID: 358958922}
   selectedHighlight: {fileID: 254761126}
   button: {fileID: 1995467700}
-  rookSprite: {fileID: 21300000, guid: 5040206c59ace0f4a86e405267810750, type: 3}
-  bishopSprite: {fileID: 21300000, guid: 8c11d11c34741854f89b8e769a195be0, type: 3}
-  knightSprite: {fileID: 21300000, guid: e722a972aa620584c820c75ea2905931, type: 3}
-  queenSprite: {fileID: 21300000, guid: bab0393b557d88a4fae5de7ac5d53b0f, type: 3}
+  rookSprite: {fileID: 21300000, guid: bed8c155f0df5f14a98ed7fe7ced58b6, type: 3}
+  bishopSprite: {fileID: 21300000, guid: b0ba5e9438b266541ac523281ccb4f46, type: 3}
+  knightSprite: {fileID: 21300000, guid: a851a2f0ce9f32e4eb7f2101ada5bed9, type: 3}
+  queenSprite: {fileID: 21300000, guid: 08e88d6be5fe3a84fa84181249d3bc58, type: 3}
   enabledColor: {r: 1, g: 1, b: 1, a: 1}
   disabledColor: {r: 1, g: 1, b: 1, a: 0.35}
 --- !u!114 &1995467700
@@ -10437,10 +10441,10 @@ MonoBehaviour:
   countText: {fileID: 1352650548}
   selectedHighlight: {fileID: 232978005}
   button: {fileID: 2018848552}
-  rookSprite: {fileID: 21300000, guid: 5040206c59ace0f4a86e405267810750, type: 3}
-  bishopSprite: {fileID: 21300000, guid: 8c11d11c34741854f89b8e769a195be0, type: 3}
-  knightSprite: {fileID: 21300000, guid: e722a972aa620584c820c75ea2905931, type: 3}
-  queenSprite: {fileID: 21300000, guid: bab0393b557d88a4fae5de7ac5d53b0f, type: 3}
+  rookSprite: {fileID: 21300000, guid: bed8c155f0df5f14a98ed7fe7ced58b6, type: 3}
+  bishopSprite: {fileID: 21300000, guid: b0ba5e9438b266541ac523281ccb4f46, type: 3}
+  knightSprite: {fileID: 21300000, guid: a851a2f0ce9f32e4eb7f2101ada5bed9, type: 3}
+  queenSprite: {fileID: 21300000, guid: 08e88d6be5fe3a84fa84181249d3bc58, type: 3}
   enabledColor: {r: 1, g: 1, b: 1, a: 1}
   disabledColor: {r: 1, g: 1, b: 1, a: 0.35}
 --- !u!222 &2018848555

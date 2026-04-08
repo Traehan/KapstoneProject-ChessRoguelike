@@ -16,8 +16,9 @@ MonoBehaviour:
   displayName: Explode.
   rulesText: 'Damage Enemy = <color=#800000>Bleed</color> \n Kill: spread half it''s
     <color=#800000>Bleed</color> around'
-  art: {fileID: 0}
+  art: {fileID: 21300000, guid: 0a21cb58d8d796f4fa145db4a6b0f243, type: 3}
   manaCost: 2
+  soundProfile: {fileID: 0}
   cardType: 1
   targetingMode: 3
   effects:

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Chess.PieceUpgradeSO
   displayName: Determination
   description: On Kill, gain +1 AP! (twice per turn)
-  icon: {fileID: 21300000, guid: 1f0631f3c7475974ba63080b7937e1c1, type: 3}
+  icon: {fileID: 21300000, guid: 69655fa593aa2044d99c1b9b4b59de97, type: 3}
   addMaxHP: 0
   addAttack: 0
   keywordAbility: {fileID: 11400000, guid: 035158c4c96b77e48a044e2a28222dcb, type: 2}

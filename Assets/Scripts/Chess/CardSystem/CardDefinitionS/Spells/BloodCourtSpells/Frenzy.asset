@@ -15,8 +15,9 @@ MonoBehaviour:
   cardId: 
   displayName: Frenzy
   rulesText: '+5 Temp. Attack on Ally \n if it Kills an Enemy this turn: +2 Mana'
-  art: {fileID: 0}
+  art: {fileID: 21300000, guid: 5e1b4a01dbe758b468387aa276526400, type: 3}
   manaCost: 2
+  soundProfile: {fileID: 0}
   cardType: 1
   targetingMode: 2
   effects:

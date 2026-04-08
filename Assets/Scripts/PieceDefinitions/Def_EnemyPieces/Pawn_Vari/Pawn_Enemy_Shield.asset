@@ -18,7 +18,7 @@ MonoBehaviour:
   count: 1
   soundProfile: {fileID: 0}
   Description: 
-  piecePrefab: {fileID: -155879537101727075, guid: f704e1f7d73fd754da52fa5432ba6796, type: 3}
+  piecePrefab: {fileID: 1720133724627200953, guid: 7495ff3a07a944163b2c3167925275ce, type: 3}
   maxHP: 10
   attack: 1
   forwardOnly: 1

@@ -16,8 +16,9 @@ MonoBehaviour:
   displayName: Pass it On
   rulesText: Transfer all <color=#2A4B8D><i>Fortify</color></i> from one piece to
     another ally
-  art: {fileID: 21300000, guid: 9c48896e74e0aef45aa78578d48b9f24, type: 3}
+  art: {fileID: 21300000, guid: 5773de7328750ad4da885e8d9d078438, type: 3}
   manaCost: 1
+  soundProfile: {fileID: 0}
   cardType: 1
   targetingMode: 11
   effects:

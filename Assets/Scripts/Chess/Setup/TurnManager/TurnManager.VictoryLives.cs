@@ -19,6 +19,8 @@ namespace Chess
 
             playerLives = Mathf.Max(0, playerLives - 1);
             UpdateLivesUI();
+            
+            GameEvents.OnPlayerLifeLost?.Invoke(playerLives);
 
             if (playerLives <= 0)
             {
