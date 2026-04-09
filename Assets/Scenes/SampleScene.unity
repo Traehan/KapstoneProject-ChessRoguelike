@@ -1270,7 +1270,7 @@ MonoBehaviour:
   m_RequiresOpaqueTextureOption: 2
   m_CameraType: 0
   m_Cameras: []
-  m_RendererIndex: -1
+  m_RendererIndex: 0
   m_VolumeLayerMask:
     serializedVersion: 2
     m_Bits: 1
@@ -1331,6 +1331,7 @@ MonoBehaviour:
   shakeTarget: {fileID: 330585546}
   lifeLossShakeDuration: 1
   lifeLossShakeMagnitude: 0.2
+  postShakeZoomOutDelay: 0.05
   dangerBorderImage: {fileID: 207772807}
   borderFlashDuration: 1
   borderMaxAlpha: 0.5
@@ -1871,6 +1872,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c580bace2cadf744e9fdfa2dba0a2d87, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Chess.TurnManager
+  playerActionDebounceSeconds: 0.08
   manaPerSpellPhase: 3
   maxMana: 5
   board: {fileID: 506964572}
@@ -2761,6 +2763,55 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 700944257}
   m_CullTransparentMesh: 1
+--- !u!1 &703609124
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 703609126}
+  - component: {fileID: 703609125}
+  m_Layer: 0
+  m_Name: GenericGlobalVolume
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &703609125
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 703609124}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Core.Runtime::UnityEngine.Rendering.Volume
+  m_IsGlobal: 1
+  priority: 0
+  blendDistance: 0
+  weight: 1
+  sharedProfile: {fileID: 11400000, guid: adcc2ac753a3f1c40ad69f0afbd823ac, type: 2}
+--- !u!4 &703609126
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 703609124}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 155.7749, y: -113.01034, z: -568.651}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &762827503
 GameObject:
   m_ObjectHideFlags: 0
@@ -4342,10 +4393,36 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Chess.BoardActionPresentation
   board: {fileID: 506964572}
-  hitImpactPrefab: {fileID: 1945818321875297007, guid: 74836a13452ddc746a20f9f6c76c4ce9, type: 3}
-  impactLifetime: 1.5
+  hitImpactPrefab: {fileID: 5707296075241192002, guid: 02ac3f271f9634f46bd9f9d8a16e565d, type: 3}
+  impactLifetime: 10
   impactOffset: {x: 0, y: 10, z: 0}
   impactParent: {fileID: 0}
+  impactTravelDuration: 0.05
+  impactTravelEase:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  defenderImpactStopOffset: 0.05
 --- !u!4 &1347230044
 Transform:
   m_ObjectHideFlags: 0
@@ -6092,3 +6169,4 @@ SceneRoots:
   - {fileID: 1486627070}
   - {fileID: 196493672}
   - {fileID: 1347230044}
+  - {fileID: 703609126}

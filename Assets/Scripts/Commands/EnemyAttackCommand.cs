@@ -29,7 +29,6 @@ namespace Chess
             if (_tm == null || _board == null) return false;
             if (_attacker == null || _defender == null) return false;
 
-            // both must still be on the expected tiles
             if (!_board.TryGetPiece(_attackerAt, out var aNow) || aNow != _attacker) return false;
             if (!_board.TryGetPiece(_defenderAt, out var dNow) || dNow != _defender) return false;
 
@@ -42,14 +41,55 @@ namespace Chess
             int dmgToDef = Mathf.Max(0, defHPBefore - _defender.currentHP);
             int dmgToAtk = Mathf.Max(0, atkHPBefore - _attacker.currentHP);
 
-            if (dmgToDef > 0) GameEvents.OnPieceDamaged?.Invoke(_defender, dmgToDef, _attacker);
-            if (dmgToAtk > 0) GameEvents.OnPieceDamaged?.Invoke(_attacker, dmgToAtk, _defender);
+            GameEvents.OnAttackResolved?.Invoke(new AttackReport
+            {
+                attacker = _attacker,
+                defender = _defender,
+                damageToDefender = dmgToDef,
+                damageToAttacker = dmgToAtk,
+                attackerDied = attackerDied,
+                defenderDied = defenderDied,
+                bypassedFortify = false,
+                attackerTeam = _attacker.Team,
+                isBossAttack = false,
+                reason = MoveReason.Forced
+            });
 
-            // Handle deaths via soft-capture
             if (defenderDied)
             {
-                _board.CapturePiece(_defender);
-                GameEvents.OnPieceCaptured?.Invoke(_defender, _attacker, _defenderAt);
+                var motion = _defender.GetComponent<PieceMotionController>();
+                Vector3 attackerWorld = _attacker.transform.position;
+                Vector3 defenderWorld = _defender.transform.position;
+                Vector3 recoilDir = defenderWorld - attackerWorld;
+                recoilDir.y = 0f;
+
+                if (motion != null)
+                {
+                    motion.PlayDeathRecoilAndDissolve(defenderWorld, recoilDir, () =>
+                    {
+                        _board.CapturePiece(_defender);
+                        GameEvents.OnPieceCaptured?.Invoke(_defender, _attacker, _defenderAt);
+
+                        if (!attackerDied)
+                        {
+                            bool moved = _board.TryMovePiece(_attacker, _defenderAt);
+                            if (moved)
+                                GameEvents.OnPieceMoved?.Invoke(_attacker, _attackerAt, _defenderAt, MoveReason.Forced);
+                        }
+                    });
+                }
+                else
+                {
+                    _board.CapturePiece(_defender);
+                    GameEvents.OnPieceCaptured?.Invoke(_defender, _attacker, _defenderAt);
+
+                    if (!attackerDied)
+                    {
+                        bool moved = _board.TryMovePiece(_attacker, _defenderAt);
+                        if (moved)
+                            GameEvents.OnPieceMoved?.Invoke(_attacker, _attackerAt, _defenderAt, MoveReason.Forced);
+                    }
+                }
             }
 
             if (attackerDied)
@@ -58,27 +98,6 @@ namespace Chess
                 GameEvents.OnPieceCaptured?.Invoke(_attacker, _defender, _attackerAt);
             }
 
-            // If defender died and attacker survived -> step into tile
-            if (defenderDied && !attackerDied)
-            {
-                // Destination should now be empty (defender captured)
-                bool moved = _board.TryMovePiece(_attacker, _defenderAt);
-                if (moved)
-                    GameEvents.OnPieceMoved?.Invoke(_attacker, _attackerAt, _defenderAt, MoveReason.Forced);
-            }
-
-            var report = new AttackReport
-            {
-                attacker = _attacker,
-                defender = _defender,
-                damageToDefender = dmgToDef,
-                damageToAttacker = dmgToAtk,
-                attackerDied = attackerDied,
-                defenderDied = defenderDied,
-                bypassedFortify = false
-            };
-
-            GameEvents.OnAttackResolved?.Invoke(report);
             return true;
         }
 

@@ -2608,7 +2608,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MapGenerator
   boardWidth: 5
-  playableRows: 8
+  playableRows: 2
   nodeVisualPrefab: {fileID: 3256242062096203640, guid: 28ca25ae6614c1c4a956f829eed3fb2b, type: 3}
   contentParent: {fileID: 518547682}
   horizontalSpacing: 125

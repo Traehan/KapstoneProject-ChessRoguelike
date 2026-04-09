@@ -268,6 +268,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5445252489178040530, guid: 9b2d4865c628049d9a2dc20513ddd19c, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5445252489178040530, guid: 9b2d4865c628049d9a2dc20513ddd19c, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -627,7 +631,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &123656035
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1942,15 +1946,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2577269123529887362, guid: 9b2d4865c628049d9a2dc20513ddd19c, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 500
+      value: 625
       objectReference: {fileID: 0}
     - target: {fileID: 2577269123529887362, guid: 9b2d4865c628049d9a2dc20513ddd19c, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 400
+      value: 325
       objectReference: {fileID: 0}
     - target: {fileID: 2577269123529887362, guid: 9b2d4865c628049d9a2dc20513ddd19c, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -250
+      value: -270
       objectReference: {fileID: 0}
     - target: {fileID: 4170874676218438109, guid: 9b2d4865c628049d9a2dc20513ddd19c, type: 3}
       propertyPath: m_Sprite
@@ -2759,15 +2763,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2577269123529887362, guid: 9b2d4865c628049d9a2dc20513ddd19c, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 500
+      value: 625
       objectReference: {fileID: 0}
     - target: {fileID: 2577269123529887362, guid: 9b2d4865c628049d9a2dc20513ddd19c, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 400
+      value: 325
       objectReference: {fileID: 0}
     - target: {fileID: 2577269123529887362, guid: 9b2d4865c628049d9a2dc20513ddd19c, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -250
+      value: -270
       objectReference: {fileID: 0}
     - target: {fileID: 4170874676218438109, guid: 9b2d4865c628049d9a2dc20513ddd19c, type: 3}
       propertyPath: m_Sprite
@@ -3872,15 +3876,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2577269123529887362, guid: 9b2d4865c628049d9a2dc20513ddd19c, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 500
+      value: 625
       objectReference: {fileID: 0}
     - target: {fileID: 2577269123529887362, guid: 9b2d4865c628049d9a2dc20513ddd19c, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 400
+      value: 325
       objectReference: {fileID: 0}
     - target: {fileID: 2577269123529887362, guid: 9b2d4865c628049d9a2dc20513ddd19c, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -250
+      value: -270
       objectReference: {fileID: 0}
     - target: {fileID: 4170874676218438109, guid: 9b2d4865c628049d9a2dc20513ddd19c, type: 3}
       propertyPath: m_Sprite

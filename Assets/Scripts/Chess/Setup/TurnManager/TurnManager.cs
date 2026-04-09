@@ -20,6 +20,9 @@ namespace Chess
     {
         public static TurnManager Instance { get; private set; }
         CommandHistory _history = new CommandHistory();
+        
+        float _nextAllowedPlayerActionTime = 0f;
+        [SerializeField, Min(0f)] float playerActionDebounceSeconds = 0.08f;
         public Team PlayerTeam => playerTeam;
         public TurnPhase Phase { get; private set; } = TurnPhase.PlayerTurn;
         //AP INFO
@@ -137,14 +140,22 @@ namespace Chess
 
         public bool TryPlayerAct_Move(Piece piece, Vector2Int dest)
         {
-            if (!ValidatePlayerMove(piece, dest)) return false;
+            if (!ValidatePlayerMove(piece, dest))
+                return false;
+
+            // Prevent duplicate click / mouse-down + mouse-up / double-dispatch attacks
+            if (Time.unscaledTime < _nextAllowedPlayerActionTime)
+                return false;
+
+            _nextAllowedPlayerActionTime = Time.unscaledTime + playerActionDebounceSeconds;
 
             var from = piece.Coord;
 
             if (!board.TryGetPiece(dest, out var target))
                 return _history.Execute(new MoveCommand(this, board, piece, from, dest, apCost: 1));
 
-            if (target.Team == piece.Team) return false;
+            if (target.Team == piece.Team)
+                return false;
 
             return _history.Execute(new AttackCommand(this, board, piece, target, from, dest, apCost: 1));
         }
