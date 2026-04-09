@@ -8,6 +8,7 @@ namespace Chess
         [Header("Catalog")]
         public string displayName = "Pawn";
         public Sprite icon;
+        public Sprite PieceInfoIcon;
         public GameObject iconPrefabOverride;
         public int count = 1;
 

@@ -14,9 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Chess.PieceDefinition
   displayName: War Chief
   icon: {fileID: 21300000, guid: d7f15048149b46c4b92059b943cc8b27, type: 3}
+  PieceInfoIcon: {fileID: 21300000, guid: 4949a9b022d0e2c43af96f0b373a7941, type: 3}
   iconPrefabOverride: {fileID: 0}
   count: 1
   soundProfile: {fileID: 0}
+  attackImpactPrefab: {fileID: 0}
   Description: 'Rally: +5 <color=#2A4B8D><i>Fortify</color></i> & +1<color=#FF0000><i>Retaliate</color></i>
     to Unit'
   piecePrefab: {fileID: 7104712197079646426, guid: 189dc4e92627f44dbb9627e33c7ea94e, type: 3}
