@@ -21,7 +21,7 @@ namespace Chess
                 gameOverPanel.SetActive(true);
 
             if (gameOverText != null)
-                gameOverText.text = "GAME OVER";
+                gameOverText.text = "OVERWHELMED";
         }
     }
 }
