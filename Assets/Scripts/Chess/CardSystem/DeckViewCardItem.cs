@@ -14,8 +14,6 @@ public class DeckViewCardItem : MonoBehaviour, IPointerClickHandler
     PieceDefinition _pieceDefinition;
     Card.Card _runtimeDisplayCard;
     CardView _cardView;
-    
-    
 
     int _runDeckIndex = -1;
     int _armyIndex = -1;
@@ -27,7 +25,6 @@ public class DeckViewCardItem : MonoBehaviour, IPointerClickHandler
     public Card.Card RuntimeDisplayCard => _runtimeDisplayCard;
     public int RunDeckIndex => _runDeckIndex;
     public bool IsSelected => _isSelected;
-    
     public int ArmyIndex => _armyIndex;
 
     public void Bind(CardDefinitionSO definition, int runDeckIndex = -1, bool selectableForEvent = false)
@@ -35,6 +32,7 @@ public class DeckViewCardItem : MonoBehaviour, IPointerClickHandler
         _definition = definition;
         _pieceDefinition = null;
         _runDeckIndex = runDeckIndex;
+        _armyIndex = -1;
         _isSelectableForEvent = selectableForEvent;
         _isSelected = false;
         RefreshSelectionVisual();
@@ -66,6 +64,26 @@ public class DeckViewCardItem : MonoBehaviour, IPointerClickHandler
         }
 
         _runtimeDisplayCard = new Card.Card(_pieceDefinition, manaCost: 1);
+        BindToView();
+    }
+
+    public void Bind(Card.Card runtimeCard, bool selectableForEvent = false)
+    {
+        _runtimeDisplayCard = runtimeCard;
+        _definition = runtimeCard != null ? runtimeCard.Definition : null;
+        _pieceDefinition = runtimeCard != null ? runtimeCard.GetSummonPieceDefinition() : null;
+        _runDeckIndex = -1;
+        _armyIndex = -1;
+        _isSelectableForEvent = selectableForEvent;
+        _isSelected = false;
+        RefreshSelectionVisual();
+
+        if (_runtimeDisplayCard == null)
+        {
+            Debug.LogWarning("[DeckViewCardItem] Bind(Card) called with null runtimeCard.");
+            return;
+        }
+
         BindToView();
     }
 

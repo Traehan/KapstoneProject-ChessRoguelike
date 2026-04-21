@@ -50,7 +50,7 @@ namespace Chess
                 if (runtime != null)
                     runtime.Notify_PieceMoved(from, to);
 
-                PaintAbilityHints();
+                // PaintAbilityHints();
             }
 
             if (Phase == TurnPhase.EnemyTurn && piece.Team == enemyTeam && reason == MoveReason.Forced)
@@ -72,7 +72,7 @@ namespace Chess
             }
 
             RecomputeEnemyIntentsAndPaint();
-            PaintAbilityHints();
+            // PaintAbilityHints();
         }
 
         void HandlePieceCaptured(Piece victim, Piece by, Vector2Int at)
@@ -115,7 +115,7 @@ namespace Chess
             }
 
             RecomputeEnemyIntentsAndPaint();
-            PaintAbilityHints();
+            // PaintAbilityHints();
         }
 
         void HandlePieceDamaged(Piece target, int amount, Piece source)
@@ -137,7 +137,7 @@ namespace Chess
                 runtime.Notify_SpellCardPlayed(card, report);
             }
 
-            PaintAbilityHints();
+            // PaintAbilityHints();
         }
 
         void HandleUnitCardPlayed(Card.Card card, UnitCardPlayReport report)
@@ -155,7 +155,7 @@ namespace Chess
                 runtime.Notify_UnitCardPlayed(card, report);
             }
 
-            PaintAbilityHints();
+            // PaintAbilityHints();
         }
 
         void HandleCommandUndone(IGameCommand cmd) { }

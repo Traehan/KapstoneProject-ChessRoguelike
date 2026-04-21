@@ -10,6 +10,13 @@ public class DeckViewController : MonoBehaviour
 {
     public static DeckViewController Instance { get; private set; }
 
+    enum RuntimeBattleViewMode
+    {
+        None = 0,
+        BattleDrawPile = 1,
+        BattleDiscardPile = 2
+    }
+
     [Header("Panel")]
     [SerializeField] GameObject rootPanel;
 
@@ -19,7 +26,7 @@ public class DeckViewController : MonoBehaviour
     [SerializeField] TMP_Text instructionText;
     [SerializeField] Transform gridParent;
     [SerializeField] GameObject cardItemPrefab;
-    
+
     Action<PieceDefinition> _onArmyPieceConfirmed;
     Action _onArmySelectionCancelled;
     readonly List<PieceDefinition> _currentArmySelectionSource = new();
@@ -33,6 +40,9 @@ public class DeckViewController : MonoBehaviour
 
     DeckEditMode _currentMode = DeckEditMode.None;
     Action _onEventFinished;
+
+    RuntimeBattleViewMode _runtimeBattleViewMode = RuntimeBattleViewMode.None;
+    string _lastRuntimeTitle = "";
 
     void Awake()
     {
@@ -60,8 +70,33 @@ public class DeckViewController : MonoBehaviour
         }
     }
 
+    void OnEnable()
+    {
+        GameEvents.OnCardDrawn += HandleBattlePileChanged;
+        GameEvents.OnCardDiscarded += HandleBattlePileChanged;
+        GameEvents.OnCardAddedToHand += HandleBattlePileChanged;
+        GameEvents.OnCardRemovedFromHand += HandleBattlePileChanged;
+        GameEvents.OnCardReturnedToHand += HandleBattlePileChanged;
+        GameEvents.OnCardExhausted += HandleBattlePileChanged;
+        GameEvents.OnCardPlayed += HandleBattlePileChanged;
+    }
+
+    void OnDisable()
+    {
+        GameEvents.OnCardDrawn -= HandleBattlePileChanged;
+        GameEvents.OnCardDiscarded -= HandleBattlePileChanged;
+        GameEvents.OnCardAddedToHand -= HandleBattlePileChanged;
+        GameEvents.OnCardRemovedFromHand -= HandleBattlePileChanged;
+        GameEvents.OnCardReturnedToHand -= HandleBattlePileChanged;
+        GameEvents.OnCardExhausted -= HandleBattlePileChanged;
+        GameEvents.OnCardPlayed -= HandleBattlePileChanged;
+    }
+
     public void OpenRunDeckView(string title = "Deck")
     {
+        _runtimeBattleViewMode = RuntimeBattleViewMode.None;
+        _lastRuntimeTitle = "";
+
         _currentMode = DeckEditMode.None;
         _onEventFinished = null;
         _selectedItems.Clear();
@@ -77,8 +112,51 @@ public class DeckViewController : MonoBehaviour
             rootPanel.SetActive(true);
     }
 
+    public void OpenBattleDeckView(string title = "Deck")
+    {
+        _runtimeBattleViewMode = RuntimeBattleViewMode.BattleDrawPile;
+        _lastRuntimeTitle = title;
+
+        _currentMode = DeckEditMode.None;
+        _onEventFinished = null;
+        _selectedItems.Clear();
+
+        RebuildBattlePileView(title, useDrawPile: true);
+
+        if (instructionText != null)
+            instructionText.text = "";
+
+        SetEventButtonsVisible(false);
+
+        if (rootPanel != null)
+            rootPanel.SetActive(true);
+    }
+
+    public void OpenBattleDiscardView(string title = "Discard")
+    {
+        _runtimeBattleViewMode = RuntimeBattleViewMode.BattleDiscardPile;
+        _lastRuntimeTitle = title;
+
+        _currentMode = DeckEditMode.None;
+        _onEventFinished = null;
+        _selectedItems.Clear();
+
+        RebuildBattlePileView(title, useDrawPile: false);
+
+        if (instructionText != null)
+            instructionText.text = "";
+
+        SetEventButtonsVisible(false);
+
+        if (rootPanel != null)
+            rootPanel.SetActive(true);
+    }
+
     public void OpenRemoveTwoMode(Action onFinished = null)
     {
+        _runtimeBattleViewMode = RuntimeBattleViewMode.None;
+        _lastRuntimeTitle = "";
+
         _currentMode = DeckEditMode.RemoveTwo;
         _onEventFinished = onFinished;
         _selectedItems.Clear();
@@ -94,7 +172,7 @@ public class DeckViewController : MonoBehaviour
         if (rootPanel != null)
             rootPanel.SetActive(true);
     }
-    
+
     public void OpenArmyUpgradeSelectionMode(
         List<PieceDefinition> selectablePieces,
         string title,
@@ -102,6 +180,9 @@ public class DeckViewController : MonoBehaviour
         Action<PieceDefinition> onConfirm,
         Action onCancel = null)
     {
+        _runtimeBattleViewMode = RuntimeBattleViewMode.None;
+        _lastRuntimeTitle = "";
+
         _currentMode = DeckEditMode.SelectOneArmyPieceForUpgrade;
         _onEventFinished = null;
         _onArmyPieceConfirmed = onConfirm;
@@ -126,6 +207,9 @@ public class DeckViewController : MonoBehaviour
 
     public void OpenDuplicateOneMode(Action onFinished = null)
     {
+        _runtimeBattleViewMode = RuntimeBattleViewMode.None;
+        _lastRuntimeTitle = "";
+
         _currentMode = DeckEditMode.DuplicateOne;
         _onEventFinished = onFinished;
         _selectedItems.Clear();
@@ -154,6 +238,9 @@ public class DeckViewController : MonoBehaviour
         _onArmySelectionCancelled = null;
         _currentArmySelectionSource.Clear();
 
+        _runtimeBattleViewMode = RuntimeBattleViewMode.None;
+        _lastRuntimeTitle = "";
+
         if (rootPanel != null)
             rootPanel.SetActive(false);
     }
@@ -167,6 +254,36 @@ public class DeckViewController : MonoBehaviour
         }
 
         OpenRunDeckView(title);
+    }
+
+    public void ToggleBattleDeckView(string title = "Deck")
+    {
+        bool showingSameView = rootPanel != null
+                               && rootPanel.activeSelf
+                               && _runtimeBattleViewMode == RuntimeBattleViewMode.BattleDrawPile;
+
+        if (showingSameView)
+        {
+            Close();
+            return;
+        }
+
+        OpenBattleDeckView(title);
+    }
+
+    public void ToggleBattleDiscardView(string title = "Discard")
+    {
+        bool showingSameView = rootPanel != null
+                               && rootPanel.activeSelf
+                               && _runtimeBattleViewMode == RuntimeBattleViewMode.BattleDiscardPile;
+
+        if (showingSameView)
+        {
+            Close();
+            return;
+        }
+
+        OpenBattleDiscardView(title);
     }
 
     public void OnDeckEventCardClicked(DeckViewCardItem clickedItem)
@@ -362,7 +479,54 @@ public class DeckViewController : MonoBehaviour
         if (countText != null)
             countText.text = $"{totalCount} Cards";
     }
-    
+
+    void RebuildBattlePileView(string title, bool useDrawPile)
+    {
+        ClearGrid();
+
+        if (headerText != null)
+            headerText.text = title;
+
+        if (gridParent == null || cardItemPrefab == null)
+        {
+            Debug.LogWarning("[DeckViewController] Missing gridParent or cardItemPrefab.");
+            return;
+        }
+
+        var deckManager = FindObjectOfType<DeckManager>();
+        if (deckManager == null)
+        {
+            Debug.LogWarning("[DeckViewController] No DeckManager found in scene.");
+            if (countText != null)
+                countText.text = "0 Cards";
+            return;
+        }
+
+        List<Card.Card> source = useDrawPile ? deckManager.DrawPile : deckManager.Discard;
+
+        int totalCount = 0;
+
+        for (int i = 0; i < source.Count; i++)
+        {
+            var runtimeCard = source[i];
+            if (runtimeCard == null)
+                continue;
+
+            var go = Instantiate(cardItemPrefab, gridParent);
+            _spawned.Add(go);
+
+            var item = go.GetComponent<DeckViewCardItem>();
+            if (item == null)
+                item = go.AddComponent<DeckViewCardItem>();
+
+            item.Bind(runtimeCard);
+            totalCount++;
+        }
+
+        if (countText != null)
+            countText.text = $"{totalCount} Cards";
+    }
+
     void RebuildArmyOnlyView(string title, bool selectableForEvent)
     {
         ClearGrid();
@@ -437,6 +601,26 @@ public class DeckViewController : MonoBehaviour
 
         if (countText != null)
             countText.text = $"{totalCount} Cards";
+    }
+
+    void HandleBattlePileChanged(Card.Card _)
+    {
+        if (rootPanel == null || !rootPanel.activeSelf)
+            return;
+
+        if (_currentMode != DeckEditMode.None)
+            return;
+
+        switch (_runtimeBattleViewMode)
+        {
+            case RuntimeBattleViewMode.BattleDrawPile:
+                RebuildBattlePileView(string.IsNullOrWhiteSpace(_lastRuntimeTitle) ? "Deck" : _lastRuntimeTitle, useDrawPile: true);
+                break;
+
+            case RuntimeBattleViewMode.BattleDiscardPile:
+                RebuildBattlePileView(string.IsNullOrWhiteSpace(_lastRuntimeTitle) ? "Discard" : _lastRuntimeTitle, useDrawPile: false);
+                break;
+        }
     }
 
     void ClearGrid()

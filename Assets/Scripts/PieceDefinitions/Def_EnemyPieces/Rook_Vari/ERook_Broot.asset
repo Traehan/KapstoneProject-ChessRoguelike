@@ -14,9 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Chess.PieceDefinition
   displayName: Broot Rook
   icon: {fileID: 21300000, guid: 71a9f62cf983a024ebc83c86befdbf39, type: 3}
+  PieceInfoIcon: {fileID: 21300000, guid: 71a9f62cf983a024ebc83c86befdbf39, type: 3}
   iconPrefabOverride: {fileID: 0}
   count: 1
   soundProfile: {fileID: 0}
+  attackImpactPrefab: {fileID: 5766537038910437382, guid: b54c41381c8269849a3b27f6231007a1, type: 3}
   Description: 
   piecePrefab: {fileID: 39890954595483458, guid: a415376aaacd04066aa73fa4220d88d7, type: 3}
   maxHP: 15

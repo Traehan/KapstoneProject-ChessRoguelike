@@ -50,7 +50,7 @@ namespace Chess
             foreach (var a in _abilities) a?.OnPieceMoved(_clan, p);
         }
 
-        // ✅ NEW: forward OnAttackResolved → abilities
+        // NEW: forward OnAttackResolved → abilities
         void NotifyAbilitiesAttackResolved(AttackReport r)
         {
             if (_abilities == null) return;

@@ -151,6 +151,8 @@ namespace Chess
                     var rt = p.GetComponent<PieceRuntime>();
                     if (rt == null) rt = p.gameObject.AddComponent<PieceRuntime>();
                     rt.Init(p, board, tm);
+                    
+                    GameEvents.OnPieceSpawned?.Invoke(p, coord);
 
                     if (!p.TryGetComponent<IEnemyBehavior>(out _))
                         EnemyBehaviorFactory.EnsureBehaviorFor(p as Piece, difficultyTier);

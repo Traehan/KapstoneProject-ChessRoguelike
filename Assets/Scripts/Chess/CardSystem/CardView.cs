@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Reflection;
 using TMPro;
 using UnityEngine;
@@ -27,6 +28,10 @@ public class CardView : MonoBehaviour
     [Header("Spell UI")]
     public TMP_Text rulesText;
     public Image SpellIconImage;
+
+    [Header("Upgrade Slots")]
+    [SerializeField] Image upgradeSlot1Image;
+    [SerializeField] Image upgradeSlot2Image;
 
     [Header("Spell Defaults")]
     public Sprite defaultSpellCardBackground;
@@ -61,8 +66,8 @@ public class CardView : MonoBehaviour
         if (SpellTargetingController.Instance != null)
             SpellTargetingController.Instance.OnSpellTargetingStateChanged -= HandleSpellTargetingStateChanged;
     }
-    
-    public void BindDefinition(Card.CardDefinitionSO definition) //used for deckview feature
+
+    public void Bind(Card.CardDefinitionSO definition)
     {
         if (definition == null)
         {
@@ -107,24 +112,24 @@ public class CardView : MonoBehaviour
         else
             BindUnitCard(card);
 
-        // Whenever a card is rebound/reused by the hand UI, reset it visually.
         SetSpellTargetingActiveImmediate(false);
     }
 
     void BindUnitCard(Card.Card card)
     {
-        var unitPiece = card.GetSummonPieceDefinition();
+        var baseUnitPiece = card.GetSummonPieceDefinition();
+        var displayUnitPiece = ResolveDisplayUnitPiece(card, baseUnitPiece);
 
         if (artImage != null)
         {
             artImage.sprite = card.Art;
             artImage.enabled = (artImage.sprite != null);
         }
-        
+
         if (Description != null)
         {
             Description.gameObject.SetActive(true);
-            Description.text = unitPiece != null ? unitPiece.Description : "";
+            Description.text = displayUnitPiece != null ? displayUnitPiece.Description : "";
         }
 
         if (SpellIconImage != null)
@@ -145,11 +150,11 @@ public class CardView : MonoBehaviour
         if (attackStat != null) attackStat.gameObject.SetActive(true);
         if (moveStat != null) moveStat.gameObject.SetActive(true);
 
-        if (unitPiece != null)
+        if (displayUnitPiece != null)
         {
-            int hp = ReadInt(unitPiece, "maxHP", "MaxHP", "health", "Health", "hp", "HP", "maxHealth", "MaxHealth", "baseHealth", "BaseHealth");
-            int atk = ReadInt(unitPiece, "attack", "Attack", "damage", "Damage", "baseAttack", "BaseAttack");
-            int mov = ReadInt(unitPiece, "maxStride", "MaxStride", "stride", "Stride", "movement", "Movement", "move", "Move");
+            int hp = ReadInt(displayUnitPiece, "maxHP", "MaxHP", "health", "Health", "hp", "HP", "maxHealth", "MaxHealth", "baseHealth", "BaseHealth");
+            int atk = ReadInt(displayUnitPiece, "attack", "Attack", "damage", "Damage", "baseAttack", "BaseAttack");
+            int mov = ReadInt(displayUnitPiece, "maxStride", "MaxStride", "stride", "Stride", "movement", "Movement", "move", "Move");
 
             if (healthStat != null) healthStat.text = hp.ToString();
             if (attackStat != null) attackStat.text = atk.ToString();
@@ -161,6 +166,8 @@ public class CardView : MonoBehaviour
             if (attackStat != null) attackStat.text = "-";
             if (moveStat != null) moveStat.text = "-";
         }
+
+        RefreshUpgradeIcons(displayUnitPiece);
     }
 
     void BindSpellCard(Card.Card card)
@@ -183,7 +190,6 @@ public class CardView : MonoBehaviour
             rulesText.text = card.RulesText;
         }
 
-        // ADD THIS
         if (Description != null)
         {
             Description.text = "";
@@ -212,6 +218,62 @@ public class CardView : MonoBehaviour
         if (attackImage != null) attackImage.gameObject.SetActive(false);
         if (moveImage != null) moveImage.gameObject.SetActive(false);
         if (StatsPanel != null) StatsPanel.gameObject.SetActive(false);
+
+        RefreshUpgradeIcons(null);
+    }
+
+    PieceDefinition ResolveDisplayUnitPiece(Card.Card card, PieceDefinition fallbackPiece)
+    {
+        if (fallbackPiece == null)
+            return null;
+
+        if (GameSession.I == null)
+            return fallbackPiece;
+
+        // If this card came from a unit card definition, resolve it to the matching runtime army piece.
+        var resolvedFromCardDef = GameSession.I.ResolveDisplayPieceForCard(card.Definition);
+        if (resolvedFromCardDef != null)
+            return resolvedFromCardDef;
+
+        // If this card was built directly from a runtime piece (army/deck view cases), keep it.
+        return fallbackPiece;
+    }
+
+    void RefreshUpgradeIcons(PieceDefinition displayPiece)
+    {
+        IReadOnlyList<PieceUpgradeSO> upgrades = null;
+
+        if (displayPiece != null && GameSession.I != null)
+            upgrades = GameSession.I.GetQueuedUpgradesFor(displayPiece);
+
+        SetUpgradeSlotVisual(upgradeSlot1Image, upgrades, 0);
+        SetUpgradeSlotVisual(upgradeSlot2Image, upgrades, 1);
+    }
+
+    void SetUpgradeSlotVisual(Image targetImage, IReadOnlyList<PieceUpgradeSO> upgrades, int slotIndex)
+    {
+        if (targetImage == null)
+            return;
+
+        PieceUpgradeSO upgrade = null;
+
+        if (upgrades != null && slotIndex >= 0 && slotIndex < upgrades.Count)
+            upgrade = upgrades[slotIndex];
+
+        bool hasUpgradeIcon = upgrade != null && upgrade.icon != null;
+
+        targetImage.gameObject.SetActive(hasUpgradeIcon);
+
+        if (hasUpgradeIcon)
+        {
+            targetImage.sprite = upgrade.icon;
+            targetImage.enabled = true;
+        }
+        else
+        {
+            targetImage.sprite = null;
+            targetImage.enabled = false;
+        }
     }
 
     static int ReadInt(object obj, params string[] names)
@@ -274,11 +336,9 @@ public class CardView : MonoBehaviour
         if (!_basePosInitialized)
             CacheBasePosition();
 
-        // Do nothing if state is already correct
         if (_isSpellTargetingActive == active)
             return;
 
-        // Only capture the base position when lifting from the normal hand position
         if (active && !_isSpellTargetingActive)
             _baseAnchoredPos = _rect.anchoredPosition;
 

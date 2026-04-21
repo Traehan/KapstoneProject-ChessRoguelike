@@ -70,6 +70,7 @@ namespace Chess
 
         [Header("Card System")]
         [SerializeField] private DeckManager deckManager;
+        [SerializeField] HandPanel handPanel;
 
         readonly List<Vector2Int> _enemyIntents = new();
         readonly List<Vector2Int> _intentBuf = new();
@@ -133,7 +134,7 @@ namespace Chess
             NotifyAbilitiesEndPlayerTurn();
             NotifyAllPlayerPieceRuntimes_EndTurn();
 
-            PaintAbilityHints();
+            // PaintAbilityHints();
             StatusTickSystem.TickEndOfPlayerTurn(board);
             StartCoroutine(EnemyTurnRoutine());
         }
@@ -192,7 +193,7 @@ namespace Chess
 
         public void RepaintIronMarchHints()
         {
-            PaintAbilityHints();
+            // PaintAbilityHints();
         }
 
         void Awake()

@@ -18,7 +18,7 @@ MonoBehaviour:
   iconPrefabOverride: {fileID: 0}
   count: 1
   soundProfile: {fileID: 0}
-  attackImpactPrefab: {fileID: 0}
+  attackImpactPrefab: {fileID: 1972357286798797734, guid: d504ed4f35b5e4d68b711c40232c28b4, type: 3}
   Description: 'Rally: +5 <color=#2A4B8D><i>Fortify</color></i> & +1<color=#FF0000><i>Retaliate</color></i>
     to Unit'
   piecePrefab: {fileID: 7104712197079646426, guid: 189dc4e92627f44dbb9627e33c7ea94e, type: 3}

@@ -16,14 +16,16 @@ namespace Chess
         void BeginPreparation()
         {
             SetPhase(TurnPhase.Preparation);
+            if (GameSession.I != null && deckManager != null)
+                deckManager.InitializeBattleFromCardDefinitions(GameSession.I.CurrentRunDeck);
         }
         
         public void BeginEncounterFromPreparation()
         {
             if (Phase != TurnPhase.Preparation) return;
 
-            if (GameSession.I != null && deckManager != null)
-                deckManager.InitializeBattleFromCardDefinitions(GameSession.I.CurrentRunDeck);
+            // if (GameSession.I != null && deckManager != null)
+            //     deckManager.InitializeBattleFromCardDefinitions(GameSession.I.CurrentRunDeck);
             
             EnsureQueenLeaderBound();
             BeginSpellPhase(); 
@@ -34,34 +36,28 @@ namespace Chess
             EnsureQueenLeaderBound();
             SetPhase(TurnPhase.SpellPhase);
 
-            // Mana reset for this phase
+            if (handPanel != null)
+                handPanel.gameObject.SetActive(true);
+
             RefillManaForSpellPhase();
 
-            // First draw to normal hand size
             deckManager?.DrawUpTo(4);
 
-            // Then apply any queued bonus draws from abilities
             int queuedDraws = ConsumeQueuedNextSpellPhaseDraws();
             if (queuedDraws > 0 && deckManager != null)
                 deckManager.Draw(queuedDraws);
-
-            var hand = FindObjectOfType<HandPanel>();
-            if (hand != null)
-            {
-                hand.gameObject.SetActive(true);
-                hand.RebuildHand();
-            }
         }
-        
+
         public void EndSpellPhaseButton()
         {
             if (Phase != TurnPhase.SpellPhase) return;
 
-            // Hide hand while in PlayerTurn (movement/attacks)
-            var hand = FindObjectOfType<HandPanel>();
-            if (hand != null) hand.gameObject.SetActive(false);
+            deckManager?.DiscardEndOfTurn();
 
-            BeginPlayerTurn(); 
+            if (handPanel != null)
+                handPanel.PlayBulkDiscardSequenceAndHide();
+
+            BeginPlayerTurn();
         }
 
         void BeginPlayerTurn()
@@ -84,7 +80,7 @@ namespace Chess
             NotifyAbilitiesBeginPlayerTurn();
             NotifyAllPlayerPieceRuntimes_BeginTurn();
 
-            PaintAbilityHints();
+            // PaintAbilityHints();
 
             CaptureTurnStartSnapshot();
         }
@@ -143,9 +139,7 @@ namespace Chess
                 if (atk.Execute())
                     GameEvents.OnCommandExecuted?.Invoke(atk);
             }
-
-
-
+            
             SetPhase(TurnPhase.Cleanup);
 
             if (postEnemyTurnPause > 0f)

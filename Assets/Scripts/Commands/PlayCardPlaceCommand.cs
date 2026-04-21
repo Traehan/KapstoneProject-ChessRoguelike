@@ -65,6 +65,7 @@ namespace Chess
                 _tm.RefundMana(_card.ManaCost);
                 return false;
             }
+            
 
             if (!_deck.RemoveFromHand(_card))
             {
@@ -72,8 +73,7 @@ namespace Chess
                 _tm.RefundMana(_card.ManaCost);
                 return false;
             }
-
-            GameEvents.OnCardRemovedFromHand?.Invoke(_card);
+            
 
             _deck.MoveToPlayedThisBattle(_card);
 
@@ -90,6 +90,7 @@ namespace Chess
 
             GameEvents.OnCardPlayed?.Invoke(_card);
             GameEvents.RaiseUnitCardPlayed(_card, report);
+            
 
             return true;
         }

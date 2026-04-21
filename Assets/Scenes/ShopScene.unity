@@ -6404,7 +6404,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 20}
+  m_SizeDelta: {x: 0, y: 75}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1563164636
 MonoBehaviour:
@@ -7194,8 +7194,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8cbac4fb6c98978439998c0bcdd79e05, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DeckViewOpenButton
+  viewType: 0
   panelTitle: Deck
-  MovementPanel: {fileID: 0}
+  movementPanel: {fileID: 0}
+  buttonText: {fileID: 0}
+  showCountOnButton: 1
 --- !u!114 &1834917508
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8654,8 +8657,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8cbac4fb6c98978439998c0bcdd79e05, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DeckViewOpenButton
+  viewType: 0
   panelTitle: Deck
-  MovementPanel: {fileID: 0}
+  movementPanel: {fileID: 0}
+  buttonText: {fileID: 0}
+  showCountOnButton: 1
 --- !u!114 &2137682648
 MonoBehaviour:
   m_ObjectHideFlags: 0

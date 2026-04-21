@@ -14,9 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Chess.PieceDefinition
   displayName: Chaser
   icon: {fileID: 21300000, guid: 71a9f62cf983a024ebc83c86befdbf39, type: 3}
+  PieceInfoIcon: {fileID: 21300000, guid: 71a9f62cf983a024ebc83c86befdbf39, type: 3}
   iconPrefabOverride: {fileID: 0}
   count: 1
   soundProfile: {fileID: 0}
+  attackImpactPrefab: {fileID: 5766537038910437382, guid: b54c41381c8269849a3b27f6231007a1, type: 3}
   Description: 
   piecePrefab: {fileID: 6324373625646752519, guid: 90ff20be4e06b4f51bcf13fd8ae3ac83, type: 3}
   maxHP: 5

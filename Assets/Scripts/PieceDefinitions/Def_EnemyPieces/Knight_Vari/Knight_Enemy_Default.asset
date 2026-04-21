@@ -14,9 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Chess.PieceDefinition
   displayName: Dark Knight
   icon: {fileID: 21300000, guid: 90b578f4b1a158641b7e7767002f8d03, type: 3}
+  PieceInfoIcon: {fileID: 21300000, guid: 90b578f4b1a158641b7e7767002f8d03, type: 3}
   iconPrefabOverride: {fileID: 0}
   count: 1
   soundProfile: {fileID: 0}
+  attackImpactPrefab: {fileID: 1972357286798797734, guid: d504ed4f35b5e4d68b711c40232c28b4, type: 3}
   Description: 
   piecePrefab: {fileID: 446473603643015032, guid: 73dfafb8fce2e42858c1a5eec56d976a, type: 3}
   maxHP: 5

@@ -18,7 +18,7 @@ MonoBehaviour:
   iconPrefabOverride: {fileID: 0}
   count: 1
   soundProfile: {fileID: 0}
-  attackImpactPrefab: {fileID: 0}
+  attackImpactPrefab: {fileID: 7191386093512644187, guid: ef4e48c1b81a244da954999fc5b79266, type: 3}
   Description: 'Incant: +2 <color=#2A4B8D><i>Fortify</color></i>'
   piecePrefab: {fileID: 6800806147491389230, guid: 084d0b40d44424ffda3b7db18b8f28b9, type: 3}
   maxHP: 5

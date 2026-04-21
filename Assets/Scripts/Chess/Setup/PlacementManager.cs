@@ -69,6 +69,8 @@ public class PlacementManager : MonoBehaviour
             runtime = placed.gameObject.AddComponent<PieceRuntime>();
 
         runtime.Init(placed, board, turnManager);
+        
+        GameEvents.OnPieceSpawned?.Invoke(placed, c);
 
         _occupied.Add(c);
         _placed.Add(new PlacedRecord

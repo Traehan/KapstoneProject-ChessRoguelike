@@ -14,9 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Chess.PieceDefinition
   displayName: Bishoot
   icon: {fileID: 21300000, guid: 61d112fd68d665741918a4849580adea, type: 3}
+  PieceInfoIcon: {fileID: 21300000, guid: 61d112fd68d665741918a4849580adea, type: 3}
   iconPrefabOverride: {fileID: 0}
   count: 1
   soundProfile: {fileID: 0}
+  attackImpactPrefab: {fileID: 5766537038910437382, guid: b54c41381c8269849a3b27f6231007a1, type: 3}
   Description: 
   piecePrefab: {fileID: -4136598586594201849, guid: f99eb4e53858a4098a5825c40f1784ca, type: 3}
   maxHP: 5
