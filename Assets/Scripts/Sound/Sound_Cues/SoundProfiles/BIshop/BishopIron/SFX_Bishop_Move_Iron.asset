@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SFX_Bishop_Move_Iron
   m_EditorClassIdentifier: Assembly-CSharp::Chess.SoundCueSO
   clips:
-  - {fileID: 8300000, guid: 5d957cfa929864ebfaaa346e85289ae0, type: 3}
+  - {fileID: 8300000, guid: 17c77c31b6b6948d59c2793ebcaebec0, type: 3}
   volumeMin: 1
   volumeMax: 1
   pitchMin: 1
