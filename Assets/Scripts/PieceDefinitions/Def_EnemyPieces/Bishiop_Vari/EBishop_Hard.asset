@@ -14,11 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Chess.PieceDefinition
   displayName: Bishop hard
   icon: {fileID: 0}
+  PieceInfoIcon: {fileID: 21300000, guid: 61d112fd68d665741918a4849580adea, type: 3}
   iconPrefabOverride: {fileID: 0}
   count: 1
-  piecePrefab: {fileID: 8784958972727818190, guid: 400b2ccf1a7f8194bbc873014a00b3a9, type: 3}
-  maxHP: 2
-  attack: 2
-  forwardOnly: 0
+  soundProfile: {fileID: 0}
+  attackImpactPrefab: {fileID: 5766537038910437382, guid: b54c41381c8269849a3b27f6231007a1, type: 3}
+  Description: 
+  piecePrefab: {fileID: 301013434826175051, guid: de1002a7a7c87460ca247bcd4e5e0a7c, type: 3}
+  maxHP: 15
+  attack: 5
+  forwardOnly: 1
   passThroughFriendlies: 0
-  maxStride: 8
+  maxStride: 3
+  shopPrice: 100

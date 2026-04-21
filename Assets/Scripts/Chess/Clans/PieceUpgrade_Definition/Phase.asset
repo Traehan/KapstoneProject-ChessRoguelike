@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Chess.PhaseUpgradeSO
   displayName: Phase
   description: Allows piece to pass/attack through allies!
-  icon: {fileID: 21300000, guid: 1a70f1d09aee3484eb26b77d1c09d5fe, type: 3}
+  icon: {fileID: 21300000, guid: 93955a12c0c4dc544ba6cfd8a1df14e1, type: 3}
   addMaxHP: 0
   addAttack: 0
   keywordAbility: {fileID: 0}

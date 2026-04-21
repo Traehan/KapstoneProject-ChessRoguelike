@@ -14,9 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Chess.PieceDefinition
   displayName: Pawn
   icon: {fileID: 21300000, guid: 2df440b258378d745a4e9c943e39aed1, type: 3}
+  PieceInfoIcon: {fileID: 21300000, guid: 2df440b258378d745a4e9c943e39aed1, type: 3}
   iconPrefabOverride: {fileID: 0}
   count: 1
   soundProfile: {fileID: 0}
+  attackImpactPrefab: {fileID: 5145838664990344076, guid: 3d7c50c955b504f81b049c25a651c424, type: 3}
   Description: 
   piecePrefab: {fileID: -155879537101727075, guid: a67a30024fa4e44078a8ea681ac3170d, type: 3}
   maxHP: 5

@@ -10,6 +10,10 @@ namespace Chess
         public static System.Action<Team> OnTurnEnded;
         public static System.Action<TurnPhase> OnPhaseChanged;
         public static System.Action<Piece> OnPieceStatsChanged;
+        public static System.Action<Piece> OnPositiveStatChanged;
+      
+        // Player pressure / danger
+        public static System.Action<int> OnPlayerLifeLost; // remaining lives
 
         // Commands
         public static System.Action<IGameCommand> OnCommandExecuted;

@@ -85,7 +85,7 @@ namespace Chess
             }
 
             _removedFromHand = true;
-            GameEvents.OnCardRemovedFromHand?.Invoke(_card);
+            
 
             _deck.MoveToPlayedThisBattle(_card);
             _movedToPlayed = true;

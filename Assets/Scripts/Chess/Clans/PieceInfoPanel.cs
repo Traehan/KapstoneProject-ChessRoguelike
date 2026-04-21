@@ -76,7 +76,7 @@ public class PieceInfoPanel : MonoBehaviour
         {
             if (def != null && def.icon != null)
             {
-                pieceImage.sprite = def.icon;
+                pieceImage.sprite = def.PieceInfoIcon;
                 pieceImage.enabled = true;
             }
             else

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ec08b46787a78d499fd596cf85f11e7, type: 3}
   m_Name: BloodCourt
   m_EditorClassIdentifier: Assembly-CSharp::Chess.ClanDefinition
-  clanName: <color=#8B0000>BLOOD COURT</color>
+  clanName: <color=#8B0000>CRIMSON COURT</color>
   ClanPassiveDescription: <size=22><color=#FF0000><i><b>Clan Passive Ability</b></i></color></size>\n\nPieces
     inflict +1 <color=#800000>Bleed</color> on enemies when attacking
   QueenAuraDescription: <size=22><color=#FF0000><i><b>Queen Ability</b></i></color></size>
@@ -24,9 +24,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 83af93f6eef53354ab0676430a465793, type: 2}
   - {fileID: 11400000, guid: fac02ea5b2dfc77499696ded6b5f17f8, type: 2}
   StartingTroopPool:
-  - {fileID: 11400000, guid: 7f003049c03d88440ba3260e8dba1515, type: 2}
   - {fileID: 11400000, guid: caaba4aec4be4504e8a8df17ded31d0d, type: 2}
   - {fileID: 11400000, guid: 8898d83dfd7480a4b9237ff27c4d5b83, type: 2}
+  - {fileID: 11400000, guid: 7f003049c03d88440ba3260e8dba1515, type: 2}
   startingBattleDeck:
   - {fileID: 11400000, guid: ac99ee6dff496a047a52d4804c208082, type: 2}
   - {fileID: 11400000, guid: ac99ee6dff496a047a52d4804c208082, type: 2}
@@ -48,3 +48,5 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 4ddb69c3ef903974d90d0b2ae329e97a, type: 2}
   - {fileID: 11400000, guid: a8d86336ff805834cadcae653dbf506f, type: 2}
   - {fileID: 11400000, guid: 0e9be4d17ee870b44abc7786d69164ab, type: 2}
+  spawnRingPrefab: {fileID: 5356347562543238070, guid: e86fbf3f1bdcb4dca94ff67dbb808b57, type: 3}
+  boostSplashPrefab: {fileID: 1149807093318259222, guid: 1fb93a19cb45d40849942c18459b86fc, type: 3}

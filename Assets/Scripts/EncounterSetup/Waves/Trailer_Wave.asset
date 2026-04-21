@@ -1,0 +1,85 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14201db801c8ca4449ce3dc7134ccb30, type: 3}
+  m_Name: Trailer_Wave
+  m_EditorClassIdentifier: Assembly-CSharp::Chess.EncounterWave
+  spawns:
+  - piece: {fileID: 11400000, guid: 21965604bf4e5544da4eb7d858f34bb7, type: 2}
+    coord: {x: 1, y: 0}
+    fromTop: 1
+  - piece: {fileID: 11400000, guid: d3883e3ca600c6e449787739b4918791, type: 2}
+    coord: {x: 0, y: 1}
+    fromTop: 1
+  - piece: {fileID: 11400000, guid: d3883e3ca600c6e449787739b4918791, type: 2}
+    coord: {x: 6, y: 0}
+    fromTop: 1
+  - piece: {fileID: 11400000, guid: d3883e3ca600c6e449787739b4918791, type: 2}
+    coord: {x: 5, y: 1}
+    fromTop: 1
+  - piece: {fileID: 11400000, guid: ec4c33d4f5053e44eb1dc58e90748206, type: 2}
+    coord: {x: 2, y: 0}
+    fromTop: 1
+  - piece: {fileID: 11400000, guid: ec4c33d4f5053e44eb1dc58e90748206, type: 2}
+    coord: {x: 5, y: 0}
+    fromTop: 1
+  - piece: {fileID: 11400000, guid: c5ec31a290371c1458aeab1ad95fd8b9, type: 2}
+    coord: {x: 3, y: 0}
+    fromTop: 1
+  - piece: {fileID: 11400000, guid: c5ec31a290371c1458aeab1ad95fd8b9, type: 2}
+    coord: {x: 2, y: 4}
+    fromTop: 1
+  - piece: {fileID: 11400000, guid: b9e2d4cdd458deb4ab3730b96476eb2d, type: 2}
+    coord: {x: 2, y: 2}
+    fromTop: 1
+  - piece: {fileID: 11400000, guid: f23cc6cba89df5141887086810997f7b, type: 2}
+    coord: {x: 7, y: 1}
+    fromTop: 1
+  - piece: {fileID: 11400000, guid: b9e2d4cdd458deb4ab3730b96476eb2d, type: 2}
+    coord: {x: 1, y: 4}
+    fromTop: 1
+  - piece: {fileID: 11400000, guid: f23cc6cba89df5141887086810997f7b, type: 2}
+    coord: {x: 3, y: 2}
+    fromTop: 1
+  - piece: {fileID: 11400000, guid: b2554096802b01041ad00d7ed738efc1, type: 2}
+    coord: {x: 5, y: 2}
+    fromTop: 1
+  - piece: {fileID: 11400000, guid: b2554096802b01041ad00d7ed738efc1, type: 2}
+    coord: {x: 6, y: 3}
+    fromTop: 1
+  - piece: {fileID: 11400000, guid: b2554096802b01041ad00d7ed738efc1, type: 2}
+    coord: {x: 0, y: 4}
+    fromTop: 1
+  - piece: {fileID: 11400000, guid: 7bb6914516af23d4d8c6399c43ddb056, type: 2}
+    coord: {x: 5, y: 4}
+    fromTop: 1
+  - piece: {fileID: 11400000, guid: 7bb6914516af23d4d8c6399c43ddb056, type: 2}
+    coord: {x: 7, y: 4}
+    fromTop: 1
+  - piece: {fileID: 11400000, guid: 6a0254649eaa6634db223e64debbd459, type: 2}
+    coord: {x: 4, y: 5}
+    fromTop: 1
+  - piece: {fileID: 11400000, guid: b9e2d4cdd458deb4ab3730b96476eb2d, type: 2}
+    coord: {x: 6, y: 5}
+    fromTop: 1
+  - piece: {fileID: 11400000, guid: b9e2d4cdd458deb4ab3730b96476eb2d, type: 2}
+    coord: {x: 3, y: 5}
+    fromTop: 1
+  - piece: {fileID: 11400000, guid: 4700bc9fcdd982040ab620e8b2650bf5, type: 2}
+    coord: {x: 4, y: 2}
+    fromTop: 1
+  - piece: {fileID: 11400000, guid: b9e2d4cdd458deb4ab3730b96476eb2d, type: 2}
+    coord: {x: 7, y: 5}
+    fromTop: 1
+  trigger: 0
+  amount: 0
+  spawnInterval: 0.25
+  postWavePause: 0.5

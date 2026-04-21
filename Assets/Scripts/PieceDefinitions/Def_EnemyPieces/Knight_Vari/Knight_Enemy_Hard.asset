@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ded2e13f6ebd3434dad991b06601023a, type: 3}
+  m_Name: Knight_Enemy_Hard
+  m_EditorClassIdentifier: Assembly-CSharp::Chess.PieceDefinition
+  displayName: Dark Knight
+  icon: {fileID: 21300000, guid: 90b578f4b1a158641b7e7767002f8d03, type: 3}
+  PieceInfoIcon: {fileID: 21300000, guid: 90b578f4b1a158641b7e7767002f8d03, type: 3}
+  iconPrefabOverride: {fileID: 0}
+  count: 1
+  soundProfile: {fileID: 0}
+  attackImpactPrefab: {fileID: 1972357286798797734, guid: d504ed4f35b5e4d68b711c40232c28b4, type: 3}
+  Description: 
+  piecePrefab: {fileID: 7330144353913822202, guid: 6675c822a031145bfad5a36afde53e38, type: 3}
+  maxHP: 20
+  attack: 10
+  forwardOnly: 1
+  passThroughFriendlies: 0
+  maxStride: 3
+  shopPrice: 100

@@ -313,12 +313,11 @@ public class SpellTargetingController : MonoBehaviour
             turnManager.PlayerTeam,
             target
         );
-
+        
         bool success = turnManager.ExecuteCommand(cmd);
         if (success)
         {
             StartSuccessFlash(flashCoord);
-            FindObjectOfType<HandPanel>()?.RebuildHand();
             CancelTargeting();
         }
         else

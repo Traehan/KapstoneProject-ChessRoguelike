@@ -15,8 +15,9 @@ MonoBehaviour:
   cardId: 
   displayName: Retaliate
   rulesText: Applys +1 <color=#FF0000><i>Retaliate</color></i>
-  art: {fileID: 21300000, guid: dd9ee2ec33a6ba3449555a6681b3c90b, type: 3}
+  art: {fileID: 21300000, guid: 14c94be583bc35e4d9775ce1d5bfe692, type: 3}
   manaCost: 1
+  soundProfile: {fileID: 0}
   cardType: 1
   targetingMode: 2
   effects:

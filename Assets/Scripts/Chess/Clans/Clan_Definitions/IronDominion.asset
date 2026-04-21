@@ -39,11 +39,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 28caf602d991e644db861115b487aa39, type: 2}
   - {fileID: 11400000, guid: 18bc56d99283db7479e79b7fc1f69384, type: 2}
   - {fileID: 11400000, guid: 18bc56d99283db7479e79b7fc1f69384, type: 2}
-  - {fileID: 11400000, guid: a75b2f1a4a19885458ded8d3f2ee18ad, type: 2}
-  - {fileID: 11400000, guid: 9d5314d6f5086e942aedeea3154efa37, type: 2}
   - {fileID: 11400000, guid: 4521b98382d571246b05f294453f311a, type: 2}
   - {fileID: 11400000, guid: 4521b98382d571246b05f294453f311a, type: 2}
-  - {fileID: 11400000, guid: bb5a778f884c0b740b1ec863224ce24f, type: 2}
   SpellPool:
   - {fileID: 11400000, guid: 18bc56d99283db7479e79b7fc1f69384, type: 2}
   - {fileID: 11400000, guid: bb5a778f884c0b740b1ec863224ce24f, type: 2}
@@ -52,3 +49,5 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 28caf602d991e644db861115b487aa39, type: 2}
   - {fileID: 11400000, guid: 7a0db8898a933444c9239a006fd1d1bb, type: 2}
   - {fileID: 11400000, guid: 4521b98382d571246b05f294453f311a, type: 2}
+  spawnRingPrefab: {fileID: 648209434129052522, guid: 377e8d53b1f6a415293f487e87d89b38, type: 3}
+  boostSplashPrefab: {fileID: 715287906373240068, guid: c804aa50ddcac44a09e151d56763d451, type: 3}

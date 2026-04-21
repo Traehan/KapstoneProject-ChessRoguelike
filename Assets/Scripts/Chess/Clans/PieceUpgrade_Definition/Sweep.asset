@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Chess.PieceUpgradeSO
   displayName: Sweep
   description: Hits enemies to the left and right of the enemy getting attacked!
-  icon: {fileID: 21300000, guid: fd5626a8e9faa0c42b2d92ecfe65e5ef, type: 3}
+  icon: {fileID: 21300000, guid: 20ceb55e3a68bc7408c32ff2e42d8471, type: 3}
   addMaxHP: 0
   addAttack: 0
   keywordAbility: {fileID: 11400000, guid: 44e6a89afc81ee64eadda2f79bade499, type: 2}

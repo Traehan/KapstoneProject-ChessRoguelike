@@ -82,8 +82,18 @@ public class RecruitNodePanel : MonoBehaviour
         if (root != null)
             root.SetActive(def != null);
 
-        if (cardView != null && def != null)
-            cardView.BindDefinition(def);
+        if (cardView == null)
+            return;
+
+        if (def != null)
+        {
+            cardView.Bind(def);
+            cardView.gameObject.SetActive(true);
+        }
+        else
+        {
+            cardView.gameObject.SetActive(false);
+        }
     }
 
     void OnChooseA()

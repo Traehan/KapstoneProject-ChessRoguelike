@@ -105,6 +105,10 @@ namespace Chess
         {
             if (!CanApplyUpgrade(u)) return false;
 
+            int oldMaxHP = MaxHP;
+            int oldCurrentHP = CurrentHP;
+            int oldAttack = Attack;
+
             upgrades.Add(u);
             u.ApplyTo(this);
             SyncStatsToOwner();
@@ -114,6 +118,14 @@ namespace Chess
                 keywordAbilities.Add(u.keywordAbility);
                 u.keywordAbility.OnSpawn(new PieceAbilitySO.PieceCtx(Owner, Board, TM));
             }
+
+            bool gainedPositiveStat =
+                MaxHP > oldMaxHP ||
+                CurrentHP > oldCurrentHP ||
+                Attack > oldAttack;
+
+            if (gainedPositiveStat && Owner != null)
+                GameEvents.OnPositiveStatChanged?.Invoke(Owner);
 
             return true;
         }

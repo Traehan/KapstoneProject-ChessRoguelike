@@ -40,7 +40,7 @@ namespace Card
 
             Debug.Log($"[DeckManager] Battle init from legacy run deck. DrawPile={DrawPile.Count}, Hand={Hand.Count}, Discard={Discard.Count}");
         }
-        
+
         public void Draw(int count)
         {
             if (count <= 0) return;
@@ -109,6 +109,27 @@ namespace Card
             }
         }
 
+        public void DiscardHand()
+        {
+            if (Hand.Count == 0)
+                return;
+
+            var cardsToDiscard = new List<Card>(Hand);
+
+            foreach (var card in cardsToDiscard)
+            {
+                GameEvents.OnCardRemovedFromHand?.Invoke(card);
+
+                if (!Discard.Contains(card))
+                {
+                    Discard.Add(card);
+                    GameEvents.OnCardDiscarded?.Invoke(card);
+                }
+            }
+
+            Hand.Clear();
+        }
+
         public void DiscardEndOfTurn()
         {
             if (Hand.Count == 0)
@@ -117,16 +138,7 @@ namespace Card
                 return;
             }
 
-            var cardsToDiscard = new List<Card>(Hand);
-
-            foreach (var card in cardsToDiscard)
-            {
-                GameEvents.OnCardRemovedFromHand?.Invoke(card);
-                Discard.Add(card);
-                GameEvents.OnCardDiscarded?.Invoke(card);
-            }
-
-            Hand.Clear();
+            DiscardHand();
             PlayedThisTurn.Clear();
         }
 
@@ -201,6 +213,8 @@ namespace Card
             Discard.Clear();
             Shuffle(DrawPile);
 
+            GameEvents.OnCardPlayed?.Invoke(null);
+
             Debug.Log($"[DeckManager] Reshuffled. DrawPile={DrawPile.Count}");
         }
 
@@ -227,6 +241,5 @@ namespace Card
             if (card == null) return false;
             return Discard.Remove(card);
         }
-        
     }
 }

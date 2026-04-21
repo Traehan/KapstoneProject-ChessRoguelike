@@ -2,12 +2,6 @@ using UnityEngine;
 
 namespace Chess
 {
-    /// <summary>
-    /// Boss one-way attack:
-    /// - Defender takes damage (boss takes none)
-    /// - If defender dies: soft-capture (deactivate)
-    /// - Fires OnPieceDamaged / OnAttackResolved / OnPieceCaptured
-    /// </summary>
     public class BossRayAttackCommand : IGameCommand
     {
         readonly TurnManager _tm;
@@ -37,15 +31,6 @@ namespace Chess
             _tm.ResolveBossAttack(_boss, target, out bool defenderDied);
 
             int dmgToDef = Mathf.Max(0, hpBefore - target.currentHP);
-            if (dmgToDef > 0)
-                GameEvents.OnPieceDamaged?.Invoke(target, dmgToDef, _boss);
-
-            if (defenderDied)
-            {
-                // soft capture (keeps object alive)
-                _board.CapturePiece(target);
-                GameEvents.OnPieceCaptured?.Invoke(target, _boss, _targetCoord);
-            }
 
             var report = new AttackReport
             {
@@ -55,14 +40,40 @@ namespace Chess
                 damageToAttacker = 0,
                 attackerDied = false,
                 defenderDied = defenderDied,
-                bypassedFortify = false
+                bypassedFortify = false,
+                attackerTeam = _boss.Team,
+                isBossAttack = true,
+                reason = MoveReason.Forced
             };
 
             GameEvents.OnAttackResolved?.Invoke(report);
+
+            if (defenderDied)
+            {
+                var motion = target.GetComponent<PieceMotionController>();
+                Vector3 attackerWorld = _boss.transform.position;
+                Vector3 defenderWorld = target.transform.position;
+                Vector3 recoilDir = defenderWorld - attackerWorld;
+                recoilDir.y = 0f;
+
+                if (motion != null)
+                {
+                    motion.PlayDeathRecoilAndDissolve(defenderWorld, recoilDir, () =>
+                    {
+                        _board.CapturePiece(target);
+                        GameEvents.OnPieceCaptured?.Invoke(target, _boss, _targetCoord);
+                    });
+                }
+                else
+                {
+                    _board.CapturePiece(target);
+                    GameEvents.OnPieceCaptured?.Invoke(target, _boss, _targetCoord);
+                }
+            }
+
             return true;
         }
 
-        // Boss actions are not undoable.
         public void Undo() { }
     }
 }

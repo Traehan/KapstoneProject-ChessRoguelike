@@ -15,8 +15,9 @@ MonoBehaviour:
   cardId: 
   displayName: Reinforce
   rulesText: Double a pieces current <color=#2A4B8D><i>Fortify</color></i>
-  art: {fileID: 21300000, guid: 4f9b8a6aad4337849b27506a0eeaf96e, type: 3}
+  art: {fileID: 21300000, guid: e4497d81978761244a586a8ab9171cc3, type: 3}
   manaCost: 2
+  soundProfile: {fileID: 0}
   cardType: 1
   targetingMode: 2
   effects:

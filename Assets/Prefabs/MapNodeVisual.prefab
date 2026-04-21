@@ -34,7 +34,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 0, y: 110}
+  m_AnchoredPosition: {x: 0, y: 80}
   m_SizeDelta: {x: 0, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6165702649746046387
@@ -175,7 +175,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 75, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &9081522861247834731
 CanvasRenderer:
@@ -289,8 +289,8 @@ MonoBehaviour:
   shopSprite: {fileID: 21300000, guid: b3a13f0b5e401d346aa76e10a18dbb23, type: 3}
   eventSprite: {fileID: 21300000, guid: 58040af0388d98e45835f036c17e10c1, type: 3}
   bossSprite: {fileID: 21300000, guid: 316f17ef021a10c42a5291e3314af3a3, type: 3}
-  removalSprite: {fileID: 21300000, guid: a2b73ef5897ae6d49bb44729bad9e1a1, type: 3}
-  duplicationSprite: {fileID: 21300000, guid: dec42b588f94afa4f808b9a752d1156e, type: 3}
+  removalSprite: {fileID: 21300000, guid: bd1a389eaf1470a429622d84b6614df6, type: 3}
+  duplicationSprite: {fileID: 21300000, guid: b10ade9f7989e42479fcc9301a8c7757, type: 3}
 --- !u!1 &8230552826956867739
 GameObject:
   m_ObjectHideFlags: 0
@@ -326,7 +326,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 90, y: 90}
+  m_SizeDelta: {x: 70, y: 70}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2498871725449314150
 CanvasRenderer:

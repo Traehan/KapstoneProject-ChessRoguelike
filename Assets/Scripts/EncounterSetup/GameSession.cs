@@ -36,6 +36,9 @@ public class GameSession : MonoBehaviour
     readonly Dictionary<PieceDefinition, int> _upgradeCounts = new();
     readonly Dictionary<PieceDefinition, List<PieceUpgradeSO>> pendingUpgrades = new();
 
+    // NEW: lets us map a runtime army clone back to the original template piece
+    readonly Dictionary<PieceDefinition, PieceDefinition> _runtimeToTemplate = new();
+
     [Header("Run / Boss State")]
     public bool isBossBattle;
     public bool bossDefeated;
@@ -74,6 +77,7 @@ public class GameSession : MonoBehaviour
 
         _upgradeCounts.Clear();
         pendingUpgrades.Clear();
+        _runtimeToTemplate.Clear();
 
         _queenDefRuntime = null;
         hasGrantedStartingTroop = false;
@@ -338,13 +342,60 @@ public class GameSession : MonoBehaviour
         return list;
     }
 
+    // NEW: safe read-only accessor for UI visuals
+    public IReadOnlyList<PieceUpgradeSO> GetQueuedUpgradesFor(PieceDefinition def)
+    {
+        if (def == null) return null;
+        return pendingUpgrades.TryGetValue(def, out var list) ? list : null;
+    }
+
     public PieceDefinition CreateRuntimePiece(PieceDefinition template)
     {
         if (template == null) return null;
 
         var clone = ScriptableObject.Instantiate(template);
         clone.name = template.name + "_Runtime";
+
+        _runtimeToTemplate[clone] = template;
         return clone;
+    }
+
+    // NEW: if passed a runtime piece, return the original template it was cloned from
+    public PieceDefinition GetTemplateForRuntimePiece(PieceDefinition runtimePiece)
+    {
+        if (runtimePiece == null) return null;
+        return _runtimeToTemplate.TryGetValue(runtimePiece, out var template) ? template : runtimePiece;
+    }
+
+    // NEW: find the army runtime piece that visually represents the given template/card piece
+    public PieceDefinition ResolveArmyPieceForTemplate(PieceDefinition template)
+    {
+        if (template == null || army == null)
+            return template;
+
+        for (int i = 0; i < army.Count; i++)
+        {
+            var runtimePiece = army[i];
+            if (runtimePiece == null)
+                continue;
+
+            if (runtimePiece == template)
+                return runtimePiece;
+
+            if (_runtimeToTemplate.TryGetValue(runtimePiece, out var sourceTemplate) && sourceTemplate == template)
+                return runtimePiece;
+        }
+
+        return template;
+    }
+
+    // NEW: convenience for card UI
+    public PieceDefinition ResolveDisplayPieceForCard(CardDefinitionSO cardDef)
+    {
+        if (cardDef is UnitCardDefinitionSO unitDef && unitDef.summonPieceDefinition != null)
+            return ResolveArmyPieceForTemplate(unitDef.summonPieceDefinition);
+
+        return null;
     }
 
     public int GetUpgradeCount(PieceDefinition def)

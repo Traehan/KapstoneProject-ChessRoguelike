@@ -18,7 +18,6 @@ namespace Chess
         bool _defenderWasCaptured;
         bool _attackerWasCaptured;
 
-        // NEW: status snapshots for undo
         List<StatusController.StatusEntry> _attackerStatuses_Before;
         List<StatusController.StatusEntry> _defenderStatuses_Before;
 
@@ -49,11 +48,9 @@ namespace Chess
             if (_board.GetPieceAt(_attackerAt) != _attacker) return false;
             if (_board.GetPieceAt(_defenderAt) != _defender) return false;
 
-            // Snapshot HP for undo
             _attackerHP_Before = _attacker.currentHP;
             _defenderHP_Before = _defender.currentHP;
 
-            // Snapshot statuses for undo (THIS is what undoes bleed)
             var atkSC = _attacker.GetComponent<StatusController>();
             var defSC = _defender.GetComponent<StatusController>();
             _attackerStatuses_Before = atkSC != null ? atkSC.CaptureSnapshot() : null;
@@ -73,9 +70,42 @@ namespace Chess
             _defenderWasCaptured = false;
             _attackerWasCaptured = false;
 
+            GameEvents.OnAttackResolved?.Invoke(new AttackReport
+            {
+                attacker = _attacker,
+                defender = _defender,
+                damageToDefender = dmgToDef,
+                damageToAttacker = dmgToAtk,
+                attackerDied = attackerDied,
+                defenderDied = defenderDied,
+                bypassedFortify = false,
+                attackerTeam = _attacker.Team,
+                isBossAttack = false,
+                reason = MoveReason.Normal
+            });
+
             if (defenderDied)
             {
-                _board.CapturePiece(_defender);
+                var motion = _defender.GetComponent<PieceMotionController>();
+                Vector3 attackerWorld = _attacker.transform.position;
+                Vector3 defenderWorld = _defender.transform.position;
+                Vector3 recoilDir = defenderWorld - attackerWorld;
+                recoilDir.y = 0f;
+
+                if (motion != null)
+                {
+                    motion.PlayDeathRecoilAndDissolve(defenderWorld, recoilDir, () =>
+                    {
+                        _board.CapturePiece(_defender);
+                        GameEvents.OnPieceCaptured?.Invoke(_defender, _attacker, _defenderAt);
+                    });
+                }
+                else
+                {
+                    _board.CapturePiece(_defender);
+                    GameEvents.OnPieceCaptured?.Invoke(_defender, _attacker, _defenderAt);
+                }
+
                 _defenderWasCaptured = true;
             }
 
@@ -83,31 +113,27 @@ namespace Chess
             {
                 _board.CapturePiece(_attacker);
                 _attackerWasCaptured = true;
+                GameEvents.OnPieceCaptured?.Invoke(_attacker, _defender, _attackerAt);
             }
-
-            if (dmgToDef > 0) GameEvents.OnPieceDamaged?.Invoke(_defender, dmgToDef, _attacker);
-            if (dmgToAtk > 0) GameEvents.OnPieceDamaged?.Invoke(_attacker, dmgToAtk, _defender);
-
-            if (_defenderWasCaptured) GameEvents.OnPieceCaptured?.Invoke(_defender, _attacker, _defenderAt);
-            if (_attackerWasCaptured) GameEvents.OnPieceCaptured?.Invoke(_attacker, _defender, _attackerAt);
 
             return true;
         }
 
         public void Undo()
         {
-            // Restore pieces first if captured (so components exist in scene again)
             if (_defenderWasCaptured)
                 _board.RestoreCapturedPiece(_defender, _defenderAt);
 
             if (_attackerWasCaptured)
                 _board.RestoreCapturedPiece(_attacker, _attackerAt);
 
-            // Restore HP
+            // restore visuals for revived pieces
+            _defender?.GetComponent<PieceMotionController>()?.ResetVisualState();
+            _attacker?.GetComponent<PieceMotionController>()?.ResetVisualState();
+
             if (_attacker != null) _attacker.currentHP = _attackerHP_Before;
             if (_defender != null) _defender.currentHP = _defenderHP_Before;
 
-            // Restore statuses (undo bleed, poison, etc.)
             if (_attacker != null)
             {
                 var sc = _attacker.GetComponent<StatusController>();
@@ -120,7 +146,6 @@ namespace Chess
                 if (sc != null) sc.RestoreSnapshot(_defenderStatuses_Before);
             }
 
-            // Refund AP only for player actions
             if (_attacker != null && _attacker.Team == _tm.PlayerTeam)
                 _tm.RefundAP(_apCost);
 

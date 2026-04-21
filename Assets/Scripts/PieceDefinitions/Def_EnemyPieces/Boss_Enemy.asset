@@ -17,8 +17,9 @@ MonoBehaviour:
   iconPrefabOverride: {fileID: 0}
   count: 1
   soundProfile: {fileID: 0}
+  attackImpactPrefab: {fileID: 2021314505677214833, guid: 9c7f6d51cd95c43a3be049207a1cb6fa, type: 3}
   Description: 
-  piecePrefab: {fileID: 7077751289521428780, guid: 50e7ac4801f171e438a201112ec94f81, type: 3}
+  piecePrefab: {fileID: 6263990220395735788, guid: 201cdeb3877de45248aab16f977e5a83, type: 3}
   maxHP: 50
   attack: 5
   forwardOnly: 0

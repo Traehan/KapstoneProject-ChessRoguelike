@@ -14,10 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Chess.PieceDefinition
   displayName: Pawn
   icon: {fileID: 21300000, guid: 1b5f0a1df5e87934d830a0f5595277da, type: 3}
+  PieceInfoIcon: {fileID: 21300000, guid: 4949a9b022d0e2c43af96f0b373a7941, type: 3}
   iconPrefabOverride: {fileID: 0}
   count: 1
   soundProfile: {fileID: 11400000, guid: 6cbdbcfb7ca8f482598f84b5b27f1fc0, type: 2}
-  Description: 
+  attackImpactPrefab: {fileID: 5707296075241192002, guid: 02ac3f271f9634f46bd9f9d8a16e565d, type: 3}
+  Description: 'End of turn: +1 <color=#2A4B8D><i>Fortify</color></i>'
   piecePrefab: {fileID: 7089099188496879547, guid: 3a60e0b419b0b4106b7906cdd0c845e7, type: 3}
   maxHP: 1
   attack: 5

@@ -13,6 +13,8 @@ namespace Chess
 
         [Header("Hand Panel")] [SerializeField]
         GameObject handPanelRoot;
+        
+        public GameObject UndoMoveButton;
 
         [Header("End Turn Button Label")] [SerializeField]
         TMP_Text endTurnButtonLabel;
@@ -93,6 +95,12 @@ namespace Chess
             {
                 // show mana immediately
                 if (meterText != null) meterText.text = $"{tm.CurrentMana}/{tm.MaxMana}";
+                if(UndoMoveButton != null) UndoMoveButton.SetActive(false);
+            }
+
+            if (isPlayer)
+            {
+                if(UndoMoveButton != null) UndoMoveButton.SetActive(true);
             }
             // For AP, we wait for GameEvents.OnAPChanged at BeginPlayerTurn,
             // OR you can set it here if you have access to current/max AP.

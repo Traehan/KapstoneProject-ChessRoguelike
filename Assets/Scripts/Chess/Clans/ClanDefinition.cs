@@ -25,6 +25,10 @@ namespace Chess
         public CardDefinitionSO[] startingBattleDeck;
 
         public CardDefinitionSO[] SpellPool;
+        
+        [Header("Battle VFX")] 
+        public GameObject spawnRingPrefab;
+        public GameObject boostSplashPrefab;
 
 
     }

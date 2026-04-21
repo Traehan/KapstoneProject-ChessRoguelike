@@ -15,8 +15,9 @@ MonoBehaviour:
   cardId: 
   displayName: Sacrificial Pact
   rulesText: 'Destroy Allied Unit: Draw 2 Cards'
-  art: {fileID: 0}
+  art: {fileID: 21300000, guid: 5314c6c466e5fe7499341ce825bc22b3, type: 3}
   manaCost: 1
+  soundProfile: {fileID: 0}
   cardType: 1
   targetingMode: 2
   effects:

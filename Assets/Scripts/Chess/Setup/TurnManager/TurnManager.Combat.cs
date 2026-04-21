@@ -36,10 +36,8 @@ namespace Chess
 
             int modifiedAtk = Mathf.Max(0, ctx.baseDamage + ctx.damageDelta);
 
-            // attacker hits defender first
             int atkToDef = FortifyStatusUtility.AbsorbDamage(defender, modifiedAtk, ctx.bypassFortify, attacker);
 
-            // no universal counter-hit anymore
             int defToAtk = 0;
 
             if (atkToDef > 0)
@@ -48,7 +46,6 @@ namespace Chess
             defender.currentHP -= atkToDef;
             defenderDied = defender.currentHP <= 0;
 
-            // Retaliate only if defender survives, then spend 1 stack
             int retaliateStacks = RetaliateStatusUtility.GetRetaliate(defender);
             if (!defenderDied && retaliateStacks > 0)
             {
@@ -67,19 +64,9 @@ namespace Chess
             attacker.GetComponent<PieceRuntime>()?.Notify_AttackResolved(ctx);
             defender.GetComponent<PieceRuntime>()?.Notify_AttackResolved(ctx);
 
-            GameEvents.OnAttackResolved?.Invoke(new AttackReport
-            {
-                attacker = attacker,
-                defender = defender,
-                damageToDefender = atkToDef,
-                damageToAttacker = defToAtk,
-                attackerDied = attackerDied,
-                defenderDied = defenderDied,
-                bypassedFortify = ctx.bypassFortify,
-                attackerTeam = attacker.Team,
-                isBossAttack = false,
-                reason = MoveReason.Forced
-            });
+            // IMPORTANT:
+            // No OnAttackResolved here anymore.
+            // Commands are now the single source of attack events.
         }
 
         public void ResolveBossAttack(Piece attacker, Piece defender, out bool defenderDied)
@@ -117,19 +104,9 @@ namespace Chess
                 RetaliateStatusUtility.RemoveRetaliate(defender, 1);
             }
 
-            GameEvents.OnAttackResolved?.Invoke(new AttackReport
-            {
-                attacker = attacker,
-                defender = defender,
-                damageToDefender = final,
-                damageToAttacker = retaliationDamage,
-                attackerDied = attackerDied,
-                defenderDied = defenderDied,
-                bypassedFortify = false,
-                attackerTeam = attacker.Team,
-                isBossAttack = true,
-                reason = MoveReason.Forced
-            });
+            // IMPORTANT:
+            // No OnAttackResolved here anymore.
+            // BossRayAttackCommand should raise it once.
         }
     }
 }
