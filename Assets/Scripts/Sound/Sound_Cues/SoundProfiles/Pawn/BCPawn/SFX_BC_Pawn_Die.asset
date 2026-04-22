@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: SFX_BC_Pawn_Die
   m_EditorClassIdentifier: Assembly-CSharp::Chess.SoundCueSO
   clips:
-  - {fileID: 8300000, guid: 2b18dfd569d404a19bec18ed5061d3ac, type: 3}
-  volumeMin: 1
-  volumeMax: 1
+  - {fileID: 8300000, guid: 0fdec9827213f459d9ea6a757f8976de, type: 3}
+  volumeMin: 0.35
+  volumeMax: 0.35
   pitchMin: 1
   pitchMax: 1
   spatial: 0

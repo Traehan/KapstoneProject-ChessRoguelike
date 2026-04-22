@@ -2880,7 +2880,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 506964566}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c580bace2cadf744e9fdfa2dba0a2d87, type: 3}
+  m_Script: {fileID: 11500000, guid: 7169ce8c0bbe77849821cd3c424902db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Chess.TurnManager
   playerActionDebounceSeconds: 0.08
@@ -2894,9 +2894,9 @@ MonoBehaviour:
   postEnemyTurnPause: 0.15
   apPerTurn: 3
   deckManager: {fileID: 506964578}
-  handPanel: {fileID: 1311308791}
-  enemyIntentColor: {r: 1, g: 0, b: 0, a: 0.4117647}
-  bossIntentColor: {r: 0.7, g: 0.3, b: 1, a: 0.4509804}
+  handPanel: {fileID: 0}
+  enemyIntentColor: {r: 1, g: 0, b: 0, a: 0.85}
+  bossIntentColor: {r: 0.7, g: 0.3, b: 1, a: 0.9}
   playerLives: 3
   livesText: {fileID: 0}
   selectedClan: {fileID: 0}

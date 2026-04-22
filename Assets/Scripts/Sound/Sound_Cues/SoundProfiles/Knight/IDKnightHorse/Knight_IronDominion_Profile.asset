@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: Knight_IronDominion_Profile
   m_EditorClassIdentifier: Assembly-CSharp::Chess.SoundProfileSO
   entries:
-  - eventId: 14
-    cue: {fileID: 11400000, guid: e073af2f4354c4b25920ca4d231330c0, type: 2}
   - eventId: 15
-    cue: {fileID: 11400000, guid: 4bab1c6f380a842feac5be21d59f9493, type: 2}
+    cue: {fileID: 11400000, guid: e073af2f4354c4b25920ca4d231330c0, type: 2}
   - eventId: 16
-    cue: {fileID: 11400000, guid: ff19a262a77cf4695a54892c56d57a89, type: 2}
+    cue: {fileID: 11400000, guid: 4bab1c6f380a842feac5be21d59f9493, type: 2}
   - eventId: 17
+    cue: {fileID: 11400000, guid: ff19a262a77cf4695a54892c56d57a89, type: 2}
+  - eventId: 18
     cue: {fileID: 11400000, guid: 7ac4366c9aa2343ba93ed9d9e0998e7f, type: 2}

@@ -12,4 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 591bf3eb3f5c3674f840846e259b8eb3, type: 3}
   m_Name: EnemyBishopProfile
   m_EditorClassIdentifier: Assembly-CSharp::Chess.SoundProfileSO
-  entries: []
+  entries:
+  - eventId: 15
+    cue: {fileID: 11400000, guid: ab2af25bcaae84af39e4c53abb85da76, type: 2}
+  - eventId: 15
+    cue: {fileID: 11400000, guid: 5e62678fbf6344dc8a37a0d9a337eae9, type: 2}
+  - eventId: 17
+    cue: {fileID: 11400000, guid: bc2345e34cbf14818b8747c6c7b7ff22, type: 2}

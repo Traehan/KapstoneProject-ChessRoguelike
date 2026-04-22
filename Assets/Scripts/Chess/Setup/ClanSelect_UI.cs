@@ -111,6 +111,9 @@ public class ClanSelectUI : MonoBehaviour
 
     void OnStartRun()
     {
+        if (SoundManager.Instance != null)
+            SoundManager.Instance.PlayGlobal(SoundEventId.UIStartRun);
+
         if (_chosen == null)
         {
             Debug.LogWarning("[ClanSelectUI] Start clicked but no clan selected.");

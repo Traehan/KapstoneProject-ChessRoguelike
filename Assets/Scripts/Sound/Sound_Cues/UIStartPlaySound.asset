@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9c999f13582ef5c44a5fea464760dc1b, type: 3}
-  m_Name: SFX_UI_Click
+  m_Name: UIStartPlaySound
   m_EditorClassIdentifier: Assembly-CSharp::Chess.SoundCueSO
   clips:
-  - {fileID: 8300000, guid: 70f22a392352c0b439966656d8204838, type: 3}
-  volumeMin: 0.8
-  volumeMax: 0.8
+  - {fileID: 8300000, guid: 2e22e0b87ebbd432eade2191fcad92a9, type: 3}
+  volumeMin: 0.605
+  volumeMax: 0.624
   pitchMin: 1
   pitchMax: 1
   spatial: 0

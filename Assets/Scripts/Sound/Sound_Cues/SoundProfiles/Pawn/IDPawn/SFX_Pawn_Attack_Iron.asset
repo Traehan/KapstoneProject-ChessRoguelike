@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Chess.SoundCueSO
   clips:
   - {fileID: 8300000, guid: a28ae77255a2f4f4c965abeae3f9d973, type: 3}
-  volumeMin: 1
-  volumeMax: 1
+  volumeMin: 0.35
+  volumeMax: 0.35
   pitchMin: 1
   pitchMax: 1
   spatial: 0

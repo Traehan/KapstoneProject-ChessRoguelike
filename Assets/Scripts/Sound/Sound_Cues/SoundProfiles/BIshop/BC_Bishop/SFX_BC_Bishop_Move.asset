@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: SFX_BC_Bishop_Move
   m_EditorClassIdentifier: Assembly-CSharp::Chess.SoundCueSO
   clips:
-  - {fileID: 8300000, guid: 69e5c1f990b05486a996aca5d9eec606, type: 3}
-  volumeMin: 1
-  volumeMax: 1
+  - {fileID: 8300000, guid: a184ff803f7c54784bae5287c4d81020, type: 3}
+  volumeMin: 0.35
+  volumeMax: 0.35
   pitchMin: 1
   pitchMax: 1
   spatial: 0
