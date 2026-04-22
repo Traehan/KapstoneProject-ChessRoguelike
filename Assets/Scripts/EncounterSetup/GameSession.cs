@@ -421,6 +421,70 @@ public class GameSession : MonoBehaviour
 
         return 2;
     }
+    
+    public bool DevSwapClanMidRun(ClanDefinition newClan, bool grantRandomStartingTroop = true)
+{
+    if (newClan == null)
+    {
+        Debug.LogWarning("[GameSession] DevSwapClanMidRun failed: newClan is null.");
+        return false;
+    }
+
+    selectedClan = newClan;
+    startingTroopPool = newClan.StartingTroopPool;
+
+    // Replace clan-owned run content, but DO NOT reset map progress/currency.
+    army.Clear();
+    CurrentRunDeck.Clear();
+    PotentialSpellPool.Clear();
+
+    _upgradeCounts.Clear();
+    pendingUpgrades.Clear();
+
+    _queenDefRuntime = null;
+    hasGrantedStartingTroop = false;
+
+    // Since this is a dev swap on the map, prevent the opening popup from reappearing.
+    hasShownStartingTroopPopup = true;
+
+    // Make sure no old encounter is still queued.
+    selectedEncounter = null;
+    isBossBattle = false;
+
+    if (selectedClan.queenDefinition != null)
+    {
+        var queenRuntime = CreateRuntimePiece(selectedClan.queenDefinition);
+        _queenDefRuntime = queenRuntime;
+        army.Add(queenRuntime);
+    }
+    else
+    {
+        Debug.LogError("[GameSession] DevSwapClanMidRun: selectedClan.queenDefinition not assigned.");
+    }
+
+    if (grantRandomStartingTroop)
+    {
+        var troop = GrantRandomStartingTroop();
+        Debug.Log($"[GameSession] Dev clan swap troop: {troop?.displayName}");
+    }
+
+    if (selectedClan.startingBattleDeck != null && selectedClan.startingBattleDeck.Length > 0)
+        CurrentRunDeck.AddRange(selectedClan.startingBattleDeck);
+    else
+        Debug.LogWarning("[GameSession] DevSwapClanMidRun: clan has no startingBattleDeck assigned.");
+
+    if (selectedClan.SpellPool != null && selectedClan.SpellPool.Length > 0)
+        PotentialSpellPool.AddRange(selectedClan.SpellPool);
+    else
+        Debug.LogWarning("[GameSession] DevSwapClanMidRun: clan has no SpellPool assigned.");
+
+    Debug.Log(
+        $"[GameSession] DEV CLAN SWAP -> {selectedClan.clanName} | " +
+        $"Army={army.Count}, RunDeck={CurrentRunDeck.Count}, SpellPool={PotentialSpellPool.Count}"
+    );
+
+    return true;
+}
 
     public IReadOnlyList<PieceDefinition> CurrentArmy => army;
 }

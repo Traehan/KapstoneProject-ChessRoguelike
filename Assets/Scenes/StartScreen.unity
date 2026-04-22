@@ -2144,6 +2144,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8305974750690956090, guid: 7f9cc6481156b124fb0bdfc28b0fcf8e, type: 3}
+      propertyPath: menuMusicCue
+      value: 
+      objectReference: {fileID: 11400000, guid: 6dca2db237c913b42ba30694e728215f, type: 2}
+    - target: {fileID: 8305974750690956090, guid: 7f9cc6481156b124fb0bdfc28b0fcf8e, type: 3}
+      propertyPath: battleMusicCue
+      value: 
+      objectReference: {fileID: 11400000, guid: 71a7425d7f5818f489a11806c5998cf7, type: 2}
     - target: {fileID: 9020764490447516343, guid: 7f9cc6481156b124fb0bdfc28b0fcf8e, type: 3}
       propertyPath: m_Name
       value: SoundManager

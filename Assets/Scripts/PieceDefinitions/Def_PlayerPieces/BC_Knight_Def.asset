@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PieceDefinition
   displayName: Dragon
   icon: {fileID: 21300000, guid: e2d688ee697aea74e8d260d164c1a542, type: 3}
-  PieceInfoIcon: {fileID: 0}
+  PieceInfoIcon: {fileID: 21300000, guid: 32977b02a6c5e3d4a91426584a213fca, type: 3}
   iconPrefabOverride: {fileID: 0}
   count: 1
   soundProfile: {fileID: 11400000, guid: 9258d8e0ba1c448c1abf4f8cb0cff970, type: 2}

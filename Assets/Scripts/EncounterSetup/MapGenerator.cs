@@ -747,6 +747,66 @@ public class MapGenerator : MonoBehaviour
 
         SceneController.instance.GoTo(clanSelectSceneName);
     }
+    
+    public void DevJumpToBossBattleNow()
+    {
+        if (GS == null)
+        {
+            Debug.LogWarning("[MapGenerator] DevJumpToBossBattleNow failed: GameSession missing.");
+            return;
+        }
+
+        MapNode bossNode = GetNodeAt(BossRowIndex, CenterColumn);
+        if (bossNode == null)
+        {
+            Debug.LogWarning("[MapGenerator] DevJumpToBossBattleNow failed: boss node not found.");
+            return;
+        }
+
+        // Move player directly to boss node.
+        GS.mapCurrentRow = bossNode.row;
+        GS.mapCurrentColumn = bossNode.column;
+
+        // Make the boss node count as visited/selected just like normal map flow.
+        bossNode.Visit();
+
+        // Since we're going straight to boss, clear normal boss completion flags first.
+        GS.isBossBattle = true;
+        GS.bossDefeated = false;
+
+        RefreshAvailableNodes();
+        UpdateAllVisuals();
+        SaveMapState();
+
+        StartCoroutine(NavigateToNodeScene(bossNode));
+    }
+
+    public void DevJumpToBossNodeOnly()
+    {
+        if (GS == null)
+        {
+            Debug.LogWarning("[MapGenerator] DevJumpToBossNodeOnly failed: GameSession missing.");
+            return;
+        }
+
+        MapNode bossNode = GetNodeAt(BossRowIndex, CenterColumn);
+        if (bossNode == null)
+        {
+            Debug.LogWarning("[MapGenerator] DevJumpToBossNodeOnly failed: boss node not found.");
+            return;
+        }
+
+        GS.mapCurrentRow = bossNode.row;
+        GS.mapCurrentColumn = bossNode.column;
+
+        bossNode.Visit();
+
+        RefreshAvailableNodes();
+        UpdateAllVisuals();
+        SaveMapState();
+
+        StartCoroutine(CenterScrollOnCurrentNodeAfterLayout());
+    }
 
     void OnQuitGameClicked()
     {

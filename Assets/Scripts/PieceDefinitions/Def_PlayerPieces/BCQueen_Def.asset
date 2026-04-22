@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PieceDefinition
   displayName: BloodCourt Queen
   icon: {fileID: 21300000, guid: 5f79ebe4d98f27b42976ca95b7c75dd0, type: 3}
-  PieceInfoIcon: {fileID: 0}
+  PieceInfoIcon: {fileID: 21300000, guid: 781e41cff05b6ce42a2196784667aafe, type: 3}
   iconPrefabOverride: {fileID: 6290326963026979814, guid: 6108990944c8b7540897dbd9ac91c8cf, type: 3}
   count: 1
   soundProfile: {fileID: 0}

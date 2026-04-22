@@ -144,11 +144,11 @@ namespace Chess
             {
                 case TurnPhase.Preparation:
                     SoundManager.Instance.PlayGlobal(SoundEventId.PhasePreparation);
+                    if (battleMusicCue != null)
+                        SoundManager.Instance.PlayMusic(battleMusicCue);
                     break;
                 case TurnPhase.SpellPhase:
                     SoundManager.Instance.PlayGlobal(SoundEventId.PhaseSpell);
-                    if (battleMusicCue != null)
-                        SoundManager.Instance.PlayMusic(battleMusicCue);
                     break;
                 case TurnPhase.PlayerTurn:
                     SoundManager.Instance.PlayGlobal(SoundEventId.PhasePlayerTurn);
@@ -184,6 +184,7 @@ namespace Chess
                 return;
 
             SoundManager.Instance.PlayGlobal(SoundEventId.EncounterWin);
+            SoundManager.Instance.PlayMusic(menuMusicCue);
         }
 
         void HandleEncounterLost()

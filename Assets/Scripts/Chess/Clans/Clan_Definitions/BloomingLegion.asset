@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ec08b46787a78d499fd596cf85f11e7, type: 3}
+  m_Name: BloomingLegion
+  m_EditorClassIdentifier: Assembly-CSharp::Chess.ClanDefinition
+  clanName: <color=#006400>BLOOMING LEGION</color>
+  ClanPassiveDescription: <size=22><color=#006400><i><b>Clan Passive Ability</b></i></color></size>\n\nPieces
+    produce +1<size=22><color=#006400><i><b> Thorns</b></i></color> on tiles they
+    die on
+  QueenAuraDescription: '<size=22><color=#006400><i><b>Queen Ability</b></i></color></size>
+    \n\n Beginning of turn: add 1 defeated ally to hand'
+  Queen: {fileID: 21300000, guid: e57c33a00940a8e4dbc28ca5eaaece10, type: 3}
+  uiColor: {r: 0, g: 0.3921569, b: 0, a: 1}
+  queenDefinition: {fileID: 11400000, guid: cf66237b103af9842bb278c16556a7c0, type: 2}
+  abilities: []
+  StartingTroopPool: []
+  startingBattleDeck: []
+  SpellPool:
+  - {fileID: 11400000, guid: 657ca018d759f8441a569ac59e6fb623, type: 2}
+  - {fileID: 11400000, guid: 57bd1e35ab0ec6e41aa96b02c25f079a, type: 2}
+  - {fileID: 11400000, guid: 4ddb69c3ef903974d90d0b2ae329e97a, type: 2}
+  - {fileID: 11400000, guid: a8d86336ff805834cadcae653dbf506f, type: 2}
+  - {fileID: 11400000, guid: 0e9be4d17ee870b44abc7786d69164ab, type: 2}
+  spawnRingPrefab: {fileID: 5356347562543238070, guid: e86fbf3f1bdcb4dca94ff67dbb808b57, type: 3}
+  boostSplashPrefab: {fileID: 1149807093318259222, guid: 1fb93a19cb45d40849942c18459b86fc, type: 3}
