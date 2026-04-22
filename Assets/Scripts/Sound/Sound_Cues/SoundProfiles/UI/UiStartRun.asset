@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Chess.SoundCueSO
   clips:
   - {fileID: 8300000, guid: 8eac39e546826456db72c59f79c5f616, type: 3}
-  volumeMin: 0.669
-  volumeMax: 0.808
+  volumeMin: 0.045
+  volumeMax: 0.127
   pitchMin: 1
   pitchMax: 1
   spatial: 0
-  spatialBlend: 1
+  spatialBlend: 0
   minDistance: 1
   maxDistance: 15
   outputGroup: {fileID: 0}
