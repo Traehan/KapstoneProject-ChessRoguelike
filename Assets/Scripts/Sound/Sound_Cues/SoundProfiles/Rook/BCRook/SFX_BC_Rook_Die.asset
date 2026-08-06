@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: SFX_BC_Rook_Die
   m_EditorClassIdentifier: Assembly-CSharp::Chess.SoundCueSO
   clips:
-  - {fileID: 8300000, guid: daed0598ed75645b8899370c1f5ee404, type: 3}
-  volumeMin: 1
-  volumeMax: 1
+  - {fileID: 8300000, guid: 9c2b4f3c580004c4ba735f5c7158d689, type: 3}
+  volumeMin: 0.351
+  volumeMax: 0.35
   pitchMin: 1
   pitchMax: 1
   spatial: 0

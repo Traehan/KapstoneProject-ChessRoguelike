@@ -12,12 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c999f13582ef5c44a5fea464760dc1b, type: 3}
   m_Name: SFX_Enemy_BishopAttack
   m_EditorClassIdentifier: Assembly-CSharp::Chess.SoundCueSO
-  clips: []
-  volumeMin: 1
-  volumeMax: 1
+  clips:
+  - {fileID: 8300000, guid: 907f7b0184aa8466c879c848c4146d57, type: 3}
+  volumeMin: 0.35
+  volumeMax: 0.351
   pitchMin: 1
   pitchMax: 1
-  spatial: 1
+  spatial: 0
   spatialBlend: 1
   minDistance: 1
   maxDistance: 15

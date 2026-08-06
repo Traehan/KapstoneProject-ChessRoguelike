@@ -12,4 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 591bf3eb3f5c3674f840846e259b8eb3, type: 3}
   m_Name: SFXEnemyRookProfile
   m_EditorClassIdentifier: Assembly-CSharp::Chess.SoundProfileSO
-  entries: []
+  entries:
+  - eventId: 16
+    cue: {fileID: 11400000, guid: 0291a58e9d9db448383429fe6dc7ed91, type: 2}
+  - eventId: 18
+    cue: {fileID: 11400000, guid: 6e5f2081c63b64a588ab2fc7be5650bb, type: 2}
+  - eventId: 15
+    cue: {fileID: 11400000, guid: 9561ae2356e5a4294904b5cefffd24f6, type: 2}

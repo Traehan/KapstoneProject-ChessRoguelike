@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using Card;
+using Chess; // 👈 ADDED
 
 public class DeckViewOpenButton : MonoBehaviour
 {
@@ -47,6 +48,10 @@ public class DeckViewOpenButton : MonoBehaviour
 
     public void OpenDeckView()
     {
+        // 🔊 ADDED
+        if (SoundManager.Instance != null)
+            SoundManager.Instance.PlayGlobal(SoundEventId.UIDeckShuffle);
+
         if (DeckViewController.Instance == null)
         {
             Debug.LogWarning("[DeckViewOpenButton] No DeckViewController in scene.");
@@ -74,6 +79,10 @@ public class DeckViewOpenButton : MonoBehaviour
 
     public void ToggleDeckView()
     {
+        // 🔊 ADDED
+        if (SoundManager.Instance != null)
+            SoundManager.Instance.PlayGlobal(SoundEventId.UIDeckShuffle);
+
         if (DeckViewController.Instance == null)
         {
             Debug.LogWarning("[DeckViewOpenButton] No DeckViewController in scene.");

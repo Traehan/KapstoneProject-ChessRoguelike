@@ -13,5 +13,9 @@ MonoBehaviour:
   m_Name: IM_Queen_SoundProfile
   m_EditorClassIdentifier: Assembly-CSharp::Chess.SoundProfileSO
   entries:
-  - eventId: 14
-    cue: {fileID: 11400000, guid: 9139e4fb1287b664893c1bac1cd2122d, type: 2}
+  - eventId: 15
+    cue: {fileID: 11400000, guid: fd107dccd26fb4537939dee1b7587a70, type: 2}
+  - eventId: 16
+    cue: {fileID: 11400000, guid: 7276d0f70ae844aeda4311677541898b, type: 2}
+  - eventId: 18
+    cue: {fileID: 11400000, guid: b89d18a85e82c44dc80c2ff0795be0d9, type: 2}

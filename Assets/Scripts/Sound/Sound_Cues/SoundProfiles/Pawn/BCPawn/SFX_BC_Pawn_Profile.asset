@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: SFX_BC_Pawn_Profile
   m_EditorClassIdentifier: Assembly-CSharp::Chess.SoundProfileSO
   entries:
-  - eventId: 14
-    cue: {fileID: 11400000, guid: dfdc29c42faf44673a2920d2a3604fea, type: 2}
   - eventId: 15
-    cue: {fileID: 11400000, guid: bb66673404d764402a6009c5ed4ec942, type: 2}
+    cue: {fileID: 11400000, guid: dfdc29c42faf44673a2920d2a3604fea, type: 2}
   - eventId: 16
-    cue: {fileID: 11400000, guid: 6e6325db43d464791af71c348b81ae25, type: 2}
+    cue: {fileID: 11400000, guid: bb66673404d764402a6009c5ed4ec942, type: 2}
   - eventId: 17
-    cue: {fileID: 11400000, guid: a223706e113a549cf9b9aba3260af95c, type: 2}
+    cue: {fileID: 11400000, guid: 6e6325db43d464791af71c348b81ae25, type: 2}
   - eventId: 18
+    cue: {fileID: 11400000, guid: a223706e113a549cf9b9aba3260af95c, type: 2}
+  - eventId: 19
     cue: {fileID: 11400000, guid: 8829a3fe2f4544621957f67ac9f287f1, type: 2}

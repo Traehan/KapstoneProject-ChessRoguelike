@@ -16,14 +16,22 @@ MonoBehaviour:
   - eventId: 14
     cue: {fileID: 11400000, guid: 7220d595668606d49ba0684a3366eb16, type: 2}
   - eventId: 1
-    cue: {fileID: 11400000, guid: fbe3e3c59b5fa0740991c2224bc9342d, type: 2}
+    cue: {fileID: 0}
   - eventId: 2
-    cue: {fileID: 11400000, guid: fbe3e3c59b5fa0740991c2224bc9342d, type: 2}
+    cue: {fileID: 0}
   - eventId: 15
     cue: {fileID: 11400000, guid: 4fb254da4596b1c4f9ec3463f2a47e11, type: 2}
   - eventId: 17
     cue: {fileID: 11400000, guid: a73a868e220f0244ba8972d2600320ec, type: 2}
   - eventId: 12
     cue: {fileID: 11400000, guid: 412e9365555c393439f397f37b5ddef2, type: 2}
+  - eventId: 1
+    cue: {fileID: 11400000, guid: 2df76eb85423b452498537a41ac01fc3, type: 2}
   - eventId: 7
     cue: {fileID: 11400000, guid: 8a06a8e565e3845ebb41b38bcb07725c, type: 2}
+  - eventId: 3
+    cue: {fileID: 11400000, guid: 466fa1b7dbab2471fad35d22fb35dcf2, type: 2}
+  - eventId: 6
+    cue: {fileID: 11400000, guid: 466fa1b7dbab2471fad35d22fb35dcf2, type: 2}
+  - eventId: 8
+    cue: {fileID: 11400000, guid: 8d4993ba2fa9f4734bc2ca49fab7012f, type: 2}

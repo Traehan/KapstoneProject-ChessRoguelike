@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: Rook_IronDominion_Profile
   m_EditorClassIdentifier: Assembly-CSharp::Chess.SoundProfileSO
   entries:
-  - eventId: 14
-    cue: {fileID: 11400000, guid: b23a6e3ed69aa4132bdef62be8d48cd3, type: 2}
   - eventId: 15
-    cue: {fileID: 11400000, guid: 49a81eaac9d0c4463aa801e2e005d4c5, type: 2}
+    cue: {fileID: 11400000, guid: b23a6e3ed69aa4132bdef62be8d48cd3, type: 2}
   - eventId: 16
-    cue: {fileID: 11400000, guid: 905d8247ee4f24179ab0991523d5c7b5, type: 2}
+    cue: {fileID: 11400000, guid: 49a81eaac9d0c4463aa801e2e005d4c5, type: 2}
   - eventId: 17
+    cue: {fileID: 11400000, guid: 905d8247ee4f24179ab0991523d5c7b5, type: 2}
+  - eventId: 18
     cue: {fileID: 11400000, guid: bec65a453ef2a4288969e4929b10d5a7, type: 2}

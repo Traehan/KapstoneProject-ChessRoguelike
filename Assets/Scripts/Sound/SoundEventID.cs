@@ -12,7 +12,7 @@ namespace Chess
         CardSelect,
         CardDeselect,
         UIStartRun,
-        
+        UIDeckShuffle,
 
         // Phase / flow
         PhasePreparation,
