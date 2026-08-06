@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SFX_Encounter_Win
   m_EditorClassIdentifier: Assembly-CSharp::Chess.SoundCueSO
   clips:
-  - {fileID: 8300000, guid: f02ba75848d4d2a42ab083a5bb91b545, type: 3}
+  - {fileID: 8300000, guid: 019e3117c21d7844e8c35c02249e4ffa, type: 3}
   volumeMin: 1
   volumeMax: 1
   pitchMin: 1

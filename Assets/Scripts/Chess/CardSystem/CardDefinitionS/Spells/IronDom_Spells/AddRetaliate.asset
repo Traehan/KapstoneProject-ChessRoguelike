@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Card.SpellCardDefinitionSO
   cardId: 
   displayName: Retaliate
-  rulesText: Applys +1 <color=#FF0000><i>Retaliate</color></i>
+  rulesText: Apply +1 <color=#FF0000><i>Retaliate</color></i>
   art: {fileID: 21300000, guid: 14c94be583bc35e4d9775ce1d5bfe692, type: 3}
   manaCost: 1
   soundProfile: {fileID: 0}

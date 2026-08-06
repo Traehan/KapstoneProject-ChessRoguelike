@@ -20,6 +20,11 @@ public class VictoryRewardPanel : MonoBehaviour
     public CardView Reward1View;
     public CardView Reward2View;
     public CardView Reward3View;
+    
+    [Header("Movement Reward UI")]
+    [SerializeField] GameObject movementRewardRoot;
+    [SerializeField] MovementRewardIconUI movementRewardIcon1;
+    [SerializeField] MovementRewardIconUI movementRewardIcon2;
 
     readonly List<CardDefinitionSO> _rolledRewards = new();
     bool _rewardClaimed = false;
@@ -64,6 +69,7 @@ public class VictoryRewardPanel : MonoBehaviour
         BindRewardSlot(Reward1, Reward1View, picks, 0);
         BindRewardSlot(Reward2, Reward2View, picks, 1);
         BindRewardSlot(Reward3, Reward3View, picks, 2);
+        BindMovementRewardIcons();
     }
 
     List<CardDefinitionSO> GetRandomUniqueRewards(List<CardDefinitionSO> pool, int amount)
@@ -118,6 +124,48 @@ public class VictoryRewardPanel : MonoBehaviour
             inspectItem = cardView.gameObject.AddComponent<VictoryRewardCardItem>();
 
         inspectItem.Bind(runtimeCard, this, index);
+    }
+    
+    void BindMovementRewardIcons()
+    {
+        if (gameSession == null)
+            return;
+
+        var rewards = gameSession.lastGrantedMapMovementRewards;
+
+        bool hasRewards = rewards != null && rewards.Count > 0;
+
+        if (movementRewardRoot != null)
+            movementRewardRoot.SetActive(hasRewards);
+
+        if (!hasRewards)
+        {
+            if (movementRewardIcon1 != null)
+                movementRewardIcon1.gameObject.SetActive(false);
+
+            if (movementRewardIcon2 != null)
+                movementRewardIcon2.gameObject.SetActive(false);
+
+            return;
+        }
+
+        if (movementRewardIcon1 != null)
+        {
+            bool hasFirst = rewards.Count > 0;
+            movementRewardIcon1.gameObject.SetActive(hasFirst);
+
+            if (hasFirst)
+                movementRewardIcon1.Bind(rewards[0]);
+        }
+
+        if (movementRewardIcon2 != null)
+        {
+            bool hasSecond = rewards.Count > 1;
+            movementRewardIcon2.gameObject.SetActive(hasSecond);
+
+            if (hasSecond)
+                movementRewardIcon2.Bind(rewards[1]);
+        }
     }
 
     void SetSlotActive(GameObject slot, bool active)

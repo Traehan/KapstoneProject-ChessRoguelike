@@ -65,6 +65,19 @@ namespace Chess
 
             StartCoroutine(RunEncounter(chosen));
         }
+        
+        void Update()
+        {
+            if (!Application.isEditor && !Debug.isDebugBuild)
+                return;
+
+            if (Input.GetKeyDown(KeyCode.F2))
+            {
+                var turnManager = TurnManager.Instance ?? FindObjectOfType<TurnManager>();
+                if (turnManager != null)
+                    turnManager.DevForceEncounterWin();
+            }
+        }
 
         
         //use later for when I create map and need to call when an encounter occurs

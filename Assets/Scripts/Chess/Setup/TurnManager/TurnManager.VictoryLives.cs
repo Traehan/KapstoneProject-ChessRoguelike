@@ -28,6 +28,12 @@ namespace Chess
                 FindObjectOfType<GameOverUI>()?.ShowGameOver();
             }
         }
+        
+        public void DevForceEncounterWin()
+        {
+            Debug.Log("[TurnManager] DEV force encounter win.");
+            PlayerWon();
+        }
 
         int PlayerHomeRankY()
         {

@@ -18,7 +18,7 @@ MonoBehaviour:
     die on
   QueenAuraDescription: '<size=22><color=#006400><i><b>Queen Ability</b></i></color></size>
     \n\n Beginning of turn: add 1 defeated ally to hand'
-  Queen: {fileID: 21300000, guid: e57c33a00940a8e4dbc28ca5eaaece10, type: 3}
+  Queen: {fileID: 21300000, guid: 790c853e1e6391e44a62f85fb357966f, type: 3}
   uiColor: {r: 0, g: 0.3921569, b: 0, a: 1}
   queenDefinition: {fileID: 11400000, guid: cf66237b103af9842bb278c16556a7c0, type: 2}
   abilities: []

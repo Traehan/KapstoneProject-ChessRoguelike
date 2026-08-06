@@ -53,15 +53,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -7552582706839291426, guid: 1a21b3c5b818542358664ca98238acb1, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 4.39399
       objectReference: {fileID: 0}
     - target: {fileID: -7552582706839291426, guid: 1a21b3c5b818542358664ca98238acb1, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 10.18881
       objectReference: {fileID: 0}
     - target: {fileID: -7552582706839291426, guid: 1a21b3c5b818542358664ca98238acb1, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 5.2
       objectReference: {fileID: 0}
     - target: {fileID: -7552582706839291426, guid: 1a21b3c5b818542358664ca98238acb1, type: 3}
       propertyPath: m_LocalRotation.w
@@ -90,6 +90,38 @@ PrefabInstance:
     - target: {fileID: -7552582706839291426, guid: 1a21b3c5b818542358664ca98238acb1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -4059273527930080682, guid: 1a21b3c5b818542358664ca98238acb1, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -2742146525497978604, guid: 1a21b3c5b818542358664ca98238acb1, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 176242721239538135, guid: 1a21b3c5b818542358664ca98238acb1, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3202989355326365819, guid: 1a21b3c5b818542358664ca98238acb1, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3644387986998413273, guid: 1a21b3c5b818542358664ca98238acb1, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4648190949277058591, guid: 1a21b3c5b818542358664ca98238acb1, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5838552553471336640, guid: 1a21b3c5b818542358664ca98238acb1, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7405365480947596896, guid: 1a21b3c5b818542358664ca98238acb1, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -170,7 +202,7 @@ MonoBehaviour:
   chipPrefab: {fileID: 6001622697872831897, guid: 7d86de16bfb34b44eb2119de6d2923fa, type: 3}
   expandedMaxIcons: 2
   iconSpacing: 0.15
-  localOffset: {x: -2, y: 4, z: 0}
+  localOffset: {x: -1, y: 1, z: 0}
   worldScale: 0.1
   iconSize: {x: 64, y: 64}
   countSize: {x: 24, y: 24}

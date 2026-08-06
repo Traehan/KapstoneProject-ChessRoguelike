@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9c999f13582ef5c44a5fea464760dc1b, type: 3}
-  m_Name: SFX_BC_Bishop_Move
+  m_Name: SFX_BattleMusic_new
   m_EditorClassIdentifier: Assembly-CSharp::Chess.SoundCueSO
   clips:
-  - {fileID: 8300000, guid: 69e5c1f990b05486a996aca5d9eec606, type: 3}
-  volumeMin: 0.5
-  volumeMax: 0.5
+  - {fileID: 8300000, guid: 2ca718f9000ad8e4480da8e3330e1cc2, type: 3}
+  volumeMin: 0.6
+  volumeMax: 0.6
   pitchMin: 1
   pitchMax: 1
   spatial: 0

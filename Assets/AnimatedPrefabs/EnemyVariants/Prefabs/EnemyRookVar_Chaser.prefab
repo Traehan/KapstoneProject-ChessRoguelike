@@ -43,6 +43,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: EnemyRookVar_Chaser
       objectReference: {fileID: 0}
+    - target: {fileID: -8089108032486474258, guid: 96cda9cc34666478abeb74e6cdb48169, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: -7552582706839291426, guid: 96cda9cc34666478abeb74e6cdb48169, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.3
@@ -53,15 +57,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -7552582706839291426, guid: 96cda9cc34666478abeb74e6cdb48169, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -19.73239
+      value: 4.39399
       objectReference: {fileID: 0}
     - target: {fileID: -7552582706839291426, guid: 96cda9cc34666478abeb74e6cdb48169, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 10.18881
       objectReference: {fileID: 0}
     - target: {fileID: -7552582706839291426, guid: 96cda9cc34666478abeb74e6cdb48169, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 11.69876
+      value: 5.2
       objectReference: {fileID: 0}
     - target: {fileID: -7552582706839291426, guid: 96cda9cc34666478abeb74e6cdb48169, type: 3}
       propertyPath: m_LocalRotation.w
@@ -90,6 +94,22 @@ PrefabInstance:
     - target: {fileID: -7552582706839291426, guid: 96cda9cc34666478abeb74e6cdb48169, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1769748815476269219, guid: 96cda9cc34666478abeb74e6cdb48169, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3644387986998413273, guid: 96cda9cc34666478abeb74e6cdb48169, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4648190949277058591, guid: 96cda9cc34666478abeb74e6cdb48169, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7651152118281000031, guid: 96cda9cc34666478abeb74e6cdb48169, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

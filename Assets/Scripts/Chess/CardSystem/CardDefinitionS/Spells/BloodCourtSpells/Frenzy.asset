@@ -14,14 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Card.SpellCardDefinitionSO
   cardId: 
   displayName: Frenzy
-  rulesText: '+5 Temp. Attack on Ally \n if it Kills an Enemy this turn: +2 Mana'
+  rulesText: 'If this unit kills an Enemy this turn: +2 Mana /n Exhaust'
   art: {fileID: 21300000, guid: 5e1b4a01dbe758b468387aa276526400, type: 3}
-  manaCost: 2
+  manaCost: 1
   soundProfile: {fileID: 0}
   cardType: 1
   targetingMode: 2
   effects:
   - {fileID: 11400000, guid: fe783aa8b08160c41bc9a53311dd9c08, type: 2}
   discardOnCast: 1
-  exhaustOnCast: 0
+  exhaustOnCast: 1
   designNotes: 

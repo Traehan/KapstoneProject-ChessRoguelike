@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using Chess;
 
@@ -46,8 +47,20 @@ public class VictoryRewardHandler : MonoBehaviour
         _rewardGivenThisEncounter = true;
 
         var gs = GameSession.I;
-        if (gs != null && gs.isBossBattle)
-            gs.bossDefeated = true;
+
+        if (gs != null)
+        {
+            if (gs.isBossBattle)
+            {
+                gs.bossDefeated = true;
+                gs.lastGrantedMapMovementRewards.Clear();
+            }
+            else
+            {
+                List<MapMovementType> grantedMoves = gs.GrantRandomDifferentMapMovements(2, includeQueen: true);
+                Debug.Log($"[VictoryRewardHandler] Victory granted map movements: {string.Join(", ", grantedMoves)}");
+            }
+        }
 
         if (CurrencyManager.Instance != null)
             CurrencyManager.Instance.AwardEncounterVictory();

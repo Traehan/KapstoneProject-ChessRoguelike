@@ -7,6 +7,10 @@ public class DevMapTools : MonoBehaviour
     [Header("Enable")]
     [SerializeField] bool enableInEditor = true;
     [SerializeField] bool enableInDevelopmentBuild = true;
+    
+    [Header("Special Dev Swap Rules")]
+    [SerializeField] ClanDefinition bloodCourtClan;
+    [SerializeField] PieceDefinition bloodCourtExtraArmyPiece;
 
     [Header("Scene Restriction")]
     [SerializeField] string requiredSceneName = "MapScene";
@@ -73,8 +77,8 @@ public class DevMapTools : MonoBehaviour
             if (GUILayout.Button("Jump To Boss Battle Now", GUILayout.Height(30f)))
                 map.DevJumpToBossBattleNow();
 
-            if (GUILayout.Button("Jump To Boss Node Only", GUILayout.Height(26f)))
-                map.DevJumpToBossNodeOnly();
+            if (GUILayout.Button("Jump To Shop Now", GUILayout.Height(26f)))
+                map.DevJumpToShopNow();
         }
         else
         {
@@ -95,7 +99,17 @@ public class DevMapTools : MonoBehaviour
                 {
                     if (GameSession.I != null)
                     {
-                        GameSession.I.DevSwapClanMidRun(clan, grantRandomStartingTroop: true);
+                        PieceDefinition extraPiece = null;
+
+                        if (clan == bloodCourtClan)
+                            extraPiece = bloodCourtExtraArmyPiece;
+
+                        GameSession.I.DevSwapClanMidRun(
+                            clan,
+                            grantRandomStartingTroop: true,
+                            extraArmyPiece: extraPiece
+                        );
+
                         Debug.Log($"[DevMapTools] Swapped run to {clan.clanName}");
                     }
                 }

@@ -102,6 +102,11 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
+    private int GenerateRandomIntMapMovementTypes()
+    {
+        return Random.Range(0, 2);
+    }
+
     void GenerateNewMap()
     {
         mapRows.Clear();
@@ -113,10 +118,13 @@ public class MapGenerator : MonoBehaviour
             GS.mapCurrentColumn = CenterColumn;
             GS.selectedMapMovementType = MapMovementType.Rook;
 
-            GS.rookMapMoveCount = 99;
-            GS.bishopMapMoveCount = 99;
-            GS.knightMapMoveCount = 99;
+            GS.rookMapMoveCount = 0;
+            GS.bishopMapMoveCount = 0;
+            GS.knightMapMoveCount = 0;
             GS.queenMapMoveCount = 0;
+
+            GS.GrantRandomDifferentMapMovements(2, includeQueen: false);
+            GS.selectedMapMovementType = GetFirstAvailableMovementType();
         }
 
         for (int row = 0; row < TotalRows; row++)
@@ -310,6 +318,35 @@ public class MapGenerator : MonoBehaviour
         if (!selectedNode.isCurrentlyAvailable) return;
         if (GS == null) return;
 
+        MapMovementType movementUsed = GetSelectedMovementType();
+
+        if (!CanUseMovement(movementUsed))
+        {
+            movementUsed = GetFirstAvailableMovementType();
+
+            if (movementUsed == MapMovementType.None)
+            {
+                Debug.LogWarning("[MapGenerator] No available map movement types left.");
+                RefreshAvailableNodes();
+                UpdateAllVisuals();
+                SaveMapState();
+                return;
+            }
+
+            GS.selectedMapMovementType = movementUsed;
+        }
+
+        if (!GS.TryConsumeMapMovement(movementUsed, 1))
+        {
+            Debug.LogWarning($"[MapGenerator] Failed to consume movement: {movementUsed}");
+            RefreshAvailableNodes();
+            UpdateAllVisuals();
+            SaveMapState();
+            return;
+        }
+
+        Debug.Log($"[MapGenerator] Consumed 1 {movementUsed} movement.");
+
         GS.mapCurrentRow = selectedNode.row;
         GS.mapCurrentColumn = selectedNode.column;
 
@@ -318,7 +355,6 @@ public class MapGenerator : MonoBehaviour
         RefreshAvailableNodes();
         UpdateAllVisuals();
         SaveMapState();
-        // StartCoroutine(CenterScrollOnCurrentNodeAfterLayout());
 
         StartCoroutine(NavigateToNodeScene(selectedNode));
     }
@@ -658,13 +694,21 @@ public class MapGenerator : MonoBehaviour
         {
             GS.mapCurrentRow = state.currentPlayerRow;
             GS.mapCurrentColumn = state.currentPlayerColumn;
-            GS.selectedMapMovementType = state.selectedMovementType;
 
-            var inv = state.movementInventory ?? new MapMovementInventoryData();
-            GS.rookMapMoveCount = inv.rookCount;
-            GS.bishopMapMoveCount = inv.bishopCount;
-            GS.knightMapMoveCount = inv.knightCount;
-            GS.queenMapMoveCount = inv.queenCount;
+            if (GS.CanUseMapMovementType(GS.selectedMapMovementType))
+            {
+                // Keep current selected movement if it is still usable.
+            }
+            else if (state.selectedMovementType != MapMovementType.None && GS.CanUseMapMovementType(state.selectedMovementType))
+            {
+                GS.selectedMapMovementType = state.selectedMovementType;
+            }
+            else
+            {
+                GS.selectedMapMovementType = GetFirstAvailableMovementType();
+            }
+
+            Debug.Log($"[MapGenerator] Restored map position, keeping GameSession movement counts: R={GS.rookMapMoveCount}, B={GS.bishopMapMoveCount}, K={GS.knightMapMoveCount}, Q={GS.queenMapMoveCount}");
         }
 
         for (int row = 0; row < state.rows.Count; row++)
@@ -780,6 +824,48 @@ public class MapGenerator : MonoBehaviour
 
         StartCoroutine(NavigateToNodeScene(bossNode));
     }
+    
+    public void DevJumpToShopNow()
+    {
+        if (GS == null)
+        {
+            Debug.LogWarning("[MapGenerator] DevJumpToShopNow failed: GameSession missing.");
+            return;
+        }
+
+        MapNode shopNode = GetFirstNodeOfType(MapNodeType.Shop);
+        if (shopNode == null)
+        {
+            Debug.LogWarning("[MapGenerator] DevJumpToShopNow failed: no shop node found on this map.");
+            return;
+        }
+
+        GS.mapCurrentRow = shopNode.row;
+        GS.mapCurrentColumn = shopNode.column;
+
+        shopNode.Visit();
+
+        RefreshAvailableNodes();
+        UpdateAllVisuals();
+        SaveMapState();
+
+        StartCoroutine(NavigateToNodeScene(shopNode));
+    }
+    
+    MapNode GetFirstNodeOfType(MapNodeType type)
+    {
+        for (int row = 0; row < mapRows.Count; row++)
+        {
+            for (int col = 0; col < mapRows[row].Count; col++)
+            {
+                MapNode node = mapRows[row][col];
+                if (node != null && node.nodeType == type)
+                    return node;
+            }
+        }
+
+        return null;
+    }
 
     public void DevJumpToBossNodeOnly()
     {
@@ -807,6 +893,9 @@ public class MapGenerator : MonoBehaviour
 
         StartCoroutine(CenterScrollOnCurrentNodeAfterLayout());
     }
+    
+    
+
 
     void OnQuitGameClicked()
     {

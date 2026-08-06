@@ -53,6 +53,9 @@ public class GameSession : MonoBehaviour
     public int bishopMapMoveCount;
     public int knightMapMoveCount;
     public int queenMapMoveCount;
+    
+    [Header("Last Victory Movement Rewards")]
+    public List<MapMovementType> lastGrantedMapMovementRewards = new();
 
     void Awake()
     {
@@ -141,10 +144,78 @@ public class GameSession : MonoBehaviour
 
         selectedMapMovementType = MapMovementType.Rook;
 
-        rookMapMoveCount = 99;
-        bishopMapMoveCount = 99;
-        knightMapMoveCount = 99;
+        rookMapMoveCount = 0;
+        bishopMapMoveCount = 0;
+        knightMapMoveCount = 0;
         queenMapMoveCount = 0;
+    }
+    
+    public List<MapMovementType> GrantRandomDifferentMapMovements(int amount = 2, bool includeQueen = true)
+    {
+        List<MapMovementType> granted = new List<MapMovementType>();
+
+        List<MapMovementRewardOption> pool = new List<MapMovementRewardOption>
+        {
+            new MapMovementRewardOption(MapMovementType.Rook, 10),
+            new MapMovementRewardOption(MapMovementType.Bishop, 10),
+            new MapMovementRewardOption(MapMovementType.Knight, 10)
+        };
+
+        if (includeQueen)
+            pool.Add(new MapMovementRewardOption(MapMovementType.Queen, 2));
+
+        int take = Mathf.Min(amount, pool.Count);
+
+        for (int i = 0; i < take; i++)
+        {
+            MapMovementType picked = PickWeightedMapMovement(pool);
+
+            AddMapMovementCount(picked, 1);
+            granted.Add(picked);
+
+            pool.RemoveAll(x => x.type == picked);
+        }
+
+        lastGrantedMapMovementRewards.Clear();
+        lastGrantedMapMovementRewards.AddRange(granted);
+
+        Debug.Log($"[GameSession] Granted map movement rewards: {string.Join(", ", granted)}");
+        Debug.Log($"[GameSession] Map movement counts: R={rookMapMoveCount}, B={bishopMapMoveCount}, K={knightMapMoveCount}, Q={queenMapMoveCount}");
+
+        return granted;
+    }
+
+    struct MapMovementRewardOption
+    {
+        public MapMovementType type;
+        public int weight;
+
+        public MapMovementRewardOption(MapMovementType type, int weight)
+        {
+            this.type = type;
+            this.weight = weight;
+        }
+    }
+
+    MapMovementType PickWeightedMapMovement(List<MapMovementRewardOption> pool)
+    {
+        int totalWeight = 0;
+
+        for (int i = 0; i < pool.Count; i++)
+            totalWeight += Mathf.Max(0, pool[i].weight);
+
+        int roll = Random.Range(0, totalWeight);
+        int running = 0;
+
+        for (int i = 0; i < pool.Count; i++)
+        {
+            running += Mathf.Max(0, pool[i].weight);
+
+            if (roll < running)
+                return pool[i].type;
+        }
+
+        return pool[0].type;
     }
 
     public int GetMapMovementCount(MapMovementType movementType)
@@ -422,7 +493,30 @@ public class GameSession : MonoBehaviour
         return 2;
     }
     
-    public bool DevSwapClanMidRun(ClanDefinition newClan, bool grantRandomStartingTroop = true)
+    public PieceDefinition DevAddArmyPiece(PieceDefinition pieceTemplate)
+{
+    if (pieceTemplate == null)
+    {
+        Debug.LogWarning("[GameSession] DevAddArmyPiece failed: pieceTemplate is null.");
+        return null;
+    }
+
+    var runtime = CreateRuntimePiece(pieceTemplate);
+    if (runtime == null)
+    {
+        Debug.LogWarning("[GameSession] DevAddArmyPiece failed: could not create runtime piece.");
+        return null;
+    }
+
+    army.Add(runtime);
+    Debug.Log($"[GameSession] DEV added army piece: {runtime.displayName}. Army count now {army.Count}.");
+    return runtime;
+}
+
+public bool DevSwapClanMidRun(
+    ClanDefinition newClan,
+    bool grantRandomStartingTroop = true,
+    PieceDefinition extraArmyPiece = null)
 {
     if (newClan == null)
     {
@@ -433,7 +527,6 @@ public class GameSession : MonoBehaviour
     selectedClan = newClan;
     startingTroopPool = newClan.StartingTroopPool;
 
-    // Replace clan-owned run content, but DO NOT reset map progress/currency.
     army.Clear();
     CurrentRunDeck.Clear();
     PotentialSpellPool.Clear();
@@ -444,12 +537,12 @@ public class GameSession : MonoBehaviour
     _queenDefRuntime = null;
     hasGrantedStartingTroop = false;
 
-    // Since this is a dev swap on the map, prevent the opening popup from reappearing.
+    // Prevent the normal starting popup flow from acting weird after a dev swap.
     hasShownStartingTroopPopup = true;
 
-    // Make sure no old encounter is still queued.
     selectedEncounter = null;
     isBossBattle = false;
+    bossDefeated = false;
 
     if (selectedClan.queenDefinition != null)
     {
@@ -462,11 +555,13 @@ public class GameSession : MonoBehaviour
         Debug.LogError("[GameSession] DevSwapClanMidRun: selectedClan.queenDefinition not assigned.");
     }
 
+    PieceDefinition troop = null;
     if (grantRandomStartingTroop)
-    {
-        var troop = GrantRandomStartingTroop();
-        Debug.Log($"[GameSession] Dev clan swap troop: {troop?.displayName}");
-    }
+        troop = GrantRandomStartingTroop();
+
+    PieceDefinition extra = null;
+    if (extraArmyPiece != null)
+        extra = DevAddArmyPiece(extraArmyPiece);
 
     if (selectedClan.startingBattleDeck != null && selectedClan.startingBattleDeck.Length > 0)
         CurrentRunDeck.AddRange(selectedClan.startingBattleDeck);
@@ -480,6 +575,7 @@ public class GameSession : MonoBehaviour
 
     Debug.Log(
         $"[GameSession] DEV CLAN SWAP -> {selectedClan.clanName} | " +
+        $"Troop={troop?.displayName} | Extra={extra?.displayName} | " +
         $"Army={army.Count}, RunDeck={CurrentRunDeck.Count}, SpellPool={PotentialSpellPool.Count}"
     );
 

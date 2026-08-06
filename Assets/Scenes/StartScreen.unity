@@ -672,9 +672,9 @@ RectTransform:
   m_Father: {fileID: 1215286689}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
-  m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 125}
-  m_SizeDelta: {x: 75, y: 50}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: 0, y: -100}
+  m_SizeDelta: {x: 75, y: -400}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1093311638
 MonoBehaviour:
@@ -829,10 +829,10 @@ RectTransform:
   - {fileID: 1777525415}
   m_Father: {fileID: 1920333373}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -135}
-  m_SizeDelta: {x: 37, y: 25}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: 0, y: -141.25}
+  m_SizeDelta: {x: 37, y: -437.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1170078224
 MonoBehaviour:
@@ -2002,11 +2002,27 @@ PrefabInstance:
     - target: {fileID: 7882225745780591430, guid: af55ef0f1e9ca4144b3f95a0a6923738, type: 3}
       propertyPath: encounterCatalog
       value: 
-      objectReference: {fileID: 11400000, guid: 9dc5fb757d81e59429cb7dd509b5b75f, type: 2}
+      objectReference: {fileID: 11400000, guid: aaa1281255a34754d9d4eba6dd4c2e1e, type: 2}
+    - target: {fileID: 7882225745780591430, guid: af55ef0f1e9ca4144b3f95a0a6923738, type: 3}
+      propertyPath: rookMapMoveCount
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7882225745780591430, guid: af55ef0f1e9ca4144b3f95a0a6923738, type: 3}
       propertyPath: queenIconFallback
       value: 
       objectReference: {fileID: 21300000, guid: 297a671057ddef34489e6c89014aeec0, type: 3}
+    - target: {fileID: 7882225745780591430, guid: af55ef0f1e9ca4144b3f95a0a6923738, type: 3}
+      propertyPath: queenMapMoveCount
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7882225745780591430, guid: af55ef0f1e9ca4144b3f95a0a6923738, type: 3}
+      propertyPath: bishopMapMoveCount
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7882225745780591430, guid: af55ef0f1e9ca4144b3f95a0a6923738, type: 3}
+      propertyPath: knightMapMoveCount
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7882225745780591430, guid: af55ef0f1e9ca4144b3f95a0a6923738, type: 3}
       propertyPath: hasGrantedStartingTroop
       value: 1
@@ -2147,11 +2163,11 @@ PrefabInstance:
     - target: {fileID: 8305974750690956090, guid: 7f9cc6481156b124fb0bdfc28b0fcf8e, type: 3}
       propertyPath: menuMusicCue
       value: 
-      objectReference: {fileID: 11400000, guid: 6dca2db237c913b42ba30694e728215f, type: 2}
+      objectReference: {fileID: 11400000, guid: 5e892df8bd7df9644a0111f5702814df, type: 2}
     - target: {fileID: 8305974750690956090, guid: 7f9cc6481156b124fb0bdfc28b0fcf8e, type: 3}
       propertyPath: battleMusicCue
       value: 
-      objectReference: {fileID: 11400000, guid: 71a7425d7f5818f489a11806c5998cf7, type: 2}
+      objectReference: {fileID: 11400000, guid: 6f6f9aba8c946cf45aeb21a1c64707c5, type: 2}
     - target: {fileID: 9020764490447516343, guid: 7f9cc6481156b124fb0bdfc28b0fcf8e, type: 3}
       propertyPath: m_Name
       value: SoundManager
