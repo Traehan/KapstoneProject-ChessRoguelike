@@ -34,7 +34,11 @@ namespace Chess
             if (addMaxHP != 0)
             {
                 runtime.MaxHP += addMaxHP;
-                runtime.CurrentHP = Mathf.Min(runtime.CurrentHP + addMaxHP, runtime.MaxHP);
+
+                if (addMaxHP > 0 && runtime.Owner != null)
+                    PieceDamage.Heal(runtime.Owner, addMaxHP, runtime.Owner);
+                else if (runtime.Owner != null)
+                    runtime.CurrentHP = Mathf.Min(runtime.CurrentHP, runtime.MaxHP);
             }
             if (addAttack != 0)
             {

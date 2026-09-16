@@ -18,6 +18,8 @@ namespace Chess
             GameEvents.OnCommandExecuted += HandleCommandExecuted;
             GameEvents.OnCommandUndone += HandleCommandUndone;
             GameEvents.OnCommandRedone += HandleCommandRedone;
+
+            GameEvents.OnStatusApplied += NotifyAbilitiesStatusApplied;
         }
 
         void OnDisable()
@@ -34,6 +36,8 @@ namespace Chess
             GameEvents.OnCommandExecuted -= HandleCommandExecuted;
             GameEvents.OnCommandUndone -= HandleCommandUndone;
             GameEvents.OnCommandRedone -= HandleCommandRedone;
+
+            GameEvents.OnStatusApplied -= NotifyAbilitiesStatusApplied;
         }
 
         void HandlePieceMoved(Piece piece, Vector2Int from, Vector2Int to, MoveReason reason)
@@ -83,13 +87,13 @@ namespace Chess
                     a?.OnPieceCaptured(_clan, victim, by, at);
             }
 
-            // notify all player piece runtimes so piece passives can react to nearby deaths
+            // notify every piece runtime (both teams) so passives can react to any death,
+            // ally or opposing (an ability distinguishes the two via victim.Team)
             if (board != null)
             {
                 foreach (var piece in board.GetAllPieces())
                 {
                     if (piece == null) continue;
-                    if (piece.Team != playerTeam) continue;
 
                     var runtime = piece.GetComponent<PieceRuntime>();
                     if (runtime == null) continue;
@@ -129,7 +133,6 @@ namespace Chess
             foreach (var piece in board.GetAllPieces())
             {
                 if (piece == null) continue;
-                if (piece.Team != playerTeam) continue;
 
                 var runtime = piece.GetComponent<PieceRuntime>();
                 if (runtime == null) continue;
@@ -147,7 +150,6 @@ namespace Chess
             foreach (var piece in board.GetAllPieces())
             {
                 if (piece == null) continue;
-                if (piece.Team != playerTeam) continue;
 
                 var runtime = piece.GetComponent<PieceRuntime>();
                 if (runtime == null) continue;

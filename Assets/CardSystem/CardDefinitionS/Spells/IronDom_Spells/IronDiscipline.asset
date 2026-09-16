@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a098aae463101ff4aaf09c21b4c87494, type: 3}
+  m_Name: IronDiscipline
+  m_EditorClassIdentifier: Assembly-CSharp::Card.SpellCardDefinitionSO
+  cardId: 
+  displayName: Iron Discipline
+  rulesText: Target ally and surrounding allies gain +1 <color=#FF0000><i>Retaliate</color></i>
+    (max 3)
+  flavorText: "One decree, one shield-wall \u2014 every spear answers together."
+  art: {fileID: 21300000, guid: a7f996c5a68e9194fb8bbfb37703fa14, type: 3}
+  manaCost: 2
+  soundProfile: {fileID: 0}
+  cardType: 1
+  targetingMode: 2
+  rarity: 1
+  effects:
+  - {fileID: 11400000, guid: 4bc8db4469703c506f8b1aaa4c18690d, type: 2}
+  discardOnCast: 1
+  exhaustOnCast: 0
+  designNotes: 

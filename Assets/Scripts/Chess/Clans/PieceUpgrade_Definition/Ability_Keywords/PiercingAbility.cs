@@ -48,8 +48,8 @@ namespace Chess
                 if (piece.Team != attacker.Team)
                 {
                     int dmg = Mathf.Max(1, atk.baseDamage + atk.damageDelta + splashDamage);
-                    piece.currentHP -= dmg;
-                    if (piece.currentHP <= 0)
+                    var hit = PieceDamage.Apply(piece, dmg, attacker, bypassFortify: true);
+                    if (hit.died)
                         board.CapturePiece(piece);
 
                     pierced++;

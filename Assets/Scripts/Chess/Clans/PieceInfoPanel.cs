@@ -24,6 +24,14 @@ public class PieceInfoPanel : MonoBehaviour
     public TextMeshProUGUI statsText;
     public TextMeshProUGUI AbilityDescription;
 
+    [Header("Abilities")]
+    [Tooltip("Parent transform where ability entries (innate + keyword) will be instantiated. Shown for both allied and enemy pieces.")]
+    public Transform abilitiesContainer;
+    [Tooltip("Prefab with PieceAbilityEntryUI on it.")]
+    public PieceAbilityEntryUI abilityEntryPrefab;
+    [Tooltip("Shown when this piece has no innate/keyword abilities.")]
+    public TextMeshProUGUI noAbilitiesText;
+
     [Header("Upgrades")]
     [Tooltip("Parent transform where upgrade entries will be instantiated.")]
     public Transform upgradesContainer;
@@ -100,29 +108,17 @@ public class PieceInfoPanel : MonoBehaviour
                 AbilityDescription.text = def.Description;
         }
         
-        // Stats: read from the Piece, which is what combat updates
-        if (statsText != null)
-        {
-            var piece = runtime.Owner;
-            if (piece != null)
-            {
-                int displayedAtk = runtime.GetDisplayedAttack();
-                // statsText.text = $"ATK: {displayedAtk}\nHP: {piece.currentHP} / {piece.maxHP}";
+        // Stats
+        int displayedAtk = runtime.GetDisplayedAttack();
 
-                Attacktext.text = $"{displayedAtk}";
-                currHealthtext.text = $"{piece.currentHP}";
-                maxHealthtext.text = $"{piece.maxHP}";
-                Movementtext.text = $"{runtime.Movement}";
-            }
-            else
-            {
-                // Fallback (shouldn't really happen, but safe)
-                statsText.text = $"ATK: {runtime.Attack}\nHP: {runtime.CurrentHP} / {runtime.MaxHP}";
-            }
-        }
+        if (Attacktext != null) Attacktext.text = $"{displayedAtk}";
+        if (currHealthtext != null) currHealthtext.text = $"{owner.currentHP}";
+        if (maxHealthtext != null) maxHealthtext.text = $"{owner.maxHP}";
+        if (Movementtext != null) Movementtext.text = $"{runtime.Movement}";
 
 
-        // Upgrades list
+        // Abilities & upgrades lists
+        PopulateAbilities(runtime);
         PopulateUpgrades(runtime);
     }
 
@@ -133,6 +129,46 @@ public class PieceInfoPanel : MonoBehaviour
 
         if (root != null)
             root.SetActive(false);
+    }
+
+    void PopulateAbilities(PieceRuntime runtime)
+    {
+        // Clear old entries
+        if (abilitiesContainer != null)
+        {
+            for (int i = abilitiesContainer.childCount - 1; i >= 0; i--)
+            {
+                Destroy(abilitiesContainer.GetChild(i).gameObject);
+            }
+        }
+
+        bool hasAny = runtime.InnateAbilities.Count > 0 || runtime.KeywordAbilities.Count > 0;
+        if (!hasAny)
+        {
+            if (noAbilitiesText != null)
+                noAbilitiesText.gameObject.SetActive(true);
+            return;
+        }
+
+        if (noAbilitiesText != null)
+            noAbilitiesText.gameObject.SetActive(false);
+
+        if (abilitiesContainer == null || abilityEntryPrefab == null)
+            return;
+
+        foreach (var a in runtime.InnateAbilities)
+        {
+            if (a == null) continue;
+            var entry = Instantiate(abilityEntryPrefab, abilitiesContainer);
+            entry.Bind(a);
+        }
+
+        foreach (var a in runtime.KeywordAbilities)
+        {
+            if (a == null) continue;
+            var entry = Instantiate(abilityEntryPrefab, abilitiesContainer);
+            entry.Bind(a);
+        }
     }
 
     void PopulateUpgrades(PieceRuntime runtime)
@@ -165,10 +201,10 @@ public class PieceInfoPanel : MonoBehaviour
             var entry = Instantiate(upgradeEntryPrefab, upgradesContainer);
             entry.Bind(u);
         }
-        
-            void OnEnable()
+    }
+
+    void OnEnable()
     {
-    
         GameEvents.OnPieceMoved += OnAnyPieceMoved;
         GameEvents.OnAttackResolved += OnAttackResolved;
         GameEvents.OnPieceDamaged += OnPieceDamaged;
@@ -181,73 +217,71 @@ public class PieceInfoPanel : MonoBehaviour
         GameEvents.OnCommandExecuted += OnAnyCommandChanged;
     }
 
-        void OnDisable()
+    void OnDisable()
     {
-    GameEvents.OnPieceMoved -= OnAnyPieceMoved;
-    GameEvents.OnAttackResolved -= OnAttackResolved;
-    GameEvents.OnPieceDamaged -= OnPieceDamaged;
-    GameEvents.OnPieceHealed -= OnPieceHealed;
-    GameEvents.OnPieceCaptured -= OnPieceCaptured;
-    GameEvents.OnPieceRestored -= OnPieceRestored;
+        GameEvents.OnPieceMoved -= OnAnyPieceMoved;
+        GameEvents.OnAttackResolved -= OnAttackResolved;
+        GameEvents.OnPieceDamaged -= OnPieceDamaged;
+        GameEvents.OnPieceHealed -= OnPieceHealed;
+        GameEvents.OnPieceCaptured -= OnPieceCaptured;
+        GameEvents.OnPieceRestored -= OnPieceRestored;
 
-    GameEvents.OnCommandUndone -= OnAnyCommandChanged;
-    GameEvents.OnCommandRedone -= OnAnyCommandChanged;
-    GameEvents.OnCommandExecuted -= OnAnyCommandChanged;
-}
-
-bool IsCurrent(Piece p) => _current != null && _current.Owner == p;
-
-void RefreshStatsOnly()
-{
-    if (_current == null || _current.Owner == null) return;
-
-    var piece = _current.Owner;
-
-    if (statsText != null)
-    {
-        int displayedAtk = _current.GetDisplayedAttack();
-        statsText.text = $"ATK: {displayedAtk}\nHP: {piece.currentHP} / {piece.maxHP}";
+        GameEvents.OnCommandUndone -= OnAnyCommandChanged;
+        GameEvents.OnCommandRedone -= OnAnyCommandChanged;
+        GameEvents.OnCommandExecuted -= OnAnyCommandChanged;
     }
-}
 
-// ---- Event handlers ----
+    bool IsCurrent(Piece p) => _current != null && _current.Owner == p;
 
-void OnAnyPieceMoved(Piece piece, Vector2Int from, Vector2Int to, MoveReason reason)
-{
-    if (IsCurrent(piece)) RefreshStatsOnly();
-}
+    void RefreshStatsOnly()
+    {
+        if (_current == null || _current.Owner == null) return;
 
-void OnAttackResolved(AttackReport r)
-{
-    if (IsCurrent(r.attacker) || IsCurrent(r.defender)) RefreshStatsOnly();
-}
+        var piece = _current.Owner;
+        int displayedAtk = _current.GetDisplayedAttack();
 
-void OnPieceDamaged(Piece target, int amount, Piece source)
-{
-    if (IsCurrent(target) || IsCurrent(source)) RefreshStatsOnly();
-}
+        if (Attacktext != null) Attacktext.text = $"{displayedAtk}";
+        if (currHealthtext != null) currHealthtext.text = $"{piece.currentHP}";
+        if (maxHealthtext != null) maxHealthtext.text = $"{piece.maxHP}";
+        if (Movementtext != null) Movementtext.text = $"{_current.Movement}";
+    }
 
-void OnPieceHealed(Piece target, int amount, Piece source)
-{
-    if (IsCurrent(target) || IsCurrent(source)) RefreshStatsOnly();
-}
+    // ---- Event handlers ----
 
-void OnPieceCaptured(Piece victim, Piece by, Vector2Int at)
-{
-    if (IsCurrent(victim)) Hide();       // selected piece got removed
-    else if (IsCurrent(by)) RefreshStatsOnly();
-}
+    void OnAnyPieceMoved(Piece piece, Vector2Int from, Vector2Int to, MoveReason reason)
+    {
+        if (IsCurrent(piece)) RefreshStatsOnly();
+    }
 
-void OnPieceRestored(Piece piece, Vector2Int at)
-{
-    if (IsCurrent(piece)) RefreshStatsOnly();
-}
+    void OnAttackResolved(AttackReport r)
+    {
+        if (IsCurrent(r.attacker) || IsCurrent(r.defender)) RefreshStatsOnly();
+    }
 
-void OnAnyCommandChanged(IGameCommand cmd)
-{
-    // safest: undo/redo often changes HP/fortify/position.
-    if (_current != null) RefreshStatsOnly();
-}
+    void OnPieceDamaged(Piece target, int amount, Piece source)
+    {
+        if (IsCurrent(target) || IsCurrent(source)) RefreshStatsOnly();
+    }
 
+    void OnPieceHealed(Piece target, int amount, Piece source)
+    {
+        if (IsCurrent(target) || IsCurrent(source)) RefreshStatsOnly();
+    }
+
+    void OnPieceCaptured(Piece victim, Piece by, Vector2Int at)
+    {
+        if (IsCurrent(victim)) Hide();       // selected piece got removed
+        else if (IsCurrent(by)) RefreshStatsOnly();
+    }
+
+    void OnPieceRestored(Piece piece, Vector2Int at)
+    {
+        if (IsCurrent(piece)) RefreshStatsOnly();
+    }
+
+    void OnAnyCommandChanged(IGameCommand cmd)
+    {
+        // safest: undo/redo often changes HP/fortify/position.
+        if (_current != null) RefreshStatsOnly();
     }
 }

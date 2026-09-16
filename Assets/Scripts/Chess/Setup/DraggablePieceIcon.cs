@@ -39,6 +39,8 @@ public class DraggablePieceIcon : MonoBehaviour,
 
     CanvasGroup canvasGroup;
 
+    public bool IsDragging { get; private set; }
+
     public void Init(PieceDefinition def, PlacementManager placer, PrepPanel panel)
     {
         _combatMode = false;
@@ -93,9 +95,17 @@ public class DraggablePieceIcon : MonoBehaviour,
 
     public void OnBeginDrag(PointerEventData e)
     {
+        IsDragging = true;
         _startAnchoredPos = _rt.anchoredPosition;
         _startParent = _rt.parent;
         _startSiblingIndex = _rt.GetSiblingIndex();
+
+        // Only reorder siblings for battle-hand drags: PrepPanel drags this same component under a
+        // GridLayoutGroup, where reordering siblings triggers an instant re-snap of every card's position
+        // that fights this drag (see CardView.SetHoverLiftEnabled for the same class of conflict).
+        if (_combatMode)
+            _rt.SetAsLastSibling();
+
         _cg.blocksRaycasts = false;
         _ghost = null;
         _ghostPiece = null;
@@ -165,6 +175,7 @@ public class DraggablePieceIcon : MonoBehaviour,
 
     public void OnEndDrag(PointerEventData e)
     {
+        IsDragging = false;
         _cg.blocksRaycasts = true;
 
         bool placed = false;

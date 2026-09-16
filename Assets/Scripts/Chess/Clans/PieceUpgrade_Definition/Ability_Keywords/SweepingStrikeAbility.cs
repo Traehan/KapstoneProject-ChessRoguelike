@@ -42,8 +42,8 @@ namespace Chess
                 int dmg = Mathf.Max(0, ctx.piece.attack);
                 if (dmg <= 0) continue;
 
-                p.currentHP -= dmg;
-                if (p.currentHP <= 0)
+                var hit = PieceDamage.Apply(p, dmg, attacker, bypassFortify: false);
+                if (hit.died)
                 {
                     board.CapturePiece(p);
                 }

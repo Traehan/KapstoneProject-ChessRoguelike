@@ -35,6 +35,10 @@ namespace Chess
 
         private bool isLifeLossSequencePlaying;
 
+        public bool IsLifeLossSequencePlaying => isLifeLossSequencePlaying;
+
+        public Transform ShakeTarget => shakeTarget;
+
         private void Awake()
         {
             if (shakeTarget == null)

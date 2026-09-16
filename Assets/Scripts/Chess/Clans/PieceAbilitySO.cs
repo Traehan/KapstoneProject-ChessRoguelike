@@ -13,6 +13,7 @@ namespace Chess
         [Header("Meta")]
         [Tooltip("Shown in UI / tooltips.")] public string displayName;
         [TextArea] public string description;
+        public Sprite icon;
 
         /// <summary>Lightweight context passed to hooks.</summary>
         public readonly struct PieceCtx
@@ -52,8 +53,24 @@ namespace Chess
         public virtual void OnSpawn(PieceCtx ctx) { }
         public virtual void OnBeginPlayerTurn(PieceCtx ctx) { }
         public virtual void OnEndPlayerTurn(PieceCtx ctx) { }
+        public virtual void OnBeginEnemyTurn(PieceCtx ctx) { }
+        public virtual void OnEndEnemyTurn(PieceCtx ctx) { }
         public virtual void OnPieceMoved(PieceCtx ctx, Vector2Int from, Vector2Int to) { }
         public virtual void OnUndo(PieceCtx ctx) { }
+
+        /// <summary>Fired on the piece that took damage, regardless of source (melee/spell/bleed).</summary>
+        public virtual void OnDamageReceived(PieceCtx ctx, int amount, Piece source) { }
+
+        /// <summary>
+        /// Optional: claim this piece's move/attack destination for its turn (e.g. a chase/greedy
+        /// AI archetype authored as a passive). Return true and set dest to claim it; the first
+        /// ability (innate, then keyword) that returns true wins.
+        /// </summary>
+        public virtual bool TryGetMovementDestination(PieceCtx ctx, out Vector2Int dest)
+        {
+            dest = default;
+            return false;
+        }
 
         /// <summary>Card-play hooks for innate unit passives like Incant / Rally.</summary>
         public virtual void OnSpellCardPlayed(PieceCtx ctx, Card.Card card, SpellCardPlayReport report) { }

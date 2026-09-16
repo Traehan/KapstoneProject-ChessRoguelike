@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4003a8fc45004224e9a532dabec43a29, type: 3}
+  m_Name: Reinforced Plating Relic SO
+  m_EditorClassIdentifier: Assembly-CSharp::Chess.ReinforcedPlatingRelicSO
+  description: 'End of Turn: +1 fortify to pieces who haven''t moved'
+  displayName: Reinforced Plating
+  icon: {fileID: -6207051455868829426, guid: 0b83b02aa7f1e46e7b68583693b7de76, type: 3}
+  rarity: 1
+  restrictedToClan: {fileID: 11400000, guid: b4012547c94901e4096979993f744095, type: 2}
+  fortifyPerTurn: 1
+  maxStacks: 100

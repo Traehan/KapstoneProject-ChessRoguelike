@@ -15,10 +15,25 @@ namespace Chess
         public ChessBoard Board { get; private set; }
         public TurnManager TM { get; private set; }
 
-        // Runtime stats (start from Piece / PieceDefinition; can be modified by upgrades)
-        public int MaxHP { get; set; }
-        public int CurrentHP { get; set; }
-        public int Attack { get; set; }
+        // Runtime stats (start from Piece / PieceDefinition; can be modified by upgrades).
+        // HP/Attack are stored on Owner (Piece) — the single source of truth that combat,
+        // status ticks, and spell damage all write to directly. These are pass-through
+        // accessors so ability/upgrade code has a uniform place to read/write them.
+        public int MaxHP
+        {
+            get => Owner != null ? Owner.maxHP : 0;
+            set { if (Owner != null) Owner.maxHP = value; }
+        }
+        public int CurrentHP
+        {
+            get => Owner != null ? Owner.currentHP : 0;
+            set { if (Owner != null) Owner.currentHP = value; }
+        }
+        public int Attack
+        {
+            get => Owner != null ? Owner.attack : 0;
+            set { if (Owner != null) Owner.attack = value; }
+        }
         public int Movement { get; set; }
         public int CurrentAttack { get; set; }
 
@@ -27,6 +42,8 @@ namespace Chess
         public int SlotsMax => slotsMax;
         public int SlotsUsed => upgrades.Count;
         public IReadOnlyList<PieceUpgradeSO> Upgrades => upgrades;
+        public IReadOnlyList<PieceAbilitySO> InnateAbilities => innate;
+        public IReadOnlyList<PieceAbilitySO> KeywordAbilities => keywordAbilities;
 
         readonly List<PieceAbilitySO> innate = new();
         readonly List<PieceUpgradeSO> upgrades = new();
@@ -73,9 +90,6 @@ namespace Chess
             Board = board;
             TM = tm;
 
-            MaxHP = owner.maxHP;
-            CurrentHP = owner.currentHP;
-            Attack = owner.attack;
             Movement = owner.Definition != null ? owner.Definition.maxStride : 1;
 
             if (owner.TryGetComponent<PieceLoadout>(out var loadout))
@@ -84,6 +98,9 @@ namespace Chess
                 if (loadout.innateAbilities != null) innate.AddRange(loadout.innateAbilities);
             }
 
+            if (owner.Definition is EnemyPieceDefinition enemyDef && enemyDef.innateAbilities != null)
+                innate.AddRange(enemyDef.innateAbilities);
+
             var def = owner.Definition;
             var queued = GameSession.I?.ConsumeUpgradesFor(def);
             if (queued != null)
@@ -91,8 +108,6 @@ namespace Chess
                 foreach (var u in queued)
                     TryApplyUpgrade(u);
             }
-
-            SyncStatsToOwner();
 
             var ctx = new PieceAbilitySO.PieceCtx(Owner, Board, TM);
             foreach (var a in innate)
@@ -111,7 +126,6 @@ namespace Chess
 
             upgrades.Add(u);
             u.ApplyTo(this);
-            SyncStatsToOwner();
 
             if (u.keywordAbility != null && !keywordAbilities.Contains(u.keywordAbility))
             {
@@ -130,14 +144,6 @@ namespace Chess
             return true;
         }
 
-        void SyncStatsToOwner()
-        {
-            if (Owner == null) return;
-            Owner.maxHP = MaxHP;
-            Owner.currentHP = CurrentHP;
-            Owner.attack = Attack;
-        }
-
         public void Notify_BeginPlayerTurn()
         {
             var ctx = new PieceAbilitySO.PieceCtx(Owner, Board, TM);
@@ -150,6 +156,44 @@ namespace Chess
             var ctx = new PieceAbilitySO.PieceCtx(Owner, Board, TM);
             foreach (var a in innate) a?.OnEndPlayerTurn(ctx);
             foreach (var a in keywordAbilities) a?.OnEndPlayerTurn(ctx);
+        }
+
+        public void Notify_BeginEnemyTurn()
+        {
+            var ctx = new PieceAbilitySO.PieceCtx(Owner, Board, TM);
+            foreach (var a in innate) a?.OnBeginEnemyTurn(ctx);
+            foreach (var a in keywordAbilities) a?.OnBeginEnemyTurn(ctx);
+        }
+
+        public void Notify_EndEnemyTurn()
+        {
+            var ctx = new PieceAbilitySO.PieceCtx(Owner, Board, TM);
+            foreach (var a in innate) a?.OnEndEnemyTurn(ctx);
+            foreach (var a in keywordAbilities) a?.OnEndEnemyTurn(ctx);
+        }
+
+        public void Notify_DamageReceived(int amount, Piece source)
+        {
+            var ctx = new PieceAbilitySO.PieceCtx(Owner, Board, TM);
+            foreach (var a in innate) a?.OnDamageReceived(ctx, amount, source);
+            foreach (var a in keywordAbilities) a?.OnDamageReceived(ctx, amount, source);
+        }
+
+        /// <summary>Checks innate then keyword abilities for one that claims this turn's move/attack destination.</summary>
+        public bool TryGetMovementDestination(ChessBoard board, out Vector2Int dest)
+        {
+            dest = default;
+            var ctx = new PieceAbilitySO.PieceCtx(Owner, board, TM);
+
+            foreach (var a in innate)
+                if (a != null && a.TryGetMovementDestination(ctx, out dest))
+                    return true;
+
+            foreach (var a in keywordAbilities)
+                if (a != null && a.TryGetMovementDestination(ctx, out dest))
+                    return true;
+
+            return false;
         }
 
         public void Notify_PieceMoved(Vector2Int from, Vector2Int to)

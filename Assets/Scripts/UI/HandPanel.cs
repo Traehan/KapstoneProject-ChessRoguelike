@@ -31,6 +31,12 @@ public class HandPanel : MonoBehaviour
     [SerializeField] Ease discardEase = Ease.InBack;
     [SerializeField] Ease relayoutEase = Ease.OutCubic;
 
+    [Header("Fan Layout")]
+    [SerializeField] float maxFanAngle = 24f;
+    [SerializeField] float arcHeight = 40f;
+    [SerializeField] float minCardSpacing = 60f;
+    [SerializeField] float widthPaddingPx = 40f;
+
     readonly Dictionary<string, HandCardUI> _visualsById = new();
     readonly List<Card.Card> _orderedHandCards = new();
     readonly Queue<Card.Card> _drawQueue = new();
@@ -296,7 +302,10 @@ public class HandPanel : MonoBehaviour
             view = go.GetComponentInChildren<CardView>();
 
         if (view != null)
+        {
             view.Bind(card);
+            view.SetHoverLiftEnabled(true);
+        }
 
         var summonDef = card.GetSummonPieceDefinition();
 
@@ -365,19 +374,24 @@ public class HandPanel : MonoBehaviour
 
     void LayoutHandAnimated(float duration)
     {
-        for (int i = 0; i < _orderedHandCards.Count; i++)
+        int count = _orderedHandCards.Count;
+
+        for (int i = 0; i < count; i++)
         {
             var card = _orderedHandCards[i];
             var visual = GetVisualForCard(card);
             if (visual == null)
                 continue;
 
-            Vector2 target = GetAnchoredPositionForIndex(i, _orderedHandCards.Count);
+            (Vector2 target, float rotationZ) = GetHandLayoutForIndex(i, count);
+
+            visual.CardView?.SetHandBasePosition(target);
 
             if (visual.RectTransform != null)
             {
                 visual.RectTransform.DOKill();
                 visual.RectTransform.DOAnchorPos(target, duration).SetEase(relayoutEase);
+                visual.RectTransform.DOLocalRotate(new Vector3(0f, 0f, rotationZ), duration).SetEase(relayoutEase);
             }
 
             if (visual.CanvasGroup != null)
@@ -390,23 +404,50 @@ public class HandPanel : MonoBehaviour
 
     void LayoutHandImmediate()
     {
-        for (int i = 0; i < _orderedHandCards.Count; i++)
+        int count = _orderedHandCards.Count;
+
+        for (int i = 0; i < count; i++)
         {
             var card = _orderedHandCards[i];
             var visual = GetVisualForCard(card);
             if (visual == null)
                 continue;
 
-            visual.RectTransform.anchoredPosition = GetAnchoredPositionForIndex(i, _orderedHandCards.Count);
+            (Vector2 target, float rotationZ) = GetHandLayoutForIndex(i, count);
+
+            visual.CardView?.SetHandBasePosition(target);
+
+            visual.RectTransform.anchoredPosition = target;
+            visual.RectTransform.localRotation = Quaternion.Euler(0f, 0f, rotationZ);
             visual.CanvasGroup.alpha = 1f;
         }
     }
 
-    Vector2 GetAnchoredPositionForIndex(int index, int count)
+    (Vector2 position, float rotationZ) GetHandLayoutForIndex(int index, int count)
     {
-        float totalWidth = Mathf.Max(0, count - 1) * cardSpacing;
+        if (count <= 0)
+            return (Vector2.zero, 0f);
+
+        float spacing = cardSpacing;
+
+        if (handCardsRoot != null && count > 1)
+        {
+            float availableWidth = Mathf.Max(0f, handCardsRoot.rect.width - widthPaddingPx);
+            float desiredTotalWidth = (count - 1) * cardSpacing;
+
+            if (desiredTotalWidth > availableWidth)
+                spacing = Mathf.Max(minCardSpacing, availableWidth / (count - 1));
+        }
+
+        float totalWidth = Mathf.Max(0, count - 1) * spacing;
         float startX = -totalWidth * 0.5f;
-        return new Vector2(startX + index * cardSpacing, 0f);
+        float x = startX + index * spacing;
+
+        float t = count > 1 ? (index / (float)(count - 1)) - 0.5f : 0f;
+        float rotationZ = -t * maxFanAngle;
+        float y = arcHeight * (1f - Mathf.Pow(2f * t, 2f));
+
+        return (new Vector2(x, y), rotationZ);
     }
 
     void FullSyncFromDeckManagerImmediate()

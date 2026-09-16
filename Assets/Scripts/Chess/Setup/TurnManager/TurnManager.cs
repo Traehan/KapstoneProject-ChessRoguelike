@@ -24,12 +24,14 @@ namespace Chess
         float _nextAllowedPlayerActionTime = 0f;
         [SerializeField, Min(0f)] float playerActionDebounceSeconds = 0.08f;
         public Team PlayerTeam => playerTeam;
+        public Team EnemyTeam => enemyTeam;
         public TurnPhase Phase { get; private set; } = TurnPhase.PlayerTurn;
         //AP INFO
         public int CurrentAP { get; private set; }
         public int CurrentAPMax { get; private set; }
         int _pendingNextBattlePhaseAPBonus;
         public bool IsPlayerTurn => Phase == TurnPhase.PlayerTurn;
+        public bool IsEnemyTurn => Phase == TurnPhase.EnemyTurn;
         public bool CanPlayerAct => IsPlayerTurn && CurrentAP > 0;
         public HashSet<Piece> MovedThisPlayerTurnSnapshot => _movedThisPlayerTurn;
         public System.Action<int, int> OnAPChanged;
@@ -205,8 +207,31 @@ namespace Chess
             }
 
             Instance = this;
+
+            ApplyGauntletHandicapsIfAccepted();
+
             CurrentAPMax = apPerTurn;
             CurrentManaMax = Mathf.Min(manaPerSpellPhase, maxMana);
+        }
+
+        // Gauntlet (Elite/Trial) Mana Handicap / Energy Handicap: mutates this battle's own
+        // apPerTurn/manaPerSpellPhase fields directly (once, here) rather than a separate local copy,
+        // because BeginPlayerTurn()/RefillManaForSpellPhase() both re-read these fields fresh every
+        // turn/spell-phase - a value captured only for the initial CurrentAPMax/CurrentManaMax calc
+        // would get overwritten as soon as the first real turn began. This is safe: TurnManager is
+        // scene-local and rebuilt from the scene's serialized defaults on the next battle, so nothing
+        // here permanently changes the authored default.
+        void ApplyGauntletHandicapsIfAccepted()
+        {
+            var gs = GameSession.I;
+            if (gs == null || !gs.gauntletAccepted)
+                return;
+
+            if (gs.pendingGauntletChallenge == GauntletChallengeType.EnergyHandicap)
+                apPerTurn = Mathf.Max(1, apPerTurn - 1);
+
+            if (gs.pendingGauntletChallenge == GauntletChallengeType.ManaHandicap)
+                manaPerSpellPhase = Mathf.Max(0, manaPerSpellPhase - 1);
         }
 
         void Start()

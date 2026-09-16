@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cb83fae61b887640ba433e185da28c4, type: 3}
+  m_Name: ERook_Chaser
+  m_EditorClassIdentifier: Assembly-CSharp::Chess.EnemyPieceDefinition
+  displayName: Chaser
+  icon: {fileID: 21300000, guid: 71a9f62cf983a024ebc83c86befdbf39, type: 3}
+  PieceInfoIcon: {fileID: 21300000, guid: 71a9f62cf983a024ebc83c86befdbf39, type: 3}
+  iconPrefabOverride: {fileID: 0}
+  count: 1
+  soundProfile: {fileID: 0}
+  attackImpactPrefab: {fileID: 5766537038910437382, guid: b54c41381c8269849a3b27f6231007a1, type: 3}
+  Description: 
+  piecePrefab: {fileID: 6324373625646752519, guid: 90ff20be4e06b4f51bcf13fd8ae3ac83, type: 3}
+  maxHP: 5
+  attack: 10
+  forwardOnly: 0
+  passThroughFriendlies: 1
+  maxStride: 3
+  shopPrice: 100
+  innateAbilities:
+  - {fileID: 11400000, guid: 0056265153201da42811966a5f71eb01, type: 2}

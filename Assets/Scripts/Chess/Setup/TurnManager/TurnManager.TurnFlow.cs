@@ -88,6 +88,7 @@ namespace Chess
         IEnumerator EnemyTurnRoutine()
         {
             SetPhase(TurnPhase.EnemyTurn);
+            NotifyAllPieceRuntimes_BeginEnemyTurn();
 
             foreach (var enemy in GetSortedEnemies())
             {
@@ -97,8 +98,7 @@ namespace Chess
                 {
                     boss.ExecuteTurn(board);
 
-                    if (enemyMoveDelay > 0f)
-                        yield return new WaitForSeconds(enemyMoveDelay);
+                    yield return WaitForAttackAnimationOrDelay();
 
                     continue;
                 }
@@ -107,10 +107,28 @@ namespace Chess
 
                 ExecuteEnemyActionAsCommand(enemy, target);
 
-                if (enemyMoveDelay > 0f)
-                    yield return new WaitForSeconds(enemyMoveDelay);
+                yield return WaitForAttackAnimationOrDelay();
             }
-            
+
+            IEnumerator WaitForAttackAnimationOrDelay()
+            {
+                yield return null; // let this frame's Play*() calls register on the gate first
+
+                float safetyTimeout = 3f, t = 0f;
+                while (PieceMotionController.ActiveAnimationCount > 0 && t < safetyTimeout)
+                {
+                    t += Time.deltaTime;
+                    yield return null;
+                }
+
+                if (t >= safetyTimeout)
+                    Debug.LogWarning("[TurnManager] Animation gate timeout — possible leaked animation.");
+
+                float minPacing = enemyMoveDelay * JuiceSettings.EnemyPacingMultiplier;
+                if (minPacing > 0f)
+                    yield return new WaitForSeconds(minPacing);
+            }
+
             void ExecuteEnemyActionAsCommand(Piece enemy, Vector2Int target)
             {
                 if (board == null || enemy == null) return;
@@ -140,10 +158,12 @@ namespace Chess
                     GameEvents.OnCommandExecuted?.Invoke(atk);
             }
             
+            NotifyAllPieceRuntimes_EndEnemyTurn();
             SetPhase(TurnPhase.Cleanup);
 
-            if (postEnemyTurnPause > 0f)
-                yield return new WaitForSeconds(postEnemyTurnPause);
+            float scaledPostEnemyTurnPause = postEnemyTurnPause * JuiceSettings.EnemyPacingMultiplier;
+            if (scaledPostEnemyTurnPause > 0f)
+                yield return new WaitForSeconds(scaledPostEnemyTurnPause);
 
             EnsureEncounterRunnerBound();
             if (encounterRunner != null && encounterRunner.IsVictoryReady(board))

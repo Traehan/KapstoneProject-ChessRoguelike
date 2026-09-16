@@ -1,6 +1,6 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -32,22 +32,30 @@ namespace Chess
         [SerializeField, Min(0f)] float deathHoldDuration = 0.06f;
         [SerializeField, Min(0.01f)] float deathFadeDuration = 0.18f;
 
-        Coroutine _routine;
+        public static int ActiveAnimationCount { get; private set; }
+
+        Sequence _activeSequence;
         Vector3 _lastTargetWorld;
+        bool _gateOpen;
 
         readonly List<SpriteRenderer> _spriteRenderers = new();
         readonly List<Color> _originalColors = new();
 
-        public bool IsPlaying => _routine != null;
+        public bool IsPlaying => _activeSequence != null && _activeSequence.IsActive();
 
         void Awake()
         {
             CacheSpriteRenderers();
         }
-        
+
         void OnEnable()
         {
             RestoreFullAlpha();
+        }
+
+        void OnDisable()
+        {
+            EndGate();
         }
 
         public void ResetVisualState()
@@ -67,6 +75,28 @@ namespace Chess
                 _originalColors.Add(_spriteRenderers[i] != null ? _spriteRenderers[i].color : Color.white);
         }
 
+        void BeginGate()
+        {
+            if (_gateOpen)
+                return;
+
+            _gateOpen = true;
+            ActiveAnimationCount++;
+        }
+
+        void EndGate()
+        {
+            if (!_gateOpen)
+                return;
+
+            _gateOpen = false;
+            ActiveAnimationCount = Mathf.Max(0, ActiveAnimationCount - 1);
+        }
+
+        // Scaled by JuiceSettings.AnimationDurationMultiplier, read live so a mid-battle
+        // speed change takes effect starting with the next animation.
+        static float Scaled(float duration) => duration * JuiceSettings.AnimationDurationMultiplier;
+
         public void SnapToWorld(Vector3 worldPos)
         {
             StopCurrentRoutine();
@@ -80,7 +110,31 @@ namespace Chess
             StopCurrentRoutine();
             RestoreFullAlpha();
             _lastTargetWorld = worldTo;
-            _routine = StartCoroutine(Co_PlayBoardSlide(worldFrom, worldTo, tileSize));
+
+            float distanceInTiles =
+                Mathf.Max(0.001f, Vector3.Distance(worldFrom, worldTo) / Mathf.Max(0.001f, tileSize));
+
+            float duration = Scaled(distanceInTiles / Mathf.Max(0.01f, moveSpeedTilesPerSecond));
+
+            transform.position = worldFrom;
+
+            if (duration <= 0f)
+            {
+                transform.position = worldTo;
+                return;
+            }
+
+            BeginGate();
+
+            _activeSequence = DOTween.Sequence();
+            _activeSequence.Append(transform.DOMove(worldTo, duration).SetEase(moveEase));
+            _activeSequence.OnComplete(() =>
+            {
+                transform.position = worldTo;
+                _activeSequence = null;
+                EndGate();
+            });
+            _activeSequence.OnKill(EndGate);
         }
 
         public void PlayAttackBump(Vector3 attackerWorld, Vector3 defenderWorld, Action<Vector3> onImpact = null)
@@ -88,7 +142,36 @@ namespace Chess
             StopCurrentRoutine();
             RestoreFullAlpha();
             _lastTargetWorld = attackerWorld;
-            _routine = StartCoroutine(Co_PlayAttackBump(attackerWorld, defenderWorld, onImpact));
+
+            Vector3 dir = defenderWorld - attackerWorld;
+            dir.y = 0f;
+
+            transform.position = attackerWorld;
+
+            if (dir.sqrMagnitude <= 0.0001f)
+                return;
+
+            dir.Normalize();
+
+            Vector3 hitPoint = attackerWorld + dir * attackLungeDistance;
+
+            BeginGate();
+
+            _activeSequence = DOTween.Sequence();
+            _activeSequence.Append(transform.DOMove(hitPoint, Scaled(lungeDuration)).SetEase(attackEase));
+            _activeSequence.AppendCallback(() => onImpact?.Invoke(hitPoint));
+
+            if (collidePause > 0f)
+                _activeSequence.AppendInterval(Scaled(collidePause));
+
+            _activeSequence.Append(transform.DOMove(attackerWorld, Scaled(returnDuration)).SetEase(attackEase));
+            _activeSequence.OnComplete(() =>
+            {
+                transform.position = attackerWorld;
+                _activeSequence = null;
+                EndGate();
+            });
+            _activeSequence.OnKill(EndGate);
         }
 
         public void PlayAttackKillAdvance(Vector3 attackerWorld, Vector3 defenderWorld, Vector3 finalWorld, Action<Vector3> onImpact = null)
@@ -96,7 +179,39 @@ namespace Chess
             StopCurrentRoutine();
             RestoreFullAlpha();
             _lastTargetWorld = finalWorld;
-            _routine = StartCoroutine(Co_PlayAttackKillAdvance(attackerWorld, defenderWorld, finalWorld, onImpact));
+
+            Vector3 dir = defenderWorld - attackerWorld;
+            dir.y = 0f;
+
+            transform.position = attackerWorld;
+
+            if (dir.sqrMagnitude <= 0.0001f)
+            {
+                transform.position = finalWorld;
+                return;
+            }
+
+            dir.Normalize();
+
+            Vector3 hitPoint = attackerWorld + dir * attackLungeDistance;
+
+            BeginGate();
+
+            _activeSequence = DOTween.Sequence();
+            _activeSequence.Append(transform.DOMove(hitPoint, Scaled(lungeDuration)).SetEase(attackEase));
+            _activeSequence.AppendCallback(() => onImpact?.Invoke(hitPoint));
+
+            if (collidePause > 0f)
+                _activeSequence.AppendInterval(Scaled(collidePause));
+
+            _activeSequence.Append(transform.DOMove(finalWorld, Scaled(killAdvanceDuration)).SetEase(attackEase));
+            _activeSequence.OnComplete(() =>
+            {
+                transform.position = finalWorld;
+                _activeSequence = null;
+                EndGate();
+            });
+            _activeSequence.OnKill(EndGate);
         }
 
         public void PlayHitRecoil(Vector3 defenderWorld, Vector3 recoilDirection, bool returnToOrigin)
@@ -104,7 +219,48 @@ namespace Chess
             StopCurrentRoutine();
             RestoreFullAlpha();
             _lastTargetWorld = defenderWorld;
-            _routine = StartCoroutine(Co_PlayHitRecoil(defenderWorld, recoilDirection, returnToOrigin));
+
+            recoilDirection.y = 0f;
+
+            transform.position = defenderWorld;
+
+            if (recoilDirection.sqrMagnitude <= 0.0001f)
+                return;
+
+            recoilDirection.Normalize();
+
+            Vector3 recoilTarget = defenderWorld + recoilDirection * hitRecoilDistance;
+
+            BeginGate();
+
+            _activeSequence = DOTween.Sequence();
+            _activeSequence.Append(transform.DOMove(recoilTarget, Scaled(hitRecoilOutDuration)).SetEase(hitRecoilEase));
+
+            if (hitRecoilPause > 0f)
+                _activeSequence.AppendInterval(Scaled(hitRecoilPause));
+
+            if (returnToOrigin)
+            {
+                _activeSequence.Append(transform.DOMove(defenderWorld, Scaled(hitRecoilReturnDuration)).SetEase(hitRecoilEase));
+                _activeSequence.OnComplete(() =>
+                {
+                    transform.position = defenderWorld;
+                    _activeSequence = null;
+                    EndGate();
+                });
+            }
+            else
+            {
+                _activeSequence.OnComplete(() =>
+                {
+                    transform.position = recoilTarget;
+                    _lastTargetWorld = recoilTarget;
+                    _activeSequence = null;
+                    EndGate();
+                });
+            }
+
+            _activeSequence.OnKill(EndGate);
         }
 
         public void PlayDeathRecoilAndDissolve(Vector3 defenderWorld, Vector3 recoilDirection, Action onFinished)
@@ -112,126 +268,7 @@ namespace Chess
             StopCurrentRoutine();
             RestoreFullAlpha();
             _lastTargetWorld = defenderWorld;
-            _routine = StartCoroutine(Co_PlayDeathRecoilAndDissolve(defenderWorld, recoilDirection, onFinished));
-        }
 
-        IEnumerator Co_PlayBoardSlide(Vector3 worldFrom, Vector3 worldTo, float tileSize)
-        {
-            transform.position = worldFrom;
-
-            float distanceInTiles =
-                Mathf.Max(0.001f, Vector3.Distance(worldFrom, worldTo) / Mathf.Max(0.001f, tileSize));
-
-            float duration = distanceInTiles / Mathf.Max(0.01f, moveSpeedTilesPerSecond);
-
-            if (duration <= 0f)
-            {
-                transform.position = worldTo;
-                _routine = null;
-                yield break;
-            }
-
-            yield return AnimateWorldPosition(worldFrom, worldTo, duration, moveEase);
-
-            transform.position = worldTo;
-            _routine = null;
-        }
-
-        IEnumerator Co_PlayAttackBump(Vector3 attackerWorld, Vector3 defenderWorld, Action<Vector3> onImpact)
-        {
-            Vector3 dir = defenderWorld - attackerWorld;
-            dir.y = 0f;
-
-            if (dir.sqrMagnitude <= 0.0001f)
-            {
-                transform.position = attackerWorld;
-                _routine = null;
-                yield break;
-            }
-
-            dir.Normalize();
-
-            Vector3 hitPoint = attackerWorld + dir * attackLungeDistance;
-
-            transform.position = attackerWorld;
-
-            yield return AnimateWorldPosition(attackerWorld, hitPoint, lungeDuration, attackEase);
-
-            onImpact?.Invoke(hitPoint);
-            yield return new WaitForSeconds(collidePause);
-
-            yield return AnimateWorldPosition(hitPoint, attackerWorld, returnDuration, attackEase);
-
-            transform.position = attackerWorld;
-            _routine = null;
-        }
-
-        IEnumerator Co_PlayAttackKillAdvance(Vector3 attackerWorld, Vector3 defenderWorld, Vector3 finalWorld, Action<Vector3> onImpact)
-        {
-            Vector3 dir = defenderWorld - attackerWorld;
-            dir.y = 0f;
-
-            if (dir.sqrMagnitude <= 0.0001f)
-            {
-                transform.position = finalWorld;
-                _routine = null;
-                yield break;
-            }
-
-            dir.Normalize();
-
-            Vector3 hitPoint = attackerWorld + dir * attackLungeDistance;
-
-            transform.position = attackerWorld;
-
-            yield return AnimateWorldPosition(attackerWorld, hitPoint, lungeDuration, attackEase);
-
-            onImpact?.Invoke(hitPoint);
-            yield return new WaitForSeconds(collidePause);
-
-            yield return AnimateWorldPosition(hitPoint, finalWorld, killAdvanceDuration, attackEase);
-
-            transform.position = finalWorld;
-            _routine = null;
-        }
-
-        IEnumerator Co_PlayHitRecoil(Vector3 defenderWorld, Vector3 recoilDirection, bool returnToOrigin)
-        {
-            recoilDirection.y = 0f;
-
-            if (recoilDirection.sqrMagnitude <= 0.0001f)
-            {
-                transform.position = defenderWorld;
-                _routine = null;
-                yield break;
-            }
-
-            recoilDirection.Normalize();
-
-            Vector3 recoilTarget = defenderWorld + recoilDirection * hitRecoilDistance;
-
-            transform.position = defenderWorld;
-
-            yield return AnimateWorldPosition(defenderWorld, recoilTarget, hitRecoilOutDuration, hitRecoilEase);
-
-            if (hitRecoilPause > 0f)
-                yield return new WaitForSeconds(hitRecoilPause);
-
-            if (returnToOrigin)
-            {
-                yield return AnimateWorldPosition(recoilTarget, defenderWorld, hitRecoilReturnDuration, hitRecoilEase);
-                transform.position = defenderWorld;
-            }
-            else
-            {
-                transform.position = recoilTarget;
-            }
-
-            _routine = null;
-        }
-
-        IEnumerator Co_PlayDeathRecoilAndDissolve(Vector3 defenderWorld, Vector3 recoilDirection, Action onFinished)
-        {
             recoilDirection.y = 0f;
 
             if (recoilDirection.sqrMagnitude <= 0.0001f)
@@ -243,55 +280,46 @@ namespace Chess
 
             transform.position = defenderWorld;
 
-            yield return AnimateWorldPosition(defenderWorld, recoilTarget, hitRecoilOutDuration, hitRecoilEase);
-
-            if (deathHoldDuration > 0f)
-                yield return new WaitForSeconds(deathHoldDuration);
-
-            yield return FadeToAlpha(0f, deathFadeDuration);
-
-            _routine = null;
-            onFinished?.Invoke();
-        }
-
-        IEnumerator FadeToAlpha(float targetAlpha, float duration)
-        {
             if (_spriteRenderers.Count == 0)
                 CacheSpriteRenderers();
 
-            float t = 0f;
+            BeginGate();
 
-            var startColors = new List<Color>(_spriteRenderers.Count);
-            for (int i = 0; i < _spriteRenderers.Count; i++)
-                startColors.Add(_spriteRenderers[i] != null ? _spriteRenderers[i].color : Color.white);
+            _activeSequence = DOTween.Sequence();
+            _activeSequence.Append(transform.DOMove(recoilTarget, Scaled(hitRecoilOutDuration)).SetEase(hitRecoilEase));
 
-            while (t < duration)
-            {
-                t += Time.deltaTime;
-                float u = Mathf.Clamp01(t / Mathf.Max(0.0001f, duration));
+            if (deathHoldDuration > 0f)
+                _activeSequence.AppendInterval(Scaled(deathHoldDuration));
 
-                for (int i = 0; i < _spriteRenderers.Count; i++)
-                {
-                    var sr = _spriteRenderers[i];
-                    if (sr == null) continue;
-
-                    Color c = startColors[i];
-                    c.a = Mathf.Lerp(startColors[i].a, targetAlpha, u);
-                    sr.color = c;
-                }
-
-                yield return null;
-            }
+            float fadeDuration = Scaled(deathFadeDuration);
+            bool firstFade = true;
 
             for (int i = 0; i < _spriteRenderers.Count; i++)
             {
                 var sr = _spriteRenderers[i];
-                if (sr == null) continue;
+                if (sr == null)
+                    continue;
 
-                Color c = sr.color;
-                c.a = targetAlpha;
-                sr.color = c;
+                var fadeTween = sr.DOFade(0f, fadeDuration);
+
+                if (firstFade)
+                {
+                    _activeSequence.Append(fadeTween);
+                    firstFade = false;
+                }
+                else
+                {
+                    _activeSequence.Join(fadeTween);
+                }
             }
+
+            _activeSequence.OnComplete(() =>
+            {
+                _activeSequence = null;
+                EndGate();
+                onFinished?.Invoke();
+            });
+            _activeSequence.OnKill(EndGate);
         }
 
         void RestoreFullAlpha()
@@ -309,35 +337,15 @@ namespace Chess
             }
         }
 
-        IEnumerator AnimateWorldPosition(Vector3 from, Vector3 to, float duration, AnimationCurve curve)
-        {
-            if (duration <= 0f)
-            {
-                transform.position = to;
-                yield break;
-            }
-
-            float t = 0f;
-
-            while (t < duration)
-            {
-                t += Time.deltaTime;
-                float u = Mathf.Clamp01(t / duration);
-                float eased = curve != null ? curve.Evaluate(u) : u;
-                transform.position = Vector3.LerpUnclamped(from, to, eased);
-                yield return null;
-            }
-
-            transform.position = to;
-        }
-
         void StopCurrentRoutine()
         {
-            if (_routine != null)
-            {
-                StopCoroutine(_routine);
-                _routine = null;
-            }
+            if (_activeSequence != null && _activeSequence.IsActive())
+                _activeSequence.Kill();
+
+            _activeSequence = null;
+
+            // Idempotent: also called from the killed sequence's OnKill callback above.
+            EndGate();
 
             if (_lastTargetWorld != default)
                 transform.position = _lastTargetWorld;

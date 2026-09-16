@@ -73,19 +73,16 @@ namespace Chess
             if (rt != null)
             {
                 rt.MaxHP += addMaxHp;
-                rt.CurrentHP = Mathf.Min(rt.CurrentHP + addCurHp, rt.MaxHP);
                 rt.Attack += addAtk;
-
-                queen.maxHP = rt.MaxHP;
-                queen.currentHP = rt.CurrentHP;
-                queen.attack = rt.Attack;
             }
             else
             {
                 queen.maxHP += addMaxHp;
-                queen.currentHP = Mathf.Min(queen.currentHP + addCurHp, queen.maxHP);
                 queen.attack += addAtk;
             }
+
+            if (addCurHp > 0)
+                PieceDamage.Heal(queen, addCurHp, queen);
 
             GameEvents.OnPieceStatsChanged?.Invoke(queen);
         }

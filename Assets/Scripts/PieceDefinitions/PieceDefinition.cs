@@ -20,6 +20,9 @@ namespace Chess
 
         public string Description;
 
+        [Header("Lore")]
+        [TextArea] public string flavorText;
+
         [Header("Spawn")]
         public Piece piecePrefab;
 

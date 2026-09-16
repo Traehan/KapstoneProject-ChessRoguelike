@@ -63,7 +63,11 @@ namespace Chess
                     worldFrom,
                     worldTo,
                     worldTo,
-                    hitPoint => SpawnImpactToward(attackerPiece, hitPoint, worldTo));
+                    hitPoint =>
+                    {
+                        SpawnImpactToward(attackerPiece, hitPoint, worldTo);
+                        HitStopController.Instance?.RequestHitStop();
+                    });
                 return;
             }
 
@@ -90,6 +94,7 @@ namespace Chess
             if (r.isBossAttack)
             {
                 SpawnImpactToward(r.attacker, attackerWorld, defenderWorld);
+                HitStopController.Instance?.RequestHitStop();
 
                 if (!r.defenderDied && defenderMotion != null)
                 {
@@ -126,7 +131,11 @@ namespace Chess
                 attackerMotion.PlayAttackBump(
                     attackerWorld,
                     defenderWorld,
-                    hitPoint => SpawnImpactToward(attackerPiece, hitPoint, defenderWorld));
+                    hitPoint =>
+                    {
+                        SpawnImpactToward(attackerPiece, hitPoint, defenderWorld);
+                        HitStopController.Instance?.RequestHitStop();
+                    });
             }
 
             if (r.defenderDied)

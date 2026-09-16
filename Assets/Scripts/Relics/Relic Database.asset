@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0935c7d11e1d06408347916300a79e7, type: 3}
+  m_Name: Relic Database
+  m_EditorClassIdentifier: Assembly-CSharp::Chess.RelicDatabase
+  allRelics:
+  - {fileID: 11400000, guid: a5ebbc157d6376144b805ec272d26519, type: 2}
+  - {fileID: 11400000, guid: 84a0a2580cd66194693f8f643453246d, type: 2}
+  - {fileID: 11400000, guid: f6af89b348dc2f74582ed940b4f53a3e, type: 2}

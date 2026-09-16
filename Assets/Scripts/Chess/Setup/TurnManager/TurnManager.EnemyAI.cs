@@ -50,6 +50,13 @@ namespace Chess
             }
 
             target = default;
+
+            // Ability-driven movement (e.g. Chase Closest authored as a passive) takes priority
+            // over the legacy IEnemyBehavior component system.
+            var runtime = enemy.GetComponent<PieceRuntime>();
+            if (runtime != null && runtime.TryGetMovementDestination(board, out target))
+                return true;
+
             if (!enemy.TryGetComponent<IEnemyBehavior>(out var beh)) return false;
             return beh.TryGetDesiredDestination(board, out target);
         }

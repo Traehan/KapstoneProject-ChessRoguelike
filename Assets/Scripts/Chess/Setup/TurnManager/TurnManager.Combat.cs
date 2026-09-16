@@ -36,26 +36,14 @@ namespace Chess
 
             int modifiedAtk = Mathf.Max(0, ctx.baseDamage + ctx.damageDelta);
 
-            int atkToDef = FortifyStatusUtility.AbsorbDamage(defender, modifiedAtk, ctx.bypassFortify, attacker);
-
-            int defToAtk = 0;
-
-            if (atkToDef > 0)
-                GameEvents.OnPieceDamaged?.Invoke(defender, atkToDef, attacker);
-
-            defender.currentHP -= atkToDef;
-            defenderDied = defender.currentHP <= 0;
+            var hit = PieceDamage.Apply(defender, modifiedAtk, attacker, ctx.bypassFortify);
+            defenderDied = hit.died;
 
             int retaliateStacks = RetaliateStatusUtility.GetRetaliate(defender);
             if (!defenderDied && retaliateStacks > 0)
             {
-                int retaliationBase = GetAttackValue(defender);
-                defToAtk = FortifyStatusUtility.AbsorbDamage(attacker, retaliationBase, false, defender);
-
-                if (defToAtk > 0)
-                    GameEvents.OnPieceDamaged?.Invoke(attacker, defToAtk, defender);
-
-                attacker.currentHP -= defToAtk;
+                int retaliationBase = GetAttackValue(defender) + GetRelicRetaliateBonusDamage(defender, attacker);
+                PieceDamage.Apply(attacker, retaliationBase, defender, bypassFortify: false);
                 RetaliateStatusUtility.RemoveRetaliate(defender, 1);
             }
 
@@ -78,29 +66,14 @@ namespace Chess
             if (_ironMarchAura != null)
                 dmg += _ironMarchAura.GetAttackBonusIfEligible(_clan, attacker);
 
-            int final = FortifyStatusUtility.AbsorbDamage(defender, dmg, false, attacker);
-
-            if (final > 0)
-                GameEvents.OnPieceDamaged?.Invoke(defender, final, attacker);
-
-            defender.currentHP -= final;
-            defenderDied = defender.currentHP <= 0;
-
-            int retaliationDamage = 0;
-            bool attackerDied = false;
+            var hit = PieceDamage.Apply(defender, dmg, attacker, bypassFortify: false);
+            defenderDied = hit.died;
 
             int retaliateStacks = RetaliateStatusUtility.GetRetaliate(defender);
             if (!defenderDied && retaliateStacks > 0)
             {
-                int retaliationBase = GetAttackValue(defender);
-                retaliationDamage = FortifyStatusUtility.AbsorbDamage(attacker, retaliationBase, false, defender);
-
-                if (retaliationDamage > 0)
-                    GameEvents.OnPieceDamaged?.Invoke(attacker, retaliationDamage, defender);
-
-                attacker.currentHP -= retaliationDamage;
-                attackerDied = attacker.currentHP <= 0;
-
+                int retaliationBase = GetAttackValue(defender) + GetRelicRetaliateBonusDamage(defender, attacker);
+                PieceDamage.Apply(attacker, retaliationBase, defender, bypassFortify: false);
                 RetaliateStatusUtility.RemoveRetaliate(defender, 1);
             }
 

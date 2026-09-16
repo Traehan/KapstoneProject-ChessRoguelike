@@ -24,6 +24,18 @@ namespace Chess
                 p.GetComponent<PieceRuntime>()?.Notify_EndPlayerTurn();
         }
 
+        void NotifyAllPieceRuntimes_BeginEnemyTurn()
+        {
+            foreach (var p in board.GetAllPieces())
+                p.GetComponent<PieceRuntime>()?.Notify_BeginEnemyTurn();
+        }
+
+        void NotifyAllPieceRuntimes_EndEnemyTurn()
+        {
+            foreach (var p in board.GetAllPieces())
+                p.GetComponent<PieceRuntime>()?.Notify_EndEnemyTurn();
+        }
+
         void EnsureEncounterRunnerBound()
         {
             if (encounterRunner == null)

@@ -27,13 +27,9 @@ public static class StatusTickSystem
             int bleed = sc.GetStacks(StatusId.Bleed);
             if (bleed <= 0) continue;
 
-            p.currentHP -= bleed;
-            Debug.Log("Enemy took damage from bleed effect");
+            var hit = PieceDamage.Apply(p, bleed, null, bypassFortify: true);
 
-            GameEvents.OnPieceDamaged?.Invoke(p, bleed, null);
-            GameEvents.OnPieceStatsChanged?.Invoke(p);
-
-            if (p.currentHP <= 0)
+            if (hit.died)
             {
                 toRemove ??= new List<Piece>();
                 toRemove.Add(p);
